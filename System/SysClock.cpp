@@ -37,34 +37,47 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     main.cpp : Main program entry point                                    //
+//     System/SysClock.cpp : System Clock management                          //
 ////////////////////////////////////////////////////////////////////////////////
-#include <iostream>
-
-#include "System/System.h"
-#include "System/SysSleep.h"
-#include "System/SysClock.h"
+#include "SysClock.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Standard program entry point                                              //
-//  return : Main program return code                                         //
+//  SysClock default constructor                                              //
 ////////////////////////////////////////////////////////////////////////////////
-int main()
+SysClock::SysClock() :
+m_start(std::chrono::steady_clock::now())
 {
-    // Start WOS
-    std::cout << "WOS\n";
 
-    // Test clock
-    SysClock clock;
-    clock.reset();
+}
 
-    // Sleep for 1sec
-    SysSleep(1.0);
+////////////////////////////////////////////////////////////////////////////////
+//  SysClock destructor                                                       //
+////////////////////////////////////////////////////////////////////////////////
+SysClock::~SysClock()
+{
 
-    // Output elapsed time
-    std::cout << clock.getAndReset() << '\n';
+}
 
-    // Program successfully executed
-    return 0;
+
+////////////////////////////////////////////////////////////////////////////////
+//  Get elapsed time in seconds and reset the clock                           //
+////////////////////////////////////////////////////////////////////////////////
+double SysClock::getAndReset()
+{
+    double elapsedTime = std::chrono::duration_cast<std::chrono::nanoseconds>
+        (std::chrono::steady_clock::now() - m_start).count()*0.000000001;
+    m_start = std::chrono::steady_clock::now();
+    return elapsedTime;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Get elapsed time in seconds and reset the clock                           //
+////////////////////////////////////////////////////////////////////////////////
+float SysClock::getAndResetF()
+{
+    float elapsedTime = std::chrono::duration_cast<std::chrono::nanoseconds>
+        (std::chrono::steady_clock::now() - m_start).count()*0.000000001f;
+    m_start = std::chrono::steady_clock::now();
+    return elapsedTime;
 }

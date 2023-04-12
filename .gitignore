@@ -23,6 +23,13 @@
 
 !main.cpp
 
+# System
+!System/
+!System/System.h
+!System/SysSleep.h
+!System/SysClock.h
+!System/SysClock.cpp
+
 # Cursors files
 !cursors/
 !cursors/default.png

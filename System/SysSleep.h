@@ -37,34 +37,36 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     main.cpp : Main program entry point                                    //
+//     System/SysSleep.h : System thread sleep management                     //
 ////////////////////////////////////////////////////////////////////////////////
-#include <iostream>
+#ifndef WOS_SYSTEM_SYSSLEEP_HEADER
+#define WOS_SYSTEM_SYSSLEEP_HEADER
 
-#include "System/System.h"
-#include "System/SysSleep.h"
-#include "System/SysClock.h"
+    #include "System.h"
+
+    #include <thread>
+    #include <chrono>
 
 
-////////////////////////////////////////////////////////////////////////////////
-//  Standard program entry point                                              //
-//  return : Main program return code                                         //
-////////////////////////////////////////////////////////////////////////////////
-int main()
-{
-    // Start WOS
-    std::cout << "WOS\n";
+    ////////////////////////////////////////////////////////////////////////////
+    //  Put current thread to sleep for given time in seconds                 //
+    ////////////////////////////////////////////////////////////////////////////
+    inline void SysSleep(double seconds)
+    {
+        std::this_thread::sleep_for(std::chrono::microseconds(
+            static_cast<long long int>(seconds*1000000)
+        ));
+    }
 
-    // Test clock
-    SysClock clock;
-    clock.reset();
+    ////////////////////////////////////////////////////////////////////////////
+    //  Put current thread to sleep for given time in seconds                 //
+    ////////////////////////////////////////////////////////////////////////////
+    inline void SysSleep(float seconds)
+    {
+        std::this_thread::sleep_for(std::chrono::microseconds(
+            static_cast<long long int>(seconds*1000000)
+        ));
+    }
 
-    // Sleep for 1sec
-    SysSleep(1.0);
 
-    // Output elapsed time
-    std::cout << clock.getAndReset() << '\n';
-
-    // Program successfully executed
-    return 0;
-}
+#endif // WOS_SYSTEM_SYSSLEEP_HEADER

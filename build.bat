@@ -6,6 +6,7 @@
     -ffunction-sections -fno-trapping-math -fno-math-errno -fno-signed-zeros ^
     -W -Wall -pthread -lGL -s USE_PTHREADS=1 -s PROXY_TO_PTHREAD ^
     -s MAX_WEBGL_VERSION=2 -o wos.js ^
+    System/SysClock.cpp ^
     main.cpp
 
 :: System pause

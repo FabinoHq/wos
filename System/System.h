@@ -37,34 +37,28 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     main.cpp : Main program entry point                                    //
+//     System/System.h : VOS System management wrapper                        //
 ////////////////////////////////////////////////////////////////////////////////
-#include <iostream>
-
-#include "System/System.h"
-#include "System/SysSleep.h"
-#include "System/SysClock.h"
+#ifndef WOS_SYSTEM_SYSTEM_HEADER
+#define WOS_SYSTEM_SYSTEM_HEADER
 
 
-////////////////////////////////////////////////////////////////////////////////
-//  Standard program entry point                                              //
-//  return : Main program return code                                         //
-////////////////////////////////////////////////////////////////////////////////
-int main()
-{
-    // Start WOS
-    std::cout << "WOS\n";
+    ////////////////////////////////////////////////////////////////////////////
+    //  Operating system configuration                                        //
+    ////////////////////////////////////////////////////////////////////////////
+    #define WOS_DESKTOP
 
-    // Test clock
-    SysClock clock;
-    clock.reset();
 
-    // Sleep for 1sec
-    SysSleep(1.0);
+    ////////////////////////////////////////////////////////////////////////////
+    //  64bits or 32bits configuration                                        //
+    ////////////////////////////////////////////////////////////////////////////
+    #if defined(__x86_64__) || defined(_WIN64) || defined(__LP64__) || \
+        defined(__ia64) || defined(_M_X64) || defined(_M_IA64) || \
+        defined(__aarch64__) || defined(__powerpc64__)
+        #define WOS_64BITS
+    #else
+        #define WOS_32BITS
+    #endif
 
-    // Output elapsed time
-    std::cout << clock.getAndReset() << '\n';
 
-    // Program successfully executed
-    return 0;
-}
+#endif // WOS_SYSTEM_SYSTEM_HEADER
