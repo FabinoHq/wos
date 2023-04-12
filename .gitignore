@@ -1,0 +1,15 @@
+# Ignore everything, except listed files
+*
+
+# Global files
+!.gitignore
+!.gitattributes
+!README.md
+!LICENSE
+
+# Sources files
+!index.html
+!style.css
+!favicon.ico
+!wos.svg
+!crossdomain.xml
