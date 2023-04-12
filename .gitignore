@@ -7,9 +7,35 @@
 !README.md
 !LICENSE
 
+# Batch files
+!build.bat
+
 # Sources files
 !index.html
 !style.css
 !favicon.ico
 !wos.svg
 !crossdomain.xml
+
+!wos.js
+!wos.worker.js
+!wos.wasm
+
+!main.cpp
+
+# Cursors files
+!cursors/
+!cursors/default.png
+!cursors/crosshair.png
+!cursors/textcursor.png
+!cursors/grabcursor.png
+!cursors/grabbingcursor.png
+!cursors/ewresize.png
+!cursors/nsresize.png
+!cursors/ewresize.png
+!cursors/neswresize.png
+!cursors/nwseresize.png
+
+# Fonts files
+!fonts/
+!fonts/wosfont.otf
