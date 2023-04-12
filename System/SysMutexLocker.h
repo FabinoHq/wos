@@ -37,28 +37,57 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     System/System.h : WOS System management wrapper                        //
+//     System/SysMutexLocker.h : System Mutex locker management               //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_SYSTEM_SYSTEM_HEADER
-#define WOS_SYSTEM_SYSTEM_HEADER
+#ifndef WOS_SYSTEM_SYSMUTEXLOCKER_HEADER
+#define WOS_SYSTEM_SYSMUTEXLOCKER_HEADER
+
+    #include "System.h"
+    #include "SysMutex.h"
+
+    #include <thread>
+    #include <mutex>
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Operating system configuration                                        //
+    //  SysMutexLocker class definition                                       //
     ////////////////////////////////////////////////////////////////////////////
-    #define WOS_DESKTOP
+    class SysMutexLocker
+    {
+        public:
+            ////////////////////////////////////////////////////////////////////
+            //  SysMutexLocker constructor : Lock the associated mutex        //
+            ////////////////////////////////////////////////////////////////////
+            inline SysMutexLocker(SysMutex& mutex) :
+            m_mutex(mutex)
+            {
+                m_mutex.lock();
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  SysMutexLocker destructor : Unlock the associated mutex       //
+            ////////////////////////////////////////////////////////////////////
+            inline ~SysMutexLocker()
+            {
+                m_mutex.unlock();
+            }
 
 
-    ////////////////////////////////////////////////////////////////////////////
-    //  64bits or 32bits configuration                                        //
-    ////////////////////////////////////////////////////////////////////////////
-    #if defined(__x86_64__) || defined(_WIN64) || defined(__LP64__) || \
-        defined(__ia64) || defined(_M_X64) || defined(_M_IA64) || \
-        defined(__aarch64__) || defined(__powerpc64__)
-        #define WOS_64BITS
-    #else
-        #define WOS_32BITS
-    #endif
+        private:
+            ////////////////////////////////////////////////////////////////////
+            //  SysMutexLocker private copy constructor : Not copyable        //
+            ////////////////////////////////////////////////////////////////////
+            SysMutexLocker(const SysMutexLocker&) = delete;
+
+            ////////////////////////////////////////////////////////////////////
+            //  SysMutexLocker private copy operator : Not copyable           //
+            ////////////////////////////////////////////////////////////////////
+            SysMutexLocker& operator=(const SysMutexLocker&) = delete;
 
 
-#endif // WOS_SYSTEM_SYSTEM_HEADER
+        private:
+            SysMutex&           m_mutex;            // Associated mutex
+    };
+
+
+#endif // WOS_SYSTEM_SYSMUTEXLOCKER_HEADER

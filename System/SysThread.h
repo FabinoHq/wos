@@ -37,28 +37,86 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     System/System.h : WOS System management wrapper                        //
+//     System/SysThread.h : System Thread management                          //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_SYSTEM_SYSTEM_HEADER
-#define WOS_SYSTEM_SYSTEM_HEADER
+#ifndef WOS_SYSTEM_SYSTHREAD_HEADER
+#define WOS_SYSTEM_SYSTHREAD_HEADER
+
+    #include "System.h"
+    #include "SysSleep.h"
+    #include "SysMutex.h"
+
+    #include <thread>
+    #include <new>
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Operating system configuration                                        //
+    //  SysThread standby sleep time : 10 ms                                  //
     ////////////////////////////////////////////////////////////////////////////
-    #define WOS_DESKTOP
+    const double SysThreadStandbySleepTime = 0.01;
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  64bits or 32bits configuration                                        //
+    //  SysThread class definition                                            //
     ////////////////////////////////////////////////////////////////////////////
-    #if defined(__x86_64__) || defined(_WIN64) || defined(__LP64__) || \
-        defined(__ia64) || defined(_M_X64) || defined(_M_IA64) || \
-        defined(__aarch64__) || defined(__powerpc64__)
-        #define WOS_64BITS
-    #else
-        #define WOS_32BITS
-    #endif
+    class SysThread
+    {
+        public:
+            ////////////////////////////////////////////////////////////////////
+            //  SysThread default constructor                                 //
+            ////////////////////////////////////////////////////////////////////
+            SysThread();
+
+            ////////////////////////////////////////////////////////////////////
+            //  SysThread virtual destructor                                  //
+            ////////////////////////////////////////////////////////////////////
+            virtual ~SysThread();
 
 
-#endif // WOS_SYSTEM_SYSTEM_HEADER
+            ////////////////////////////////////////////////////////////////////
+            //  Start the thread                                              //
+            ////////////////////////////////////////////////////////////////////
+            bool start();
+
+            ////////////////////////////////////////////////////////////////////
+            //  Stop the thread                                               //
+            ////////////////////////////////////////////////////////////////////
+            void stop();
+
+            ////////////////////////////////////////////////////////////////////
+            //  Set the thread's standby mode                                 //
+            ////////////////////////////////////////////////////////////////////
+            void standby(bool standbyMode);
+
+            ////////////////////////////////////////////////////////////////////
+            //  Thread virtual process                                        //
+            ////////////////////////////////////////////////////////////////////
+            virtual void process();
+
+
+        private:
+            ////////////////////////////////////////////////////////////////////
+            //  SysThread private copy constructor : Not copyable             //
+            ////////////////////////////////////////////////////////////////////
+            SysThread(const SysThread&) = delete;
+
+            ////////////////////////////////////////////////////////////////////
+            //  SysThread private copy operator : Not copyable                //
+            ////////////////////////////////////////////////////////////////////
+            SysThread& operator=(const SysThread&) = delete;
+
+            ////////////////////////////////////////////////////////////////////
+            //  SysThread subroutine                                          //
+            ////////////////////////////////////////////////////////////////////
+            void run();
+
+
+        private:
+            std::thread*    m_thread;       // System thread
+            SysMutex        m_mutex;        // Thread states mutex
+            bool            m_running;      // Thread running state
+            bool            m_standby;      // Thread standby mode
+    };
+
+
+#endif // WOS_SYSTEM_SYSTHREAD_HEADER

@@ -37,28 +37,82 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     System/System.h : WOS System management wrapper                        //
+//     System/SysMutex.h : System Mutex management                            //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_SYSTEM_SYSTEM_HEADER
-#define WOS_SYSTEM_SYSTEM_HEADER
+#ifndef WOS_SYSTEM_SYSMUTEX_HEADER
+#define WOS_SYSTEM_SYSMUTEX_HEADER
+
+    #include "System.h"
+
+    #include <thread>
+    #include <mutex>
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Operating system configuration                                        //
+    //  SysMutex class definition                                             //
     ////////////////////////////////////////////////////////////////////////////
-    #define WOS_DESKTOP
+    class SysMutex
+    {
+        public:
+            ////////////////////////////////////////////////////////////////////
+            //  SysMutex default constructor                                  //
+            ////////////////////////////////////////////////////////////////////
+            inline SysMutex() :
+            m_mutex()
+            {
+
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  SysMutex destructor                                           //
+            ////////////////////////////////////////////////////////////////////
+            inline ~SysMutex()
+            {
+
+            }
 
 
-    ////////////////////////////////////////////////////////////////////////////
-    //  64bits or 32bits configuration                                        //
-    ////////////////////////////////////////////////////////////////////////////
-    #if defined(__x86_64__) || defined(_WIN64) || defined(__LP64__) || \
-        defined(__ia64) || defined(_M_X64) || defined(_M_IA64) || \
-        defined(__aarch64__) || defined(__powerpc64__)
-        #define WOS_64BITS
-    #else
-        #define WOS_32BITS
-    #endif
+            ////////////////////////////////////////////////////////////////////
+            //  Lock the mutex, wait until the mutex is locked                //
+            ////////////////////////////////////////////////////////////////////
+            inline void lock()
+            {
+                m_mutex.lock();
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Try to lock the mutex without waiting                         //
+            //  return : True if the mutex is locked, false otherwise         //
+            ////////////////////////////////////////////////////////////////////
+            inline bool trylock()
+            {
+                return m_mutex.try_lock();
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Unlock the mutex                                              //
+            ////////////////////////////////////////////////////////////////////
+            inline void unlock()
+            {
+                m_mutex.unlock();
+            }
 
 
-#endif // WOS_SYSTEM_SYSTEM_HEADER
+        private:
+            ////////////////////////////////////////////////////////////////////
+            //  SysMutex private copy constructor : Not copyable              //
+            ////////////////////////////////////////////////////////////////////
+            SysMutex(const SysMutex&) = delete;
+
+            ////////////////////////////////////////////////////////////////////
+            //  SysMutex private copy operator : Not copyable                 //
+            ////////////////////////////////////////////////////////////////////
+            SysMutex& operator=(const SysMutex&) = delete;
+
+
+        private:
+            std::mutex          m_mutex;            // System mutex
+    };
+
+
+#endif // WOS_SYSTEM_SYSMUTEX_HEADER

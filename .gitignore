@@ -29,6 +29,10 @@
 !System/SysSleep.h
 !System/SysClock.h
 !System/SysClock.cpp
+!System/SysMutex.h
+!System/SysMutexLocker.h
+!System/SysThread.h
+!System/SysThread.cpp
 
 # Cursors files
 !cursors/

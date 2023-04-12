@@ -37,68 +37,121 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     main.cpp : Main program entry point                                    //
+//     System/SysThread.cpp : System Thread management                        //
 ////////////////////////////////////////////////////////////////////////////////
-#include <iostream>
-
-#include "System/System.h"
-#include "System/SysSleep.h"
-#include "System/SysClock.h"
-#include "System/SysThread.h"
+#include "SysThread.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Test thread class                                                         //
+//  SysThread default constructor                                             //
 ////////////////////////////////////////////////////////////////////////////////
-class ThreadClass : public SysThread
+SysThread::SysThread() :
+m_thread(0),
+m_mutex(),
+m_running(false),
+m_standby(false)
 {
-    public:
-        ThreadClass()
-        {
 
-        }
-        virtual ~ThreadClass()
-        {
-
-        }
-
-        virtual void process()
-        {
-            // Test thread
-            std::cout << "Thread\n";
-
-            // Sleep for 100ms
-            SysSleep(0.1);
-        }
-};
-
+}
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Standard program entry point                                              //
-//  return : Main program return code                                         //
+//  SysThread virtual destructor                                              //
 ////////////////////////////////////////////////////////////////////////////////
-int main()
+SysThread::~SysThread()
 {
-    // Start WOS
-    std::cout << "WOS\n";
+    // Stop eventual running thread
+    stop();
+}
 
-    // Test clock
-    SysClock clock;
-    clock.reset();
+////////////////////////////////////////////////////////////////////////////////
+//  Start the thread                                                          //
+////////////////////////////////////////////////////////////////////////////////
+bool SysThread::start()
+{
+    // Stop eventual running thread
+    stop();
 
-    // Test thread
-    ThreadClass threadClass;
-    threadClass.start();
+    // Start the thread
+    m_thread = new (std::nothrow) std::thread(&SysThread::run, this);
+    if (!m_thread) return false;
 
-    // Sleep for 1sec
-    SysSleep(1.0);
+    // Thread successfully started
+    return true;
+}
 
-    // Stop thread
-    threadClass.stop();
+////////////////////////////////////////////////////////////////////////////////
+//  Stop the thread                                                           //
+////////////////////////////////////////////////////////////////////////////////
+void SysThread::stop()
+{
+    if (m_thread)
+    {
+        // Request thread stop
+        m_mutex.lock();
+        m_running = false;
+        m_mutex.unlock();
 
-    // Output elapsed time
-    std::cout << clock.getAndReset() << '\n';
+        // Wait for the thread to stop
+        m_thread->join();
 
-    // Program successfully executed
-    return 0;
+        // Clear thread memory
+        delete m_thread;
+        m_thread = 0;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Set the thread's standby mode                                             //
+////////////////////////////////////////////////////////////////////////////////
+void SysThread::standby(bool standbyMode)
+{
+    m_mutex.lock();
+    m_standby = standbyMode;
+    m_mutex.unlock();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Thread virtual process                                                    //
+////////////////////////////////////////////////////////////////////////////////
+void SysThread::process()
+{
+    // Default process : Standby thread
+    SysSleep(SysThreadStandbySleepTime);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//  Thread subroutine                                                         //
+////////////////////////////////////////////////////////////////////////////////
+void SysThread::run()
+{
+    // Set running and standby state
+    bool running = false;
+    bool standby = false;
+
+    m_mutex.lock();
+    m_running = running = true;
+    m_standby = standby = false;
+    m_mutex.unlock();
+
+    // Run the thread
+    while (running)
+    {
+        if (standby)
+        {
+            // Thread standby mode
+            SysSleep(SysThreadStandbySleepTime);
+        }
+        else
+        {
+            // Thread process
+            process();
+        }
+
+        // Update running and standby states
+        m_mutex.lock();
+        running = m_running;
+        standby = m_standby;
+        m_mutex.unlock();
+    }
 }
