@@ -61,6 +61,8 @@
 !Renderer/
 !Renderer/Renderer.h
 !Renderer/Renderer.cpp
+!Renderer/Shader.h
+!Renderer/Shader.cpp
 
 # Cursors files
 !cursors/

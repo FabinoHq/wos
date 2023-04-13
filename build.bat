@@ -14,6 +14,7 @@
     System/SysThread.cpp ^
     System/SysWindow.cpp ^
     Renderer/Renderer.cpp ^
+    Renderer/Shader.cpp ^
     Wos.cpp ^
     main.cpp
 

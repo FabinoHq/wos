@@ -37,94 +37,99 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Renderer/Renderer.h : Renderer management                              //
+//     Renderer/Shader.h : Shader management                                  //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_RENDERER_RENDERER_HEADER
-#define WOS_RENDERER_RENDERER_HEADER
-
-    #include <GLES2/gl2.h>
+#ifndef WOS_RENDERER_SHADER_HEADER
+#define WOS_RENDERER_SHADER_HEADER
 
     #include "../System/System.h"
     #include "../System/SysMessage.h"
-    #include "../System/SysWindow.h"
-
-    #include "../Math/Math.h"
-    #include "../Math/Vector2.h"
     #include "../Math/Matrix4x4.h"
 
-    #include "Shader.h"
-
-    #include <cstddef>
-    #include <cstdint>
-    #include <vector>
-
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Renderer clear color                                                  //
+    //  Renderer class declaration                                            //
     ////////////////////////////////////////////////////////////////////////////
-    const float RendererClearColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  Renderer compositing plane offset                                     //
-    ////////////////////////////////////////////////////////////////////////////
-    const float RendererCompositingPlaneOffset = 0.00001f;
+    class Renderer;
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Renderer class definition                                             //
+    //  Shader class definition                                               //
     ////////////////////////////////////////////////////////////////////////////
-    class Renderer
+    class Shader
     {
         public:
             ////////////////////////////////////////////////////////////////////
-            //  Renderer default constructor                                  //
+            //  Shader default constructor                                    //
             ////////////////////////////////////////////////////////////////////
-            Renderer();
+            Shader();
 
             ////////////////////////////////////////////////////////////////////
-            //  Renderer destructor                                           //
+            //  Shader destructor                                             //
             ////////////////////////////////////////////////////////////////////
-            ~Renderer();
-
-
-            ////////////////////////////////////////////////////////////////////
-            //  Init renderer                                                 //
-            //  return : True if the renderer is successfully loaded          //
-            ////////////////////////////////////////////////////////////////////
-            bool init();
+            ~Shader();
 
 
             ////////////////////////////////////////////////////////////////////
-            //  Get renderer ready state                                      //
-            //  return : True if the renderer is ready, false otherwise       //
+            //  Create shader                                                 //
             ////////////////////////////////////////////////////////////////////
-            inline bool isReady()
-            {
-                return ready;
-            }
+            bool createShader(const char* vertexShaderSrc,
+                const char* fragmentShaderSrc);
+
+            ////////////////////////////////////////////////////////////////////
+            //  Bind shader                                                   //
+            ////////////////////////////////////////////////////////////////////
+            void bindShader(Renderer& renderer);
+
+            ////////////////////////////////////////////////////////////////////
+            //  Get shader uniform location                                   //
+            ////////////////////////////////////////////////////////////////////
+            unsigned int getUniformLocation(const char* uniform);
+
+            ////////////////////////////////////////////////////////////////////
+            //  Set shader uniform value                                      //
+            ////////////////////////////////////////////////////////////////////
+            void setUniformValue(unsigned int location, int value);
+
+            ////////////////////////////////////////////////////////////////////
+            //  Set shader uniform vec 2                                      //
+            ////////////////////////////////////////////////////////////////////
+            void setUniformVec2(unsigned int location, Vector2& vec);
+
+            ////////////////////////////////////////////////////////////////////
+            //  Set projection matrix                                         //
+            ////////////////////////////////////////////////////////////////////
+            void setProjectionMatrix(Matrix4x4& projMatrix);
+
+            ////////////////////////////////////////////////////////////////////
+            //  Set view matrix                                               //
+            ////////////////////////////////////////////////////////////////////
+            void setViewMatrix(Matrix4x4& viewMatrix);
+
+            ////////////////////////////////////////////////////////////////////
+            //  Set model matrix                                              //
+            ////////////////////////////////////////////////////////////////////
+            void setModelMatrix(Matrix4x4& modelMatrix);
 
 
         private:
             ////////////////////////////////////////////////////////////////////
-            //  Renderer private copy constructor : Not copyable              //
+            //  Shader private copy constructor : Not copyable                //
             ////////////////////////////////////////////////////////////////////
-            Renderer(const Renderer&) = delete;
+            Shader(const Shader&) = delete;
 
             ////////////////////////////////////////////////////////////////////
-            //  Renderer private copy operator : Not copyable                 //
+            //  Shader private copy operator : Not copyable                   //
             ////////////////////////////////////////////////////////////////////
-            Renderer& operator=(const Renderer&) = delete;
+            Shader& operator=(const Shader&) = delete;
 
 
-        public:
-            bool                ready;                  // Renderer ready state
+        private:
+            unsigned int    m_shader;           // Shader handle
+            unsigned int    m_projMatrixLoc;    // Projection matrix location
+            unsigned int    m_viewMatrixLoc;    // View matrix location
+            unsigned int    m_modelMatrixLoc;   // Model matrix location
     };
 
 
-    ////////////////////////////////////////////////////////////////////////////
-    //  Renderer global instance                                              //
-    ////////////////////////////////////////////////////////////////////////////
-    extern Renderer GRenderer;
-
-
-#endif // WOS_RENDERER_RENDERER_HEADER
+#endif // WOS_RENDERER_SHADER_HEADER
