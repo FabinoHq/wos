@@ -37,101 +37,75 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Renderer/Shader.h : Shader management                                  //
+//     Game/Game.h : Main game class management                               //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_RENDERER_SHADER_HEADER
-#define WOS_RENDERER_SHADER_HEADER
-
-    #include <GLES2/gl2.h>
+#ifndef WOS_GAME_GAME_HEADER
+#define WOS_GAME_GAME_HEADER
 
     #include "../System/System.h"
-    #include "../System/SysMessage.h"
-    #include "../Math/Matrix4x4.h"
+
+    #include "../Renderer/Renderer.h"
+    #include "../Renderer/View.h"
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Renderer class declaration                                            //
+    //  Game main class definition                                            //
     ////////////////////////////////////////////////////////////////////////////
-    class Renderer;
-
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  Shader class definition                                               //
-    ////////////////////////////////////////////////////////////////////////////
-    class Shader
+    class Game
     {
         public:
             ////////////////////////////////////////////////////////////////////
-            //  Shader default constructor                                    //
+            //  Game default constructor                                      //
             ////////////////////////////////////////////////////////////////////
-            Shader();
+            Game();
 
             ////////////////////////////////////////////////////////////////////
-            //  Shader destructor                                             //
+            //  Game destructor                                               //
             ////////////////////////////////////////////////////////////////////
-            ~Shader();
+            ~Game();
 
 
             ////////////////////////////////////////////////////////////////////
-            //  Create shader                                                 //
+            //  Init game                                                     //
+            //  return : True if game is ready, false otherwise               //
             ////////////////////////////////////////////////////////////////////
-            bool createShader(const char* vertexShaderSrc,
-                const char* fragmentShaderSrc);
+            bool init();
+
 
             ////////////////////////////////////////////////////////////////////
-            //  Bind shader                                                   //
+            //  Compute game events                                           //
             ////////////////////////////////////////////////////////////////////
-            void bindShader();
+            void events();
 
             ////////////////////////////////////////////////////////////////////
-            //  Get shader uniform location                                   //
+            //  Compute game logic                                            //
             ////////////////////////////////////////////////////////////////////
-            unsigned int getUniformLocation(const char* uniform);
+            void compute(float frametime);
 
             ////////////////////////////////////////////////////////////////////
-            //  Set shader uniform value                                      //
+            //  Render game                                                   //
             ////////////////////////////////////////////////////////////////////
-            void setUniformValue(unsigned int location, int value);
-
-            ////////////////////////////////////////////////////////////////////
-            //  Set shader uniform vec 2                                      //
-            ////////////////////////////////////////////////////////////////////
-            void setUniformVec2(unsigned int location, Vector2& vec);
-
-            ////////////////////////////////////////////////////////////////////
-            //  Set projection matrix                                         //
-            ////////////////////////////////////////////////////////////////////
-            void setProjectionMatrix(Matrix4x4& projMatrix);
-
-            ////////////////////////////////////////////////////////////////////
-            //  Set view matrix                                               //
-            ////////////////////////////////////////////////////////////////////
-            void setViewMatrix(Matrix4x4& viewMatrix);
-
-            ////////////////////////////////////////////////////////////////////
-            //  Set model matrix                                              //
-            ////////////////////////////////////////////////////////////////////
-            void setModelMatrix(Matrix4x4& modelMatrix);
+            void render();
 
 
         private:
             ////////////////////////////////////////////////////////////////////
-            //  Shader private copy constructor : Not copyable                //
+            //  Game private copy constructor : Not copyable                  //
             ////////////////////////////////////////////////////////////////////
-            Shader(const Shader&) = delete;
+            Game(const Game&) = delete;
 
             ////////////////////////////////////////////////////////////////////
-            //  Shader private copy operator : Not copyable                   //
+            //  Game private copy operator : Not copyable                     //
             ////////////////////////////////////////////////////////////////////
-            Shader& operator=(const Shader&) = delete;
+            Game& operator=(const Game&) = delete;
 
 
         private:
-            unsigned int    m_shader;           // Shader handle
-            unsigned int    m_projMatrixLoc;    // Projection matrix location
-            unsigned int    m_viewMatrixLoc;    // View matrix location
-            unsigned int    m_modelMatrixLoc;   // Model matrix location
+            View            m_view;             // View
+
+            float           m_mouseX;           // Mouse X position
+            float           m_mouseY;           // Mouse Y position
     };
 
 
-#endif // WOS_RENDERER_SHADER_HEADER
+#endif // WOS_GAME_GAME_HEADER

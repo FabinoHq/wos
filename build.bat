@@ -17,6 +17,7 @@
     Renderer/Shader.cpp ^
     Renderer/VertexBuffer.cpp ^
     Renderer/View.cpp ^
+    Game/Game.cpp ^
     Wos.cpp ^
     main.cpp
 

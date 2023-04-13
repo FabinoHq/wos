@@ -84,3 +84,8 @@
 # Fonts files
 !fonts/
 !fonts/wosfont.otf
+
+# Game files
+!Game/
+!Game/Game.h
+!Game/Game.cpp

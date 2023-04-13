@@ -53,6 +53,8 @@
 
     #include "Renderer/Renderer.h"
 
+    #include "Game/Game.h"
+
     #include <cstddef>
     #include <cstdint>
     #include <new>
@@ -111,6 +113,8 @@
             float           m_frametime;        // WOS frametime
             float           m_framecount;       // WOS framecount
             float           m_framerate;        // WOS framerate
+
+            Game            m_game;             // Game instance
     };
 
 

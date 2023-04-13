@@ -37,115 +37,73 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Wos.cpp : WOS Main class management                                    //
+//     Game/Game.cpp : Main game class management                             //
 ////////////////////////////////////////////////////////////////////////////////
-#include "Wos.h"
+#include "Game.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  WOS global instance                                                       //
+//  Game default constructor                                                  //
 ////////////////////////////////////////////////////////////////////////////////
-Wos GWos = Wos();
-
-
-////////////////////////////////////////////////////////////////////////////////
-//  WOS main loop callback function                                           //
-////////////////////////////////////////////////////////////////////////////////
-void WosMainLoop()
-{
-    GWos.run();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-//  Wos default constructor                                                   //
-////////////////////////////////////////////////////////////////////////////////
-Wos::Wos() :
-m_running(false),
-m_clock(),
-m_frametime(0.0f),
-m_framecount(0.0f),
-m_framerate(0.0f),
-m_game()
+Game::Game() :
+m_view(),
+m_mouseX(0.0f),
+m_mouseY(0.0f)
 {
 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Wos destructor                                                            //
+//  Game destructor                                                           //
 ////////////////////////////////////////////////////////////////////////////////
-Wos::~Wos()
+Game::~Game()
 {
 
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Launch WOS                                                                //
-//  return : True if WOS successfully started, false otherwise                //
+//  Init Game                                                                 //
+//  return : True if game is ready, false otherwise                           //
 ////////////////////////////////////////////////////////////////////////////////
-bool Wos::launch()
+bool Game::init()
 {
-    // Check system CPU
-    if (!SysCPUCheck())
+    // Init view
+    if (!m_view.init())
     {
-        // Invalid system CPU
+        // Could not init view
         return false;
     }
 
-    // Create WOS global window
-    if (!GSysWindow.create())
-    {
-        // Unable to create WOS global window
-        return false;
-    }
-
-    // Init WOS renderer
-    if (!GRenderer.init())
-    {
-        // Unable to init WOS renderer
-        return false;
-    }
-
-    // Init game
-    if (!m_game.init())
-    {
-        // Could not init game
-        return false;
-    }
-
-    // Run WOS
-    m_clock.reset();
-    m_running = true;
-    emscripten_set_main_loop(WosMainLoop, 0, 1);
-
-    // WOS successfully terminated
+    // Game is ready
     return true;
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////
-//  Run WOS                                                                   //
+//  Compute game events                                                       //
 ////////////////////////////////////////////////////////////////////////////////
-void Wos::run()
+void Game::events()
 {
-    // Compute average framerate
-    float frametime = m_clock.getAndResetF();
-    m_frametime += frametime;
-    m_framecount += 1.0f;
-    if (m_framecount >= 30.0f)
+    
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Compute game logic                                                        //
+////////////////////////////////////////////////////////////////////////////////
+void Game::compute(float frametime)
+{
+    
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Render game                                                               //
+////////////////////////////////////////////////////////////////////////////////
+void Game::render()
+{
+    // Start frame rendering
+    if (!GRenderer.startFrame())
     {
-        m_frametime /= m_framecount;
-        if (m_frametime > 0.0f) { m_framerate = 1.0f/m_frametime; }
-        m_framecount = 0.0f;
-        m_frametime = 0.0f;
+        return;
     }
-
-    // Compute events
-    m_game.events();
-
-    // Compute logic
-    m_game.compute(frametime);
-
-    // Render frame
-    m_game.render();
 }
