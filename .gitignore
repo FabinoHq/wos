@@ -26,6 +26,10 @@
 # System
 !System/
 !System/System.h
+!System/SysMessage.h
+!System/SysMessage.cpp
+!System/SysCPU.h
+!System/SysCPU.cpp
 !System/SysSleep.h
 !System/SysClock.h
 !System/SysClock.cpp
@@ -33,6 +37,10 @@
 !System/SysMutexLocker.h
 !System/SysThread.h
 !System/SysThread.cpp
+
+# Math
+!Math/
+!Math/Math.h
 
 # Cursors files
 !cursors/

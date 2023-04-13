@@ -37,36 +37,42 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     main.cpp : Main program entry point                                    //
+//     System/SysMessage.cpp : System Message management                      //
 ////////////////////////////////////////////////////////////////////////////////
-#include <iostream>
-#include "System/System.h"
-#include "System/SysMessage.h"
-#include "System/SysCPU.h"
+#include "SysMessage.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Standard program entry point                                              //
-//  return : Main program return code                                         //
+//  SysMessage private constructor                                            //
 ////////////////////////////////////////////////////////////////////////////////
-int main()
+SysMessage::SysMessage() :
+m_mutex(),
+m_display(false),
+m_message()
 {
-    // Start WOS
-    std::cout << "WOS\n";
 
-    // Check system CPU
-    if (SysCPUCheck())
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Display the system message                                                //
+////////////////////////////////////////////////////////////////////////////////
+void SysMessage::display()
+{
+    m_mutex.lock();
+    if (m_display)
     {
-        std::cout << "CPU check ok\n";
+        std::cerr << m_message.str();
+        std::cerr << '\n';
     }
-    else
-    {
-        std::cout << "CPU check error\n";
-    }
+    m_mutex.unlock();
+}
 
-    // Display system message if any
-    SysMessage::box().display();
-
-    // Program successfully executed
-    return 0;
+////////////////////////////////////////////////////////////////////////////////
+//  Get the system message global singleton instance                          //
+//  return : SysMessage singleton instance                                    //
+////////////////////////////////////////////////////////////////////////////////
+SysMessage& SysMessage::box()
+{
+    static SysMessage sysmessage;
+    return sysmessage;
 }

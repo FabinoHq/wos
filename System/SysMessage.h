@@ -37,36 +37,74 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     main.cpp : Main program entry point                                    //
+//     System/SysMessage.h : System Message management                        //
 ////////////////////////////////////////////////////////////////////////////////
-#include <iostream>
-#include "System/System.h"
-#include "System/SysMessage.h"
-#include "System/SysCPU.h"
+#ifndef WOS_SYSTEM_SYSMESSAGE_HEADER
+#define WOS_SYSTEM_SYSMESSAGE_HEADER
+
+    #include "System.h"
+    #include "SysMutex.h"
+
+    #include <iostream>
+    #include <string>
+    #include <sstream>
 
 
-////////////////////////////////////////////////////////////////////////////////
-//  Standard program entry point                                              //
-//  return : Main program return code                                         //
-////////////////////////////////////////////////////////////////////////////////
-int main()
-{
-    // Start WOS
-    std::cout << "WOS\n";
-
-    // Check system CPU
-    if (SysCPUCheck())
+    ////////////////////////////////////////////////////////////////////////////
+    //  SysMessage class definition                                           //
+    ////////////////////////////////////////////////////////////////////////////
+    class SysMessage
     {
-        std::cout << "CPU check ok\n";
-    }
-    else
-    {
-        std::cout << "CPU check error\n";
-    }
+        private:
+            ////////////////////////////////////////////////////////////////////
+            //  SysMessage private constructor                                //
+            ////////////////////////////////////////////////////////////////////
+            SysMessage();
 
-    // Display system message if any
-    SysMessage::box().display();
+        public:
+            ////////////////////////////////////////////////////////////////////
+            //  Get the system message global singleton instance              //
+            //  return : SysMessage singleton instance                        //
+            ////////////////////////////////////////////////////////////////////
+            static SysMessage& box();
 
-    // Program successfully executed
-    return 0;
-}
+            ////////////////////////////////////////////////////////////////////
+            //  Display the system message                                    //
+            ////////////////////////////////////////////////////////////////////
+            void display();
+
+            ////////////////////////////////////////////////////////////////////
+            //  Add a system message                                          //
+            //  return : Reference to the SysMessage instance                 //
+            ////////////////////////////////////////////////////////////////////
+            template<typename T> SysMessage& operator<<(const T& t)
+            {
+                // Add to system message
+                m_mutex.lock();
+                m_message << t;
+                m_display = true;
+                m_mutex.unlock();
+                return *this;
+            }
+
+
+        private:
+            ////////////////////////////////////////////////////////////////////
+            //  SysMessage private copy constructor : Not copyable            //
+            ////////////////////////////////////////////////////////////////////
+            SysMessage(const SysMessage&) = delete;
+
+            ////////////////////////////////////////////////////////////////////
+            //  SysMessage private copy operator : Not copyable               //
+            ////////////////////////////////////////////////////////////////////
+            SysMessage& operator=(const SysMessage&) = delete;
+
+
+        private:
+            SysMutex                m_mutex;    // System message mutex
+            bool                    m_display;  // Display the system message
+            std::ostringstream      m_message;  // Message to display
+    };
+
+
+#endif // WOS_SYSTEM_SYSMESSAGE_HEADER
