@@ -37,95 +37,89 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Renderer/Renderer.h : Renderer management                              //
+//     Renderer/VertexBuffer.h : VertexBuffer management                      //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_RENDERER_RENDERER_HEADER
-#define WOS_RENDERER_RENDERER_HEADER
+#ifndef WOS_RENDERER_VERTEXBUFFER_HEADER
+#define WOS_RENDERER_VERTEXBUFFER_HEADER
 
     #include <GLES2/gl2.h>
 
     #include "../System/System.h"
-    #include "../System/SysMessage.h"
-    #include "../System/SysWindow.h"
 
-    #include "../Math/Math.h"
-    #include "../Math/Vector2.h"
-    #include "../Math/Matrix4x4.h"
-
-    #include "Shader.h"
-    #include "VertexBuffer.h"
-
-    #include <cstddef>
     #include <cstdint>
-    #include <vector>
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Renderer clear color                                                  //
+    //  Default vertex buffer vertices                                        //
     ////////////////////////////////////////////////////////////////////////////
-    const float RendererClearColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+    const float DefaultVertices[] = {
+        0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
+        1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
+        1.0f, 1.0f, 0.0f,  1.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,  0.0f, 0.0f
+    };
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Renderer compositing plane offset                                     //
+    //  Default vertex buffer indices                                         //
     ////////////////////////////////////////////////////////////////////////////
-    const float RendererCompositingPlaneOffset = 0.00001f;
-
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  Renderer class definition                                             //
-    ////////////////////////////////////////////////////////////////////////////
-    class Renderer
-    {
-        public:
-            ////////////////////////////////////////////////////////////////////
-            //  Renderer default constructor                                  //
-            ////////////////////////////////////////////////////////////////////
-            Renderer();
-
-            ////////////////////////////////////////////////////////////////////
-            //  Renderer destructor                                           //
-            ////////////////////////////////////////////////////////////////////
-            ~Renderer();
-
-
-            ////////////////////////////////////////////////////////////////////
-            //  Init renderer                                                 //
-            //  return : True if the renderer is successfully loaded          //
-            ////////////////////////////////////////////////////////////////////
-            bool init();
-
-
-            ////////////////////////////////////////////////////////////////////
-            //  Get renderer ready state                                      //
-            //  return : True if the renderer is ready, false otherwise       //
-            ////////////////////////////////////////////////////////////////////
-            inline bool isReady()
-            {
-                return ready;
-            }
-
-
-        private:
-            ////////////////////////////////////////////////////////////////////
-            //  Renderer private copy constructor : Not copyable              //
-            ////////////////////////////////////////////////////////////////////
-            Renderer(const Renderer&) = delete;
-
-            ////////////////////////////////////////////////////////////////////
-            //  Renderer private copy operator : Not copyable                 //
-            ////////////////////////////////////////////////////////////////////
-            Renderer& operator=(const Renderer&) = delete;
-
-
-        public:
-            bool                ready;                  // Renderer ready state
+    const unsigned int DefaultIndices[] = {
+        0, 1, 2,
+        2, 3, 0
     };
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Renderer global instance                                              //
+    //  VertexBuffer class definition                                         //
     ////////////////////////////////////////////////////////////////////////////
-    extern Renderer GRenderer;
+    class VertexBuffer
+    {
+        public:
+            ////////////////////////////////////////////////////////////////////
+            //  VertexBuffer default constructor                              //
+            ////////////////////////////////////////////////////////////////////
+            VertexBuffer();
+
+            ////////////////////////////////////////////////////////////////////
+            //  VertexBuffer destructor                                       //
+            ////////////////////////////////////////////////////////////////////
+            ~VertexBuffer();
 
 
-#endif // WOS_RENDERER_RENDERER_HEADER
+            ////////////////////////////////////////////////////////////////////
+            //  Create Vertex buffer                                          //
+            ////////////////////////////////////////////////////////////////////
+            bool createBuffer();
+
+            ////////////////////////////////////////////////////////////////////
+            //  Create Vertex buffer                                          //
+            ////////////////////////////////////////////////////////////////////
+            bool createBuffer(
+                const float* vertices, const unsigned int* indices,
+                uint32_t verticesCount, uint32_t indicesCount);
+
+            ////////////////////////////////////////////////////////////////////
+            //  Render Vertex buffer                                          //
+            ////////////////////////////////////////////////////////////////////
+            void render();
+
+
+        private:
+            ////////////////////////////////////////////////////////////////////
+            //  VertexBuffer private copy constructor : Not copyable          //
+            ////////////////////////////////////////////////////////////////////
+            VertexBuffer(const VertexBuffer&) = delete;
+
+            ////////////////////////////////////////////////////////////////////
+            //  VertexBuffer private copy operator : Not copyable             //
+            ////////////////////////////////////////////////////////////////////
+            VertexBuffer& operator=(const VertexBuffer&) = delete;
+
+
+        private:
+            unsigned int    m_vertexBuffer;     // Vertex buffer handle
+            unsigned int    m_elementBuffer;    // Element buffer handle
+            uint32_t        m_indicesCount;     // Indices count
+    };
+
+
+#endif // WOS_RENDERER_VERTEXBUFFER_HEADER

@@ -37,7 +37,7 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Renderer/Shader.h : Shader management                                  //
+//     Renderer/Shader.cpp : Shader management                                //
 ////////////////////////////////////////////////////////////////////////////////
 #include "Shader.h"
 #include "Renderer.h"
@@ -60,11 +60,9 @@ m_modelMatrixLoc(0)
 ////////////////////////////////////////////////////////////////////////////////
 Shader::~Shader()
 {
-	if (m_shader)
-	{
-		// Destroy shader
-		glDeleteProgram(m_shader);
-	}
+	// Destroy shader
+	if (m_shader) { glDeleteProgram(m_shader); }
+	m_shader = 0;
 }
 
 

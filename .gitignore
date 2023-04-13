@@ -63,6 +63,8 @@
 !Renderer/Renderer.cpp
 !Renderer/Shader.h
 !Renderer/Shader.cpp
+!Renderer/VertexBuffer.h
+!Renderer/VertexBuffer.cpp
 
 # Cursors files
 !cursors/
