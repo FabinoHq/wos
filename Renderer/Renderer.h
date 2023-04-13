@@ -42,6 +42,8 @@
 #ifndef WOS_RENDERER_RENDERER_HEADER
 #define WOS_RENDERER_RENDERER_HEADER
 
+    #include <GLES2/gl2.h>
+
     #include "../System/System.h"
     #include "../System/SysMessage.h"
     #include "../System/SysWindow.h"

@@ -72,7 +72,17 @@ Renderer::~Renderer()
 ////////////////////////////////////////////////////////////////////////////////
 bool Renderer::init()
 {
+    // Init renderer
     ready = false;
+
+    // Clear renderer
+    glClearColor(
+        RendererClearColor[0],
+        RendererClearColor[1],
+        RendererClearColor[2],
+        RendererClearColor[3]
+    );
+    glClear(GL_COLOR_BUFFER_BIT);
 
     // Renderer successfully loaded
     ready = true;

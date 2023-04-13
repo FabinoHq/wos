@@ -103,9 +103,4 @@ void Wos::run()
     // Run WOS
     m_clock.reset();
     m_running = true;
-    while (m_running)
-    {
-        std::cout << "Running\n";
-        SysSleep(0.1);
-    }
 }

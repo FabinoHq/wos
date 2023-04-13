@@ -52,6 +52,7 @@ SysWindow GSysWindow = SysWindow();
 //  SysWindow default constructor                                             //
 ////////////////////////////////////////////////////////////////////////////////
 SysWindow::SysWindow() :
+m_handle(),
 m_width(0),
 m_height(0)
 {
@@ -73,6 +74,20 @@ SysWindow::~SysWindow()
 ////////////////////////////////////////////////////////////////////////////////
 bool SysWindow::create()
 {
+    // Set window attributes
+    EmscriptenWebGLContextAttributes attributes;
+    emscripten_webgl_init_context_attributes(&attributes);
+    attributes.alpha = 0;
+    attributes.depth = 0;
+    attributes.stencil = 0;
+    attributes.antialias = 0;
+    attributes.preserveDrawingBuffer = 0;
+    attributes.failIfMajorPerformanceCaveat = 0;
+
+    // Init window
+    m_handle = emscripten_webgl_create_context("#woscreen", &attributes);
+    emscripten_webgl_make_context_current(m_handle);
+
     // Window size
     m_width = 0;
     m_height = 0;

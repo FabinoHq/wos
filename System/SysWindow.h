@@ -42,6 +42,8 @@
 #ifndef WOS_SYSTEM_SYSWINDOW_HEADER
 #define WOS_SYSTEM_SYSWINDOW_HEADER
 
+    #include <emscripten/html5.h>
+
     #include "System.h"
     #include "SysSleep.h"
     #include "SysMessage.h"
@@ -103,8 +105,9 @@
 
 
         private:
-            int                 m_width;            // Window width
-            int                 m_height;           // Window height
+            EMSCRIPTEN_WEBGL_CONTEXT_HANDLE     m_handle;       // Handle
+            int                                 m_width;        // Width
+            int                                 m_height;       // Height
     };
 
 
