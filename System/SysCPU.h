@@ -45,6 +45,10 @@
     #include "System.h"
     #include "SysMessage.h"
     #include "../Math/Math.h"
+    #include "../Math/Vector2.h"
+    #include "../Math/Vector3.h"
+    #include "../Math/Vector4.h"
+    #include "../Math/Matrix4x4.h"
 
     #include <cstddef>
     #include <cstdint>
@@ -111,6 +115,12 @@
     //  return : True if the system CPU is little-endian                      //
     ////////////////////////////////////////////////////////////////////////////
     bool SysCPUCheckEndianness();
+
+    ////////////////////////////////////////////////////////////////////////////
+    //  Check system CPU maths representations                                //
+    //  return : True if the system CPU maths representations are correct     //
+    ////////////////////////////////////////////////////////////////////////////
+    bool SysCPUCheckMaths();
 
 
 #endif // WOS_SYSTEM_SYSCPU_HEADER

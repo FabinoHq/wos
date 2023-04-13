@@ -42,6 +42,7 @@
 #include <iostream>
 #include "System/System.h"
 #include "System/SysMessage.h"
+#include "System/SysCPU.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
