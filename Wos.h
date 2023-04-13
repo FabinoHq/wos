@@ -42,6 +42,8 @@
 #ifndef WOS_WOS_HEADER
 #define WOS_WOS_HEADER
 
+    #include <emscripten/html5.h>
+
     #include "System/System.h"
     #include "System/SysMessage.h"
     #include "System/SysCPU.h"
@@ -54,6 +56,12 @@
     #include <cstddef>
     #include <cstdint>
     #include <new>
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    //  WOS main loop callback function                                       //
+    ////////////////////////////////////////////////////////////////////////////
+    void WosMainLoop();
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -100,7 +108,16 @@
         private:
             bool            m_running;          // WOS running state
             SysClock        m_clock;            // WOS clock
+            float           m_frametime;        // WOS frametime
+            float           m_framecount;       // WOS framecount
+            float           m_framerate;        // WOS framerate
     };
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    //  WOS global instance                                                   //
+    ////////////////////////////////////////////////////////////////////////////
+    extern Wos GWos;
 
 
 #endif // WOS_WOS_HEADER

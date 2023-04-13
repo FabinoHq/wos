@@ -75,7 +75,7 @@ bool Renderer::init()
     // Init renderer
     ready = false;
 
-    // Clear renderer
+    // Clear frame
     glClearColor(
         RendererClearColor[0],
         RendererClearColor[1],
@@ -86,5 +86,25 @@ bool Renderer::init()
 
     // Renderer successfully loaded
     ready = true;
+    return true;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//  Start rendering frame                                                     //
+//  return : True if the rendering frame is ready                             //
+////////////////////////////////////////////////////////////////////////////////
+bool Renderer::startFrame()
+{
+    // Clear frame
+    glClearColor(
+        RendererClearColor[0],
+        RendererClearColor[1],
+        RendererClearColor[2],
+        RendererClearColor[3]
+    );
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // Rendering frame is ready
     return true;
 }

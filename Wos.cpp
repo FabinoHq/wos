@@ -43,11 +43,29 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
+//  WOS global instance                                                       //
+////////////////////////////////////////////////////////////////////////////////
+Wos GWos = Wos();
+
+
+////////////////////////////////////////////////////////////////////////////////
+//  WOS main loop callback function                                           //
+////////////////////////////////////////////////////////////////////////////////
+void WosMainLoop()
+{
+    GWos.run();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 //  Wos default constructor                                                   //
 ////////////////////////////////////////////////////////////////////////////////
 Wos::Wos() :
 m_running(false),
-m_clock()
+m_clock(),
+m_frametime(0.0f),
+m_framecount(0.0f),
+m_framerate(0.0f)
 {
 
 }
@@ -89,7 +107,9 @@ bool Wos::launch()
     }
 
     // Run WOS
-    run();
+    m_clock.reset();
+    m_running = true;
+    emscripten_set_main_loop(WosMainLoop, 0, 1);
 
     // WOS successfully terminated
     return true;
@@ -100,7 +120,18 @@ bool Wos::launch()
 ////////////////////////////////////////////////////////////////////////////////
 void Wos::run()
 {
-    // Run WOS
-    m_clock.reset();
-    m_running = true;
+    // Compute average framerate
+    float frametime = m_clock.getAndResetF();
+    m_frametime += frametime;
+    m_framecount += 1.0f;
+    if (m_framecount >= 30.0f)
+    {
+        m_frametime /= m_framecount;
+        if (m_frametime > 0.0f) { m_framerate = 1.0f/m_frametime; }
+        m_framecount = 0.0f;
+        m_frametime = 0.0f;
+    }
+
+    // Start renderer frame
+    GRenderer.startFrame();
 }
