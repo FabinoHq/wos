@@ -214,11 +214,11 @@
                     mat[7] = 0.0f;
                     mat[8] = 0.0f;
                     mat[9] = 0.0f;
-                    mat[10] = -1.0f/farNear;
+                    mat[10] = -2.0f/farNear;
                     mat[11] = 0.0f;
                     mat[12] = -(right+left)/rightLeft;
                     mat[13] = -(top+bottom)/topBottom;
-                    mat[14] = -znear/farNear;
+                    mat[14] = -(zfar+znear)/farNear;
                     mat[15] = 1.0f;
                 }
             }
@@ -232,9 +232,7 @@
                 float rightLeft = right-left;
                 float topBottom = top-bottom;
                 float farNear = zfar-znear;
-                float nearFar = znear-zfar;
-                if (rightLeft != 0.0f && topBottom != 0.0f &&
-                    farNear != 0.0f && nearFar != 0.0f)
+                if (rightLeft != 0.0f && topBottom != 0.0f && farNear != 0.0f)
                 {
                     mat[0] = (2.0f*znear)/rightLeft;
                     mat[1] = 0.0f;
@@ -246,11 +244,11 @@
                     mat[7] = 0.0f;
                     mat[8] = (right+left)/rightLeft;
                     mat[9] = (top+bottom)/topBottom;
-                    mat[10] = zfar/nearFar;
+                    mat[10] = -(zfar+znear)/farNear;
                     mat[11] = -1.0f;
                     mat[12] = 0.0f;
                     mat[13] = 0.0f;
-                    mat[14] = -(zfar*znear)/farNear;
+                    mat[14] = -(2.0f*zfar*znear)/farNear;
                     mat[15] = 0.0f;
                 }
             }
@@ -273,9 +271,7 @@
                 float rightLeft = right-left;
                 float topBottom = top-bottom;
                 float farNear = zfar-znear;
-                float nearFar = znear-zfar;
-                if (rightLeft != 0.0f && topBottom != 0.0f &&
-                    farNear != 0.0f && nearFar != 0.0f)
+                if (rightLeft != 0.0f && topBottom != 0.0f && farNear != 0.0f)
                 {
                     mat[0] = (2.0f*znear)/rightLeft;
                     mat[1] = 0.0f;
@@ -287,11 +283,11 @@
                     mat[7] = 0.0f;
                     mat[8] = (right+left)/rightLeft;
                     mat[9] = (top+bottom)/topBottom;
-                    mat[10] = zfar/nearFar;
+                    mat[10] = -(zfar+znear)/farNear;
                     mat[11] = -1.0f;
                     mat[12] = 0.0f;
                     mat[13] = 0.0f;
-                    mat[14] = -(zfar*znear)/farNear;
+                    mat[14] = -(2.0f*zfar*znear)/farNear;
                     mat[15] = 0.0f;
                 }
             }
