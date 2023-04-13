@@ -57,6 +57,11 @@
 !Math/Transform2.h
 !Math/Transform3.h
 
+# Renderer
+!Renderer/
+!Renderer/Renderer.h
+!Renderer/Renderer.cpp
+
 # Cursors files
 !cursors/
 !cursors/default.png

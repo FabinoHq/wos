@@ -81,6 +81,13 @@ bool Wos::launch()
         return false;
     }
 
+    // Init VWOS renderer
+    if (!GRenderer.init())
+    {
+        // Unable to init WOS renderer
+        return false;
+    }
+
     // Run WOS
     run();
 
@@ -101,7 +108,4 @@ void Wos::run()
         std::cout << "Running\n";
         SysSleep(0.1);
     }
-
-    // Close WOS
-    GSysWindow.close();
 }

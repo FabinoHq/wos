@@ -11,6 +11,7 @@
     System/SysClock.cpp ^
     System/SysThread.cpp ^
     System/SysWindow.cpp ^
+    Renderer/Renderer.cpp ^
     Wos.cpp ^
     main.cpp
 

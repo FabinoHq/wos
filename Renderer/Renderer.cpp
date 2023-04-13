@@ -37,46 +37,44 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     System/SysWindow.cpp : System window management                        //
+//     Renderer/Renderer.cpp : Renderer management                            //
 ////////////////////////////////////////////////////////////////////////////////
-#include "SysWindow.h"
+#include "Renderer.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  SysWindow global instance                                                 //
+//  Renderer global instance                                                  //
 ////////////////////////////////////////////////////////////////////////////////
-SysWindow GSysWindow = SysWindow();
+Renderer GRenderer = Renderer();
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  SysWindow default constructor                                             //
+//  Renderer default constructor                                              //
 ////////////////////////////////////////////////////////////////////////////////
-SysWindow::SysWindow() :
-m_width(0),
-m_height(0)
+Renderer::Renderer() :
+ready(false)
 {
 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//  SysWindow destructor                                                      //
+//  Renderer destructor                                                       //
 ////////////////////////////////////////////////////////////////////////////////
-SysWindow::~SysWindow()
+Renderer::~Renderer()
 {
 
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Create the window                                                         //
-//  return : True if the window is successfully created                       //
+//  Init renderer                                                             //
+//  return : True if the renderer is successfully loaded                      //
 ////////////////////////////////////////////////////////////////////////////////
-bool SysWindow::create()
+bool Renderer::init()
 {
-    // Window size
-    m_width = 0;
-    m_height = 0;
+    ready = false;
 
-    // System window successfully created
+    // Renderer successfully loaded
+    ready = true;
     return true;
 }

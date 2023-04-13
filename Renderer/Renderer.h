@@ -37,70 +37,90 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Wos.h : WOS Main class management                                      //
+//     Renderer/Renderer.h : Renderer management                              //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_WOS_HEADER
-#define WOS_WOS_HEADER
+#ifndef WOS_RENDERER_RENDERER_HEADER
+#define WOS_RENDERER_RENDERER_HEADER
 
-    #include "System/System.h"
-    #include "System/SysMessage.h"
-    #include "System/SysCPU.h"
-    #include "System/SysClock.h"
-    #include "System/SysSleep.h"
-    #include "System/SysWindow.h"
+    #include "../System/System.h"
+    #include "../System/SysMessage.h"
+    #include "../System/SysWindow.h"
 
-    #include "Renderer/Renderer.h"
+    #include "../Math/Math.h"
+    #include "../Math/Vector2.h"
+    #include "../Math/Matrix4x4.h"
 
     #include <cstddef>
     #include <cstdint>
-    #include <new>
+    #include <vector>
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  WOS main class definition                                             //
+    //  Renderer clear color                                                  //
     ////////////////////////////////////////////////////////////////////////////
-    class Wos
+    const float RendererClearColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+
+    ////////////////////////////////////////////////////////////////////////////
+    //  Renderer compositing plane offset                                     //
+    ////////////////////////////////////////////////////////////////////////////
+    const float RendererCompositingPlaneOffset = 0.00001f;
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    //  Renderer class definition                                             //
+    ////////////////////////////////////////////////////////////////////////////
+    class Renderer
     {
         public:
             ////////////////////////////////////////////////////////////////////
-            //  Wos default constructor                                       //
+            //  Renderer default constructor                                  //
             ////////////////////////////////////////////////////////////////////
-            Wos();
+            Renderer();
 
             ////////////////////////////////////////////////////////////////////
-            //  Wos destructor                                                //
+            //  Renderer destructor                                           //
             ////////////////////////////////////////////////////////////////////
-            ~Wos();
+            ~Renderer();
 
 
             ////////////////////////////////////////////////////////////////////
-            //  Launch WOS                                                    //
-            //  return : True if WOS successfully started, false otherwise    //
+            //  Init renderer                                                 //
+            //  return : True if the renderer is successfully loaded          //
             ////////////////////////////////////////////////////////////////////
-            bool launch();
-
-            ////////////////////////////////////////////////////////////////////
-            //  Run WOS                                                       //
-            ////////////////////////////////////////////////////////////////////
-            void run();
+            bool init();
 
 
-        private:
             ////////////////////////////////////////////////////////////////////
-            //  Wos private copy constructor : Not copyable                   //
+            //  Get renderer ready state                                      //
+            //  return : True if the renderer is ready, false otherwise       //
             ////////////////////////////////////////////////////////////////////
-            Wos(const Wos&) = delete;
-
-            ////////////////////////////////////////////////////////////////////
-            //  Wos private copy operator : Not copyable                      //
-            ////////////////////////////////////////////////////////////////////
-            Wos& operator=(const Wos&) = delete;
+            inline bool isReady()
+            {
+                return ready;
+            }
 
 
         private:
-            bool            m_running;          // WOS running state
-            SysClock        m_clock;            // WOS clock
+            ////////////////////////////////////////////////////////////////////
+            //  Renderer private copy constructor : Not copyable              //
+            ////////////////////////////////////////////////////////////////////
+            Renderer(const Renderer&) = delete;
+
+            ////////////////////////////////////////////////////////////////////
+            //  Renderer private copy operator : Not copyable                 //
+            ////////////////////////////////////////////////////////////////////
+            Renderer& operator=(const Renderer&) = delete;
+
+
+        public:
+            bool                ready;                  // Renderer ready state
     };
 
 
-#endif // WOS_WOS_HEADER
+    ////////////////////////////////////////////////////////////////////////////
+    //  Renderer global instance                                              //
+    ////////////////////////////////////////////////////////////////////////////
+    extern Renderer GRenderer;
+
+
+#endif // WOS_RENDERER_RENDERER_HEADER
