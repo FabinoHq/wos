@@ -76,7 +76,7 @@ bool Shader::createShader(const char* vertexShaderSrc,
 	if (!vertexShaderSrc || !fragmentShaderSrc)
 	{
 		// Invalid shader source
-		SysMessage::box() << "[3005] Invalid shader source\n";
+		SysMessage::box() << "[0x3005] Invalid shader source\n";
         SysMessage::box() << "Please update your graphics drivers";
 		return false;
 	}
@@ -86,7 +86,7 @@ bool Shader::createShader(const char* vertexShaderSrc,
 	if (!vertexShader)
 	{
 		// Unable to create vertex shader
-		SysMessage::box() << "[3006] Unable to create vertex shader\n";
+		SysMessage::box() << "[0x3006] Unable to create vertex shader\n";
         SysMessage::box() << "Please update your graphics drivers";
 		return false;
 	}
@@ -101,10 +101,10 @@ bool Shader::createShader(const char* vertexShaderSrc,
 	{
 		char infoLog[512];
 		glGetShaderInfoLog(vertexShader, 512, 0, infoLog);
-		//std::cout << infoLog << '\n';
+		std::cout << infoLog << '\n';
 
 		// Unable to compile vertex shader
-		SysMessage::box() << "[3007] Unable to compile vertex shader\n";
+		SysMessage::box() << "[0x3007] Unable to compile vertex shader\n";
         SysMessage::box() << "Please update your graphics drivers";
 		return false;
 	}
@@ -114,7 +114,7 @@ bool Shader::createShader(const char* vertexShaderSrc,
 	if (!fragmentShader)
 	{
 		// Unable to create fragment shader
-		SysMessage::box() << "[3008] Unable to create fragment shader\n";
+		SysMessage::box() << "[0x3008] Unable to create fragment shader\n";
         SysMessage::box() << "Please update your graphics drivers";
 		return false;
 	}
@@ -129,10 +129,10 @@ bool Shader::createShader(const char* vertexShaderSrc,
 	{
 		char infoLog[512];
 		glGetShaderInfoLog(fragmentShader, 512, 0, infoLog);
-		//std::cout << infoLog << '\n';
+		std::cout << infoLog << '\n';
 
 		// Unable to compile fragment shader
-		SysMessage::box() << "[3009] Unable to compile fragment shader\n";
+		SysMessage::box() << "[0x3009] Unable to compile fragment shader\n";
         SysMessage::box() << "Please update your graphics drivers";
 		return false;
 	}
@@ -142,7 +142,7 @@ bool Shader::createShader(const char* vertexShaderSrc,
 	if (!m_shader)
 	{
 		// Unable to create shader program
-		SysMessage::box() << "[300A] Unable to create shader program\n";
+		SysMessage::box() << "[0x300A] Unable to create shader program\n";
         SysMessage::box() << "Please update your graphics drivers";
 		return false;
 	}
@@ -156,7 +156,7 @@ bool Shader::createShader(const char* vertexShaderSrc,
 	if (!linked)
 	{
 		// Unable to link shader program
-		SysMessage::box() << "[300B] Unable to link shader program\n";
+		SysMessage::box() << "[0x300B] Unable to link shader program\n";
         SysMessage::box() << "Please update your graphics drivers";
 		return false;
 	}

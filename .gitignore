@@ -68,6 +68,11 @@
 !Renderer/View.h
 !Renderer/View.cpp
 
+# Shaders
+!Renderer/Shaders/
+!Renderer/Shaders/Default.h
+!Renderer/Shaders/DefaultProc.h
+
 # Cursors files
 !cursors/
 !cursors/default.png

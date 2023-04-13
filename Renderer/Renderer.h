@@ -56,6 +56,9 @@
     #include "VertexBuffer.h"
     #include "View.h"
 
+    #include "Shaders/Default.h"
+    #include "Shaders/DefaultProc.h"
+
     #include <cstddef>
     #include <cstdint>
     #include <vector>
@@ -125,7 +128,10 @@
 
 
         public:
-            bool                ready;                  // Renderer ready state
+            bool                ready;              // Renderer ready state
+            Shader              defaultShader;      // Default renderer shader
+            VertexBuffer        vertexBuffer;       // Default vertex buffer
+            View                view;               // Default view
     };
 
 

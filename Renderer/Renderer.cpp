@@ -52,7 +52,10 @@ Renderer GRenderer = Renderer();
 //  Renderer default constructor                                              //
 ////////////////////////////////////////////////////////////////////////////////
 Renderer::Renderer() :
-ready(false)
+ready(false),
+defaultShader(),
+vertexBuffer(),
+view()
 {
 
 }
@@ -75,13 +78,64 @@ bool Renderer::init()
     // Init renderer
     ready = false;
 
-    // Clear frame
+    // Check SysWindow
+    /*if (!GSysWindow.isValid())
+    {
+        // Invalid SysWindow
+        SysMessage::box() << "[0x3001] Invalid system window\n";
+        SysMessage::box() << "System window must be valid";
+        return false;
+    }*/
+
+    // Create default shader
+    if (!defaultShader.createShader(
+        DefaultVertexShaderSrc, DefaultFragmentShaderSrc))
+    {
+        // Unable to create default shader
+        SysMessage::box() << "[0x3002] Unable to create default shader\n";
+        SysMessage::box() << "Please update your graphics drivers";
+        return false;
+    }
+
+    // Create default vertex buffer
+    if (!vertexBuffer.createBuffer())
+    {
+        // Unable to create default vertex buffer
+        SysMessage::box() << "[0x3003] Unable to create vertex buffer\n";
+        SysMessage::box() << "Please update your graphics drivers";
+        return false;
+    }
+
+    // Create default view
+    if (!view.init())
+    {
+        // Unable to create view
+        SysMessage::box() << "[0x3004] Unable to create view\n";
+        SysMessage::box() << "Please update your graphics drivers";
+        return false;
+    }
+
+    // OpenGL settings
     glClearColor(
         RendererClearColor[0],
         RendererClearColor[1],
         RendererClearColor[2],
         RendererClearColor[3]
     );
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // Disable byte alignment
+    //glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    // Bind default shader
+    defaultShader.bindShader();
+
+    // Bind default view
+    view.bind();
+
+    // Clear renderer
     glClear(GL_COLOR_BUFFER_BIT);
 
     // Renderer successfully loaded
@@ -97,12 +151,6 @@ bool Renderer::init()
 bool Renderer::startFrame()
 {
     // Clear frame
-    glClearColor(
-        RendererClearColor[0],
-        RendererClearColor[1],
-        RendererClearColor[2],
-        RendererClearColor[3]
-    );
     glClear(GL_COLOR_BUFFER_BIT);
 
     // Rendering frame is ready
