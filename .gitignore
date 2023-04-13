@@ -30,6 +30,7 @@
 !System/SysMessage.cpp
 !System/SysCPU.h
 !System/SysCPU.cpp
+!System/SysCRC.h
 !System/SysSleep.h
 !System/SysClock.h
 !System/SysClock.cpp

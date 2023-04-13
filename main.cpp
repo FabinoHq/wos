@@ -42,7 +42,6 @@
 #include <iostream>
 #include "System/System.h"
 #include "System/SysMessage.h"
-#include "System/SysCPU.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -53,16 +52,6 @@ int main()
 {
     // Start WOS
     std::cout << "WOS\n";
-
-    // Check system CPU
-    if (SysCPUCheck())
-    {
-        std::cout << "CPU check ok\n";
-    }
-    else
-    {
-        std::cout << "CPU check error\n";
-    }
 
     // Display system message if any
     SysMessage::box().display();
