@@ -37,68 +37,86 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Wos.h : WOS Main class management                                      //
+//     System/SysWindow.h : System window management                          //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_WOS_HEADER
-#define WOS_WOS_HEADER
+#ifndef WOS_SYSTEM_SYSWINDOW_HEADER
+#define WOS_SYSTEM_SYSWINDOW_HEADER
 
-    #include "System/System.h"
-    #include "System/SysMessage.h"
-    #include "System/SysCPU.h"
-    #include "System/SysClock.h"
-    #include "System/SysSleep.h"
-    #include "System/SysWindow.h"
-
-    #include <cstddef>
-    #include <cstdint>
-    #include <new>
+    #include "System.h"
+    #include "SysSleep.h"
+    #include "SysMessage.h"
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  WOS main class definition                                             //
+    //  SysWindow class definition                                            //
     ////////////////////////////////////////////////////////////////////////////
-    class Wos
+    class SysWindow
     {
         public:
             ////////////////////////////////////////////////////////////////////
-            //  Wos default constructor                                       //
+            //  SysWindow default constructor                                 //
             ////////////////////////////////////////////////////////////////////
-            Wos();
+            SysWindow();
 
             ////////////////////////////////////////////////////////////////////
-            //  Wos destructor                                                //
+            //  SysWindow destructor                                          //
             ////////////////////////////////////////////////////////////////////
-            ~Wos();
+            ~SysWindow();
 
 
             ////////////////////////////////////////////////////////////////////
-            //  Launch WOS                                                    //
-            //  return : True if WOS successfully started, false otherwise    //
+            //  Create the window                                             //
+            //  return : True if the window is successfully created           //
             ////////////////////////////////////////////////////////////////////
-            bool launch();
+            bool create();
 
             ////////////////////////////////////////////////////////////////////
-            //  Run WOS                                                       //
+            //  Close the window                                              //
             ////////////////////////////////////////////////////////////////////
-            void run();
+            void close();
+
+
+            ////////////////////////////////////////////////////////////////////
+            //  Get window width                                              //
+            //  return : Window width                                         //
+            ////////////////////////////////////////////////////////////////////
+            inline int getWidth() const
+            {
+                return m_width;
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Get window height                                             //
+            //  return : Window height                                        //
+            ////////////////////////////////////////////////////////////////////
+            inline int getHeight() const
+            {
+                return m_height;
+            }
 
 
         private:
             ////////////////////////////////////////////////////////////////////
-            //  Wos private copy constructor : Not copyable                   //
+            //  SysWindow private copy constructor : Not copyable             //
             ////////////////////////////////////////////////////////////////////
-            Wos(const Wos&) = delete;
+            SysWindow(const SysWindow&) = delete;
 
             ////////////////////////////////////////////////////////////////////
-            //  Wos private copy operator : Not copyable                      //
+            //  SysWindow private copy operator : Not copyable                //
             ////////////////////////////////////////////////////////////////////
-            Wos& operator=(const Wos&) = delete;
+            SysWindow& operator=(const SysWindow&) = delete;
 
 
         private:
-            bool            m_running;          // WOS running state
-            SysClock        m_clock;            // WOS clock
+            int                 m_width;            // Window width
+            int                 m_height;           // Window height
     };
 
 
-#endif // WOS_WOS_HEADER
+    ////////////////////////////////////////////////////////////////////////////
+    //  SysWindow global instance                                             //
+    ////////////////////////////////////////////////////////////////////////////
+    extern SysWindow GSysWindow;
+
+
+#endif // WOS_SYSTEM_SYSWINDOW_HEADER

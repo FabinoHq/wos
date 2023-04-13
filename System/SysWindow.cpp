@@ -37,71 +37,55 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Wos.cpp : WOS Main class management                                    //
+//     System/SysWindow.cpp : System window management                        //
 ////////////////////////////////////////////////////////////////////////////////
-#include "Wos.h"
+#include "SysWindow.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Wos default constructor                                                   //
+//  SysWindow global instance                                                 //
 ////////////////////////////////////////////////////////////////////////////////
-Wos::Wos() :
-m_running(false),
-m_clock()
+SysWindow GSysWindow = SysWindow();
+
+
+////////////////////////////////////////////////////////////////////////////////
+//  SysWindow default constructor                                             //
+////////////////////////////////////////////////////////////////////////////////
+SysWindow::SysWindow() :
+m_width(0),
+m_height(0)
 {
 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Wos destructor                                                            //
+//  SysWindow destructor                                                      //
 ////////////////////////////////////////////////////////////////////////////////
-Wos::~Wos()
+SysWindow::~SysWindow()
 {
-
+    // Close the window
+    close();
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Launch WOS                                                                //
-//  return : True if WOS successfully started, false otherwise                //
+//  Create the window                                                         //
+//  return : True if the window is successfully created                       //
 ////////////////////////////////////////////////////////////////////////////////
-bool Wos::launch()
+bool SysWindow::create()
 {
-    // Check system CPU
-    if (!SysCPUCheck())
-    {
-        // Invalid system CPU
-        return false;
-    }
+    // Window size
+    m_width = 0;
+    m_height = 0;
 
-    // Create WOS global window
-    if (!GSysWindow.create())
-    {
-        // Unable to create WOS global window
-        return false;
-    }
-
-    // Run WOS
-    run();
-
-    // WOS successfully terminated
+    // System window successfully created
     return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Run WOS                                                                   //
+//  Close the window                                                          //
 ////////////////////////////////////////////////////////////////////////////////
-void Wos::run()
+void SysWindow::close()
 {
-    // Run WOS
-    m_clock.reset();
-    m_running = true;
-    while (m_running)
-    {
-        std::cout << "Running\n";
-        SysSleep(0.1);
-    }
 
-    // Close WOS
-    GSysWindow.close();
 }

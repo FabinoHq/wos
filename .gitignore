@@ -40,6 +40,8 @@
 !System/SysMutexLocker.h
 !System/SysThread.h
 !System/SysThread.cpp
+!System/SysWindow.h
+!System/SysWindow.cpp
 
 # Math
 !Math/
