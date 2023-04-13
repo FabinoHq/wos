@@ -37,96 +37,80 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Renderer/Renderer.h : Renderer management                              //
+//     Renderer/View.h : View management                                      //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_RENDERER_RENDERER_HEADER
-#define WOS_RENDERER_RENDERER_HEADER
-
-    #include <GLES2/gl2.h>
+#ifndef WOS_RENDERER_VIEW_HEADER
+#define WOS_RENDERER_VIEW_HEADER
 
     #include "../System/System.h"
-    #include "../System/SysMessage.h"
-    #include "../System/SysWindow.h"
-
     #include "../Math/Math.h"
     #include "../Math/Vector2.h"
     #include "../Math/Matrix4x4.h"
+    #include "../Math/Transform2.h"
 
-    #include "Shader.h"
-    #include "VertexBuffer.h"
-    #include "View.h"
-
-    #include <cstddef>
     #include <cstdint>
-    #include <vector>
+    #include <cstring>
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Renderer clear color                                                  //
+    //  View class definition                                                 //
     ////////////////////////////////////////////////////////////////////////////
-    const float RendererClearColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  Renderer compositing plane offset                                     //
-    ////////////////////////////////////////////////////////////////////////////
-    const float RendererCompositingPlaneOffset = 0.00001f;
-
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  Renderer class definition                                             //
-    ////////////////////////////////////////////////////////////////////////////
-    class Renderer
+    class View : public Transform2
     {
         public:
             ////////////////////////////////////////////////////////////////////
-            //  Renderer default constructor                                  //
+            //  View default constructor                                      //
             ////////////////////////////////////////////////////////////////////
-            Renderer();
+            View();
 
             ////////////////////////////////////////////////////////////////////
-            //  Renderer destructor                                           //
+            //  View virtual destructor                                       //
             ////////////////////////////////////////////////////////////////////
-            ~Renderer();
+            virtual ~View();
 
 
             ////////////////////////////////////////////////////////////////////
-            //  Init renderer                                                 //
-            //  return : True if the renderer is successfully loaded          //
+            //  Init view                                                     //
+            //  return : True if the view is successfully created             //
             ////////////////////////////////////////////////////////////////////
             bool init();
 
+            ////////////////////////////////////////////////////////////////////
+            //  Destroy view                                                  //
+            ////////////////////////////////////////////////////////////////////
+            void destroyView();
 
             ////////////////////////////////////////////////////////////////////
-            //  Get renderer ready state                                      //
-            //  return : True if the renderer is ready, false otherwise       //
+            //  Compute view                                                  //
+            //  return : True if the view is successfully computed            //
             ////////////////////////////////////////////////////////////////////
-            inline bool isReady()
+            bool compute(float ratio);
+
+            ////////////////////////////////////////////////////////////////////
+            //  Bind view                                                     //
+            ////////////////////////////////////////////////////////////////////
+            inline void bind()
             {
-                return ready;
+
             }
 
 
         private:
             ////////////////////////////////////////////////////////////////////
-            //  Renderer private copy constructor : Not copyable              //
+            //  View private copy constructor : Not copyable                  //
             ////////////////////////////////////////////////////////////////////
-            Renderer(const Renderer&) = delete;
+            View(const View&) = delete;
 
             ////////////////////////////////////////////////////////////////////
-            //  Renderer private copy operator : Not copyable                 //
+            //  View private copy operator : Not copyable                     //
             ////////////////////////////////////////////////////////////////////
-            Renderer& operator=(const Renderer&) = delete;
+            View& operator=(const View&) = delete;
 
 
-        public:
-            bool                ready;                  // Renderer ready state
+        private:
+            Matrix4x4           m_projMatrix;       // Projection matrix
+            Matrix4x4           m_projViewMatrix;   // Projview matrix
     };
 
 
-    ////////////////////////////////////////////////////////////////////////////
-    //  Renderer global instance                                              //
-    ////////////////////////////////////////////////////////////////////////////
-    extern Renderer GRenderer;
-
-
-#endif // WOS_RENDERER_RENDERER_HEADER
+#endif // WOS_RENDERER_VIEW_HEADER
