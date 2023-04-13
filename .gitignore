@@ -22,6 +22,8 @@
 !wos.wasm
 
 !main.cpp
+!Wos.h
+!Wos.cpp
 
 # System
 !System/

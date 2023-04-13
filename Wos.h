@@ -37,29 +37,67 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     main.cpp : Main program entry point                                    //
+//     Wos.h : WOS Main class management                                      //
 ////////////////////////////////////////////////////////////////////////////////
-#include "Wos.h"
+#ifndef WOS_WOS_HEADER
+#define WOS_WOS_HEADER
+
+    #include "System/System.h"
+    #include "System/SysMessage.h"
+    #include "System/SysCPU.h"
+    #include "System/SysClock.h"
+    #include "System/SysSleep.h"
+
+    #include <cstddef>
+    #include <cstdint>
+    #include <new>
 
 
-////////////////////////////////////////////////////////////////////////////////
-//  Standard program entry point                                              //
-//  return : Main program return code                                         //
-////////////////////////////////////////////////////////////////////////////////
-int main()
-{
-    // Start WOS
-    Wos wos;
-    if (!wos.launch())
+    ////////////////////////////////////////////////////////////////////////////
+    //  WOS main class definition                                             //
+    ////////////////////////////////////////////////////////////////////////////
+    class Wos
     {
-        // WOS error occured
-        SysMessage::box().display();
-        return 1;
-    }
+        public:
+            ////////////////////////////////////////////////////////////////////
+            //  Wos default constructor                                       //
+            ////////////////////////////////////////////////////////////////////
+            Wos();
 
-    // Display system message if any
-    SysMessage::box().display();
+            ////////////////////////////////////////////////////////////////////
+            //  Wos destructor                                                //
+            ////////////////////////////////////////////////////////////////////
+            ~Wos();
 
-    // Program successfully executed
-    return 0;
-}
+
+            ////////////////////////////////////////////////////////////////////
+            //  Launch WOS                                                    //
+            //  return : True if WOS successfully started, false otherwise    //
+            ////////////////////////////////////////////////////////////////////
+            bool launch();
+
+            ////////////////////////////////////////////////////////////////////
+            //  Run WOS                                                       //
+            ////////////////////////////////////////////////////////////////////
+            void run();
+
+
+        private:
+            ////////////////////////////////////////////////////////////////////
+            //  Wos private copy constructor : Not copyable                   //
+            ////////////////////////////////////////////////////////////////////
+            Wos(const Wos&) = delete;
+
+            ////////////////////////////////////////////////////////////////////
+            //  Wos private copy operator : Not copyable                      //
+            ////////////////////////////////////////////////////////////////////
+            Wos& operator=(const Wos&) = delete;
+
+
+        private:
+            bool            m_running;          // WOS running state
+            SysClock        m_clock;            // WOS clock
+    };
+
+
+#endif // WOS_WOS_HEADER

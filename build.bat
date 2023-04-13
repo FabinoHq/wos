@@ -10,6 +10,7 @@
     System/SysCPU.cpp ^
     System/SysClock.cpp ^
     System/SysThread.cpp ^
+    Wos.cpp ^
     main.cpp
 
 :: System pause

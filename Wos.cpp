@@ -37,29 +37,61 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     main.cpp : Main program entry point                                    //
+//     Wos.cpp : WOS Main class management                                    //
 ////////////////////////////////////////////////////////////////////////////////
 #include "Wos.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Standard program entry point                                              //
-//  return : Main program return code                                         //
+//  Wos default constructor                                                   //
 ////////////////////////////////////////////////////////////////////////////////
-int main()
+Wos::Wos() :
+m_running(false),
+m_clock()
 {
-    // Start WOS
-    Wos wos;
-    if (!wos.launch())
+
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Wos destructor                                                            //
+////////////////////////////////////////////////////////////////////////////////
+Wos::~Wos()
+{
+
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//  Launch WOS                                                                //
+//  return : True if WOS successfully started, false otherwise                //
+////////////////////////////////////////////////////////////////////////////////
+bool Wos::launch()
+{
+    // Check system CPU
+    if (!SysCPUCheck())
     {
-        // WOS error occured
-        SysMessage::box().display();
-        return 1;
+        // Invalid system CPU
+        return false;
     }
 
-    // Display system message if any
-    SysMessage::box().display();
+    // Run WOS
+    run();
 
-    // Program successfully executed
-    return 0;
+    // WOS successfully terminated
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Run WOS                                                                   //
+////////////////////////////////////////////////////////////////////////////////
+void Wos::run()
+{
+    // Run WOS
+    m_clock.reset();
+    m_running = true;
+    while (m_running)
+    {
+        std::cout << "Running\n";
+        SysSleep(0.1);
+    }
 }
