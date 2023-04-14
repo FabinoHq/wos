@@ -74,6 +74,13 @@
     ////////////////////////////////////////////////////////////////////////////
     const float RendererCompositingPlaneOffset = 0.00001f;
 
+    ////////////////////////////////////////////////////////////////////////////
+    //  Renderer frame max ratios                                             //
+    ////////////////////////////////////////////////////////////////////////////
+    const bool RendererRatioMaxClamping = true;
+    const float RendererRatioXMax = 2.0f;
+    const float RendererRatioYMax = 0.7f;
+
 
     ////////////////////////////////////////////////////////////////////////////
     //  Renderer class definition                                             //
@@ -119,7 +126,7 @@
             //  Get renderer width                                            //
             //  return : Renderer width                                       //
             ////////////////////////////////////////////////////////////////////
-            inline float getWidth()
+            inline int getWidth()
             {
                 return width;
             }
@@ -128,7 +135,7 @@
             //  Get renderer height                                           //
             //  return : Renderer height                                      //
             ////////////////////////////////////////////////////////////////////
-            inline float getHeight()
+            inline int getHeight()
             {
                 return height;
             }
@@ -137,7 +144,7 @@
             //  Get renderer X offset                                         //
             //  return : Renderer X offset                                    //
             ////////////////////////////////////////////////////////////////////
-            inline float getOffsetX()
+            inline int getOffsetX()
             {
                 return offsetx;
             }
@@ -146,7 +153,7 @@
             //  Get renderer Y offset                                         //
             //  return : Renderer Y offset                                    //
             ////////////////////////////////////////////////////////////////////
-            inline float getOffsetY()
+            inline int getOffsetY()
             {
                 return offsety;
             }
@@ -159,7 +166,7 @@
             {
                 if (height > 0.0f)
                 {
-                    return (1.0f/height);
+                    return (1.0f/(height*1.0f));
                 }
                 return 1.0f;
             }
@@ -170,9 +177,9 @@
             ////////////////////////////////////////////////////////////////////
             inline float getRatio()
             {
-                if (height > 0.0f)
+                if (height > 0)
                 {
-                    return (width/height);
+                    return ((width*1.0f)/(height*1.0f));
                 }
                 return 1.0f;
             }
@@ -192,10 +199,10 @@
 
         public:
             bool                ready;              // Renderer ready state
-            float               width;              // Renderer width
-            float               height;             // Renderer height
-            float               offsetx;            // Renderer X offset
-            float               offsety;            // Renderer Y offset
+            int                 width;              // Renderer width
+            int                 height;             // Renderer height
+            int                 offsetx;            // Renderer X offset
+            int                 offsety;            // Renderer Y offset
 
             Shader              defaultShader;      // Default renderer shader
             Shader              defaultProcShader;  // Default proc shader

@@ -93,10 +93,29 @@ bool Renderer::init()
     }*/
 
     // Set renderer size
-    width = GSysWindow.getWidth()*1.0f;
-    height = GSysWindow.getHeight()*1.0f;
-    offsetx = 0.0f;
-    offsety = 0.0f;
+    int windowWidth = GSysWindow.getWidth();
+    int windowHeight = GSysWindow.getHeight();
+    width = windowWidth;
+    height = windowHeight;
+    offsetx = 0;
+    offsety = 0;
+
+    // Aspect ratio clamping
+    if (RendererRatioMaxClamping)
+    {
+        if (width >= static_cast<int>(width*RendererRatioXMax))
+        {
+            width = static_cast<int>(width*RendererRatioXMax);
+        }
+        if (height >= static_cast<int>(height*RendererRatioYMax))
+        {
+            height = static_cast<int>(height*RendererRatioYMax);
+        }
+    }
+    if (width <= 1) { width = 1; }
+    if (height <= 1) { height = 1; }
+    offsetx = static_cast<int>((windowWidth-width)*0.5f);
+    offsety = static_cast<int>((windowHeight-height)*0.5f);
 
     // Create default shader
     if (!defaultShader.createShader(
@@ -143,15 +162,37 @@ bool Renderer::init()
         RendererClearColor[2],
         RendererClearColor[3]
     );
+
+    // Init viewport
+    glViewport(offsetx, offsety, width, height);
+    glScissor(offsetx, offsety, width, height);
+    glDisable(GL_SCISSOR_TEST);
+
+    // Disable back face culling
+    glDisable(GL_CULL_FACE);
+    glFrontFace(GL_CCW);
+    glCullFace(GL_BACK);
+
+    // Disable dithering
+    glDisable(GL_DITHER);
+
+    // Init depth and blend functions
+    glDisable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glDepthMask(GL_TRUE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendEquation(GL_FUNC_ADD);
+
+    // Set texture 0 as active texture
+    glActiveTexture(GL_TEXTURE0);
 
     // Disable byte alignment
     //glPixelStorei(GL_PACK_ALIGNMENT, 1);
     //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     // Clear renderer
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     // Renderer successfully loaded
     ready = true;
@@ -166,13 +207,37 @@ bool Renderer::init()
 bool Renderer::startFrame()
 {
     // Set renderer size
-    width = GSysWindow.getWidth()*1.0f;
-    height = GSysWindow.getHeight()*1.0f;
-    offsetx = 0.0f;
-    offsety = 0.0f;
+    int windowWidth = GSysWindow.getWidth();
+    int windowHeight = GSysWindow.getHeight();
+    width = windowWidth;
+    height = windowHeight;
+    offsetx = 0;
+    offsety = 0;
+
+    // Aspect ratio clamping
+    if (RendererRatioMaxClamping)
+    {
+        if (width >= static_cast<int>(width*RendererRatioXMax))
+        {
+            width = static_cast<int>(width*RendererRatioXMax);
+        }
+        if (height >= static_cast<int>(height*RendererRatioYMax))
+        {
+            height = static_cast<int>(height*RendererRatioYMax);
+        }
+    }
+    if (width <= 1) { width = 1; }
+    if (height <= 1) { height = 1; }
+    offsetx = static_cast<int>((windowWidth-width)*0.5f);
+    offsety = static_cast<int>((windowHeight-height)*0.5f);
+
+    // Update viewport
+    glViewport(offsetx, offsety, width, height);
+    glScissor(offsetx, offsety, width, height);
+    glDisable(GL_SCISSOR_TEST);
 
     // Clear frame
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     // Bind default shader
     defaultShader.bindShader();
