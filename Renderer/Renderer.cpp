@@ -95,6 +95,7 @@ bool Renderer::init()
     // Set renderer size
     int windowWidth = GSysWindow.getWidth();
     int windowHeight = GSysWindow.getHeight();
+    GSysWindow.setSize(windowWidth, windowHeight);
     width = windowWidth;
     height = windowHeight;
     offsetx = 0;
@@ -179,9 +180,9 @@ bool Renderer::init()
     );
 
     // Init viewport
-    /*glViewport(offsetx, offsety, width, height);
+    glViewport(offsetx, offsety, width, height);
     glScissor(offsetx, offsety, width, height);
-    glDisable(GL_SCISSOR_TEST);*/
+    glDisable(GL_SCISSOR_TEST);
 
     // Disable back face culling
     glDisable(GL_CULL_FACE);
@@ -224,6 +225,7 @@ bool Renderer::startFrame()
     // Set renderer size
     int windowWidth = GSysWindow.getWidth();
     int windowHeight = GSysWindow.getHeight();
+    GSysWindow.setSize(windowWidth, windowHeight);
     width = windowWidth;
     height = windowHeight;
     offsetx = 0;
@@ -262,9 +264,9 @@ bool Renderer::startFrame()
     if (height <= 1) { height = 1; }
 
     // Update viewport
-    /*glViewport(offsetx, offsety, width, height);
+    glViewport(offsetx, offsety, width, height);
     glScissor(offsetx, offsety, width, height);
-    glDisable(GL_SCISSOR_TEST);*/
+    glDisable(GL_SCISSOR_TEST);
 
     // Clear frame
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
