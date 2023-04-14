@@ -103,13 +103,13 @@ bool Renderer::init()
     // Aspect ratio clamping
     if (RendererRatioMaxClamping)
     {
-        if (width >= static_cast<int>(width*RendererRatioXMax))
+        if (width >= static_cast<int>(windowHeight*RendererRatioXMax))
         {
-            width = static_cast<int>(width*RendererRatioXMax);
+            width = static_cast<int>(windowHeight*RendererRatioXMax);
         }
-        if (height >= static_cast<int>(height*RendererRatioYMax))
+        if (height >= static_cast<int>(windowWidth*RendererRatioYMax))
         {
-            height = static_cast<int>(height*RendererRatioYMax);
+            height = static_cast<int>(windowWidth*RendererRatioYMax);
         }
     }
     if (width <= 1) { width = 1; }
@@ -217,13 +217,13 @@ bool Renderer::startFrame()
     // Aspect ratio clamping
     if (RendererRatioMaxClamping)
     {
-        if (width >= static_cast<int>(width*RendererRatioXMax))
+        if (width >= static_cast<int>(windowHeight*RendererRatioXMax))
         {
-            width = static_cast<int>(width*RendererRatioXMax);
+            width = static_cast<int>(windowHeight*RendererRatioXMax);
         }
-        if (height >= static_cast<int>(height*RendererRatioYMax))
+        if (height >= static_cast<int>(windowWidth*RendererRatioYMax))
         {
-            height = static_cast<int>(height*RendererRatioYMax);
+            height = static_cast<int>(windowWidth*RendererRatioYMax);
         }
     }
     if (width <= 1) { width = 1; }
