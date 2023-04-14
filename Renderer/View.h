@@ -48,10 +48,14 @@
     #include "../Math/Matrix4x4.h"
     #include "../Math/Transform2.h"
 
-    #include "Shader.h"
-
     #include <cstdint>
     #include <cstring>
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    //  Renderer class declaration                                            //
+    ////////////////////////////////////////////////////////////////////////////
+    class Renderer;
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -84,19 +88,13 @@
 
             ////////////////////////////////////////////////////////////////////
             //  Compute view                                                  //
-            //  return : True if the view is successfully computed            //
             ////////////////////////////////////////////////////////////////////
-            bool compute(float ratio);
+            void compute(float ratio);
 
             ////////////////////////////////////////////////////////////////////
             //  Bind view                                                     //
             ////////////////////////////////////////////////////////////////////
-            inline void bind(Shader& shader)
-            {
-                // Upload matrices
-                shader.setProjectionMatrix(m_projMatrix);
-                shader.setProjViewMatrix(m_projViewMatrix);
-            }
+            void bindView();
 
 
         private:
@@ -112,8 +110,8 @@
 
 
         private:
-            Matrix4x4           m_projMatrix;       // Projection matrix
-            Matrix4x4           m_projViewMatrix;   // Projview matrix
+            Matrix4x4           m_projMatrix;           // Projection matrix
+            Matrix4x4           m_projViewMatrix;       // Projview matrix
     };
 
 

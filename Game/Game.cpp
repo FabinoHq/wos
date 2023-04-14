@@ -105,7 +105,7 @@ void Game::compute(float frametime)
     float ratio = GRenderer.getRatio();
 
     // Compute views
-    GRenderer.view.compute(ratio);
+    GRenderer.defaultView.compute(ratio);
     m_view.compute(ratio);
 }
 
@@ -121,7 +121,7 @@ void Game::render()
     }
 
     // Render procedural sprite
-    GRenderer.defaultProcShader.bindShader();
-    GRenderer.view.bind(GRenderer.defaultProcShader);
+    GRenderer.bindShader(GRenderer.defaultProcShader);
+    GRenderer.bindView(GRenderer.defaultView);
     m_procSprite.render();
 }

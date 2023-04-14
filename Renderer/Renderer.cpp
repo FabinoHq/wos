@@ -57,10 +57,11 @@ width(1),
 height(1),
 offsetx(0),
 offsety(0),
+shader(0),
 defaultShader(),
 defaultProcShader(),
 vertexBuffer(),
-view()
+defaultView()
 {
 
 }
@@ -70,6 +71,7 @@ view()
 ////////////////////////////////////////////////////////////////////////////////
 Renderer::~Renderer()
 {
+    shader = 0;
     offsety = 0;
     offsetx = 0;
     height = 0;
@@ -164,10 +166,10 @@ bool Renderer::init()
     }
 
     // Create default view
-    if (!view.init())
+    if (!defaultView.init())
     {
-        // Unable to create view
-        SysMessage::box() << "[0x3004] Unable to create view\n";
+        // Unable to create default view
+        SysMessage::box() << "[0x3004] Unable to create default view\n";
         SysMessage::box() << "Please update your graphics drivers";
         return false;
     }
@@ -274,10 +276,10 @@ bool Renderer::startFrame()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Bind default shader
-    defaultShader.bindShader();
+    bindShader(defaultShader);
 
     // Bind default view
-    view.bind(defaultShader);
+    bindView(defaultView);
 
     // Rendering frame is ready
     return true;

@@ -40,6 +40,7 @@
 //     Renderer/View.cpp : View management                                    //
 ////////////////////////////////////////////////////////////////////////////////
 #include "View.h"
+#include "Renderer.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -103,9 +104,8 @@ void View::destroyView()
 
 ////////////////////////////////////////////////////////////////////////////////
 //  Compute view                                                              //
-//  return : True if the view is successfully computed                        //
 ////////////////////////////////////////////////////////////////////////////////
-bool View::compute(float ratio)
+void View::compute(float ratio)
 {
     // Compute projection matrix
     m_projMatrix.setOrthographic(-ratio, ratio, 1.0f, -1.0f, -2.0f, 2.0f);
@@ -121,7 +121,14 @@ bool View::compute(float ratio)
     // Compute projview matrix
     m_projViewMatrix.set(m_projMatrix);
     m_projViewMatrix *= m_matrix;
+}
 
-    // View successfully computed
-    return true;
+////////////////////////////////////////////////////////////////////////////////
+//  Bind view                                                                 //
+////////////////////////////////////////////////////////////////////////////////
+void View::bindView()
+{
+    // Upload matrices
+    GRenderer.shader->setProjectionMatrix(m_projMatrix);
+    GRenderer.shader->setProjViewMatrix(m_projViewMatrix);
 }

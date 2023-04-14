@@ -123,6 +123,25 @@
 
 
             ////////////////////////////////////////////////////////////////////
+            //  Bind renderer shader                                          //
+            ////////////////////////////////////////////////////////////////////
+            inline void bindShader(Shader& newshader)
+            {
+                shader = &newshader;
+                shader->bindShader();
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Bind renderer view                                            //
+            ////////////////////////////////////////////////////////////////////
+            inline void bindView(View& view)
+            {
+                // Upload matrices
+                view.bindView();
+            }
+
+
+            ////////////////////////////////////////////////////////////////////
             //  Get renderer width                                            //
             //  return : Renderer width                                       //
             ////////////////////////////////////////////////////////////////////
@@ -204,10 +223,11 @@
             int                 offsetx;            // Renderer X offset
             int                 offsety;            // Renderer Y offset
 
+            Shader*             shader;             // Current shader
             Shader              defaultShader;      // Default renderer shader
             Shader              defaultProcShader;  // Default proc shader
             VertexBuffer        vertexBuffer;       // Default vertex buffer
-            View                view;               // Default view
+            View                defaultView;        // Default view
     };
 
 
