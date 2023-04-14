@@ -77,19 +77,13 @@
             //  Get window width                                              //
             //  return : Window width                                         //
             ////////////////////////////////////////////////////////////////////
-            inline int getWidth() const
-            {
-                return m_width;
-            }
+            int getWidth();
 
             ////////////////////////////////////////////////////////////////////
             //  Get window height                                             //
             //  return : Window height                                        //
             ////////////////////////////////////////////////////////////////////
-            inline int getHeight() const
-            {
-                return m_height;
-            }
+            int getHeight();
 
 
         private:
@@ -106,8 +100,6 @@
 
         private:
             EMSCRIPTEN_WEBGL_CONTEXT_HANDLE     m_handle;       // Handle
-            int                                 m_width;        // Width
-            int                                 m_height;       // Height
     };
 
 

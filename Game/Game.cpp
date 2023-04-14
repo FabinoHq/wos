@@ -101,8 +101,12 @@ void Game::events()
 ////////////////////////////////////////////////////////////////////////////////
 void Game::compute(float frametime)
 {
-    GRenderer.view.compute(1.0f);
-    m_view.compute(1.0f);
+    // Get render ratio
+    float ratio = GRenderer.getRatio();
+
+    // Compute views
+    GRenderer.view.compute(ratio);
+    m_view.compute(ratio);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

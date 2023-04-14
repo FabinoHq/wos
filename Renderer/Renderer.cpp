@@ -53,6 +53,10 @@ Renderer GRenderer = Renderer();
 ////////////////////////////////////////////////////////////////////////////////
 Renderer::Renderer() :
 ready(false),
+width(0),
+height(0),
+offsetx(0),
+offsety(0),
 defaultShader(),
 defaultProcShader(),
 vertexBuffer(),
@@ -87,6 +91,12 @@ bool Renderer::init()
         SysMessage::box() << "System window must be valid";
         return false;
     }*/
+
+    // Set renderer size
+    width = GSysWindow.getWidth()*1.0f;
+    height = GSysWindow.getHeight()*1.0f;
+    offsetx = 0.0f;
+    offsety = 0.0f;
 
     // Create default shader
     if (!defaultShader.createShader(
@@ -155,6 +165,12 @@ bool Renderer::init()
 ////////////////////////////////////////////////////////////////////////////////
 bool Renderer::startFrame()
 {
+    // Set renderer size
+    width = GSysWindow.getWidth()*1.0f;
+    height = GSysWindow.getHeight()*1.0f;
+    offsetx = 0.0f;
+    offsety = 0.0f;
+
     // Clear frame
     glClear(GL_COLOR_BUFFER_BIT);
 

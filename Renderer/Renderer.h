@@ -115,6 +115,69 @@
             }
 
 
+            ////////////////////////////////////////////////////////////////////
+            //  Get renderer width                                            //
+            //  return : Renderer width                                       //
+            ////////////////////////////////////////////////////////////////////
+            inline float getWidth()
+            {
+                return width;
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Get renderer height                                           //
+            //  return : Renderer height                                      //
+            ////////////////////////////////////////////////////////////////////
+            inline float getHeight()
+            {
+                return height;
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Get renderer X offset                                         //
+            //  return : Renderer X offset                                    //
+            ////////////////////////////////////////////////////////////////////
+            inline float getOffsetX()
+            {
+                return offsetx;
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Get renderer Y offset                                         //
+            //  return : Renderer Y offset                                    //
+            ////////////////////////////////////////////////////////////////////
+            inline float getOffsetY()
+            {
+                return offsety;
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Get renderer scale                                            //
+            //  return : Renderer scale (1/height)                            //
+            ////////////////////////////////////////////////////////////////////
+            inline float getScale()
+            {
+                if (height > 0.0f)
+                {
+                    return (1.0f/height);
+                }
+                return 1.0f;
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Get renderer aspect ratio                                     //
+            //  return : Renderer aspect ratio                                //
+            ////////////////////////////////////////////////////////////////////
+            inline float getRatio()
+            {
+                if (height > 0.0f)
+                {
+                    return (width/height);
+                }
+                return 1.0f;
+            }
+
+
         private:
             ////////////////////////////////////////////////////////////////////
             //  Renderer private copy constructor : Not copyable              //
@@ -129,6 +192,11 @@
 
         public:
             bool                ready;              // Renderer ready state
+            float               width;              // Renderer width
+            float               height;             // Renderer height
+            float               offsetx;            // Renderer X offset
+            float               offsety;            // Renderer Y offset
+
             Shader              defaultShader;      // Default renderer shader
             Shader              defaultProcShader;  // Default proc shader
             VertexBuffer        vertexBuffer;       // Default vertex buffer

@@ -49,12 +49,25 @@ SysWindow GSysWindow = SysWindow();
 
 
 ////////////////////////////////////////////////////////////////////////////////
+//  Get window width                                                          //
+////////////////////////////////////////////////////////////////////////////////
+EM_JS(int, SysGetWindowWidth, (), {
+    return window.innerWidth;
+});
+
+////////////////////////////////////////////////////////////////////////////////
+//  Get window height                                                         //
+////////////////////////////////////////////////////////////////////////////////
+EM_JS(int, SysGetWindowHeight, (), {
+    return window.innerHeight;
+});
+
+
+////////////////////////////////////////////////////////////////////////////////
 //  SysWindow default constructor                                             //
 ////////////////////////////////////////////////////////////////////////////////
 SysWindow::SysWindow() :
-m_handle(),
-m_width(0),
-m_height(0)
+m_handle()
 {
 
 }
@@ -88,10 +101,25 @@ bool SysWindow::create()
     m_handle = emscripten_webgl_create_context("#woscreen", &attributes);
     emscripten_webgl_make_context_current(m_handle);
 
-    // Window size
-    m_width = 0;
-    m_height = 0;
-
     // System window successfully created
     return true;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//  Get window width                                                          //
+//  return : Window width                                                     //
+////////////////////////////////////////////////////////////////////////////////
+int SysWindow::getWidth()
+{
+    return SysGetWindowWidth();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Get window height                                                         //
+//  return : Window height                                                    //
+////////////////////////////////////////////////////////////////////////////////
+int SysWindow::getHeight()
+{
+    return SysGetWindowHeight();
 }
