@@ -101,7 +101,8 @@ void Game::events()
 ////////////////////////////////////////////////////////////////////////////////
 void Game::compute(float frametime)
 {
-    
+    GRenderer.view.compute(1.0f);
+    m_view.compute(1.0f);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -117,5 +118,6 @@ void Game::render()
 
     // Render procedural sprite
     GRenderer.defaultProcShader.bindShader();
+    GRenderer.view.bind(GRenderer.defaultProcShader);
     m_procSprite.render();
 }

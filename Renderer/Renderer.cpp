@@ -162,7 +162,7 @@ bool Renderer::startFrame()
     defaultShader.bindShader();
 
     // Bind default view
-    view.bind();
+    view.bind(defaultShader);
 
     // Rendering frame is ready
     return true;

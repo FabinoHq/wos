@@ -48,6 +48,8 @@
     #include "../Math/Matrix4x4.h"
     #include "../Math/Transform2.h"
 
+    #include "Shader.h"
+
     #include <cstdint>
     #include <cstring>
 
@@ -89,9 +91,11 @@
             ////////////////////////////////////////////////////////////////////
             //  Bind view                                                     //
             ////////////////////////////////////////////////////////////////////
-            inline void bind()
+            inline void bind(Shader& shader)
             {
-
+                // Upload matrices
+                shader.setProjectionMatrix(m_projMatrix);
+                shader.setViewMatrix(m_projViewMatrix);
             }
 
 
