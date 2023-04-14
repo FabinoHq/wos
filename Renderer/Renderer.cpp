@@ -103,19 +103,34 @@ bool Renderer::init()
     // Aspect ratio clamping
     if (RendererRatioMaxClamping)
     {
-        if (width >= static_cast<int>(windowHeight*RendererRatioXMax))
+        float vpwidth = (windowWidth*1.0f);
+        float vpheight = (windowHeight*1.0f);
+        float vpoffx = 0.0f;
+        float vpoffy = 0.0f;
+
+        if (vpwidth >= (vpheight*RendererRatioXMax))
         {
-            width = static_cast<int>(windowHeight*RendererRatioXMax);
+            vpwidth = vpheight*RendererRatioXMax;
         }
-        if (height >= static_cast<int>(windowWidth*RendererRatioYMax))
+        if (vpheight >= (vpwidth*RendererRatioYMax))
         {
-            height = static_cast<int>(windowWidth*RendererRatioYMax);
+            vpheight = vpwidth*RendererRatioYMax;
         }
+
+        if (vpwidth <= 1.0f) { vpwidth = 1.0f; }
+        if (vpheight <= 1.0f) { vpheight = 1.0f; }
+        vpoffx = ((width*1.0f)-vpwidth)*0.5f;
+        vpoffy = ((height*1.0f)-vpheight)*0.5f;
+
+        offsetx = static_cast<int>(std::ceil(vpoffx));
+        offsety = static_cast<int>(std::ceil(vpoffy));
+        width = static_cast<int>(std::ceil(vpwidth));
+        height = static_cast<int>(std::ceil(vpheight));
     }
+    if (offsetx <= 0) { offsetx = 0; }
+    if (offsety <= 0) { offsety = 0; }
     if (width <= 1) { width = 1; }
     if (height <= 1) { height = 1; }
-    offsetx = static_cast<int>((windowWidth-width)*0.5f);
-    offsety = static_cast<int>((windowHeight-height)*0.5f);
 
     // Create default shader
     if (!defaultShader.createShader(
@@ -217,19 +232,34 @@ bool Renderer::startFrame()
     // Aspect ratio clamping
     if (RendererRatioMaxClamping)
     {
-        if (width >= static_cast<int>(windowHeight*RendererRatioXMax))
+        float vpwidth = (windowWidth*1.0f);
+        float vpheight = (windowHeight*1.0f);
+        float vpoffx = 0.0f;
+        float vpoffy = 0.0f;
+
+        if (vpwidth >= (vpheight*RendererRatioXMax))
         {
-            width = static_cast<int>(windowHeight*RendererRatioXMax);
+            vpwidth = vpheight*RendererRatioXMax;
         }
-        if (height >= static_cast<int>(windowWidth*RendererRatioYMax))
+        if (vpheight >= (vpwidth*RendererRatioYMax))
         {
-            height = static_cast<int>(windowWidth*RendererRatioYMax);
+            vpheight = vpwidth*RendererRatioYMax;
         }
+
+        if (vpwidth <= 1.0f) { vpwidth = 1.0f; }
+        if (vpheight <= 1.0f) { vpheight = 1.0f; }
+        vpoffx = ((width*1.0f)-vpwidth)*0.5f;
+        vpoffy = ((height*1.0f)-vpheight)*0.5f;
+
+        offsetx = static_cast<int>(std::ceil(vpoffx));
+        offsety = static_cast<int>(std::ceil(vpoffy));
+        width = static_cast<int>(std::ceil(vpwidth));
+        height = static_cast<int>(std::ceil(vpheight));
     }
+    if (offsetx <= 0) { offsetx = 0; }
+    if (offsety <= 0) { offsety = 0; }
     if (width <= 1) { width = 1; }
     if (height <= 1) { height = 1; }
-    offsetx = static_cast<int>((windowWidth-width)*0.5f);
-    offsety = static_cast<int>((windowHeight-height)*0.5f);
 
     // Update viewport
     /*glViewport(offsetx, offsety, width, height);
