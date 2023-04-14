@@ -53,8 +53,8 @@ Renderer GRenderer = Renderer();
 ////////////////////////////////////////////////////////////////////////////////
 Renderer::Renderer() :
 ready(false),
-width(0),
-height(0),
+width(1),
+height(1),
 offsetx(0),
 offsety(0),
 defaultShader(),
@@ -70,7 +70,11 @@ view()
 ////////////////////////////////////////////////////////////////////////////////
 Renderer::~Renderer()
 {
-
+    offsety = 0;
+    offsetx = 0;
+    height = 0;
+    width = 0;
+    ready = false;
 }
 
 
@@ -93,29 +97,26 @@ bool Renderer::init()
     }*/
 
     // Set renderer size
-    int windowWidth = GSysWindow.getWidth();
-    int windowHeight = GSysWindow.getHeight();
-    GSysWindow.setSize(windowWidth, windowHeight);
-    width = windowWidth;
-    height = windowHeight;
+    width = GSysWindow.getWidth();
+    height = GSysWindow.getHeight();
     offsetx = 0;
     offsety = 0;
 
     // Aspect ratio clamping
     if (RendererRatioMaxClamping)
     {
-        float vpwidth = (windowWidth*1.0f);
-        float vpheight = (windowHeight*1.0f);
+        float vpwidth = (width*1.0f);
+        float vpheight = (height*1.0f);
         float vpoffx = 0.0f;
         float vpoffy = 0.0f;
 
         if (vpwidth >= (vpheight*RendererRatioXMax))
         {
-            vpwidth = vpheight*RendererRatioXMax;
+            vpwidth = (vpheight*RendererRatioXMax);
         }
         if (vpheight >= (vpwidth*RendererRatioYMax))
         {
-            vpheight = vpwidth*RendererRatioYMax;
+            vpheight = (vpwidth*RendererRatioYMax);
         }
 
         if (vpwidth <= 1.0f) { vpwidth = 1.0f; }
@@ -200,6 +201,9 @@ bool Renderer::init()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendEquation(GL_FUNC_ADD);
 
+    // Disable stencil
+    glDisable(GL_STENCIL_TEST);
+
     // Set texture 0 as active texture
     glActiveTexture(GL_TEXTURE0);
 
@@ -208,7 +212,7 @@ bool Renderer::init()
     //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     // Clear renderer
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Renderer successfully loaded
     ready = true;
@@ -223,29 +227,27 @@ bool Renderer::init()
 bool Renderer::startFrame()
 {
     // Set renderer size
-    int windowWidth = GSysWindow.getWidth();
-    int windowHeight = GSysWindow.getHeight();
-    GSysWindow.setSize(windowWidth, windowHeight);
-    width = windowWidth;
-    height = windowHeight;
+    GSysWindow.update();
+    width = GSysWindow.getWidth();
+    height = GSysWindow.getHeight();
     offsetx = 0;
     offsety = 0;
 
     // Aspect ratio clamping
     if (RendererRatioMaxClamping)
     {
-        float vpwidth = (windowWidth*1.0f);
-        float vpheight = (windowHeight*1.0f);
+        float vpwidth = (width*1.0f);
+        float vpheight = (height*1.0f);
         float vpoffx = 0.0f;
         float vpoffy = 0.0f;
 
         if (vpwidth >= (vpheight*RendererRatioXMax))
         {
-            vpwidth = vpheight*RendererRatioXMax;
+            vpwidth = (vpheight*RendererRatioXMax);
         }
         if (vpheight >= (vpwidth*RendererRatioYMax))
         {
-            vpheight = vpwidth*RendererRatioYMax;
+            vpheight = (vpwidth*RendererRatioYMax);
         }
 
         if (vpwidth <= 1.0f) { vpwidth = 1.0f; }
@@ -269,7 +271,7 @@ bool Renderer::startFrame()
     glDisable(GL_SCISSOR_TEST);
 
     // Clear frame
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Bind default shader
     defaultShader.bindShader();

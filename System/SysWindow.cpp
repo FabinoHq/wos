@@ -67,7 +67,9 @@ EM_JS(int, SysGetWindowHeight, (), {
 //  SysWindow default constructor                                             //
 ////////////////////////////////////////////////////////////////////////////////
 SysWindow::SysWindow() :
-m_handle()
+m_handle(),
+m_width(1),
+m_height(1)
 {
 
 }
@@ -77,7 +79,8 @@ m_handle()
 ////////////////////////////////////////////////////////////////////////////////
 SysWindow::~SysWindow()
 {
-
+    m_width = 0;
+    m_height = 0;
 }
 
 
@@ -101,25 +104,22 @@ bool SysWindow::create()
     m_handle = emscripten_webgl_create_context("#woscreen", &attributes);
     emscripten_webgl_make_context_current(m_handle);
 
+    // Update window size
+    m_width = SysGetWindowWidth();
+    m_height = SysGetWindowHeight();
+    emscripten_set_canvas_element_size("#woscreen", m_width, m_height);
+
     // System window successfully created
     return true;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
-//  Get window width                                                          //
-//  return : Window width                                                     //
+//  Update window                                                             //
 ////////////////////////////////////////////////////////////////////////////////
-int SysWindow::getWidth()
+void SysWindow::update()
 {
-    return SysGetWindowWidth();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//  Get window height                                                         //
-//  return : Window height                                                    //
-////////////////////////////////////////////////////////////////////////////////
-int SysWindow::getHeight()
-{
-    return SysGetWindowHeight();
+    // Update window size
+    m_width = SysGetWindowWidth();
+    m_height = SysGetWindowHeight();
+    emscripten_set_canvas_element_size("#woscreen", m_width, m_height);
 }

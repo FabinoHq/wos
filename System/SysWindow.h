@@ -72,26 +72,29 @@
             ////////////////////////////////////////////////////////////////////
             bool create();
 
+            ////////////////////////////////////////////////////////////////////
+            //  Update window                                                 //
+            ////////////////////////////////////////////////////////////////////
+            void update();
 
-            ////////////////////////////////////////////////////////////////////
-            //  Set window size                                               //
-            ////////////////////////////////////////////////////////////////////
-            inline void setSize(int width, int height)
-            {
-                emscripten_set_canvas_element_size("#woscreen", width, height);
-            }
 
             ////////////////////////////////////////////////////////////////////
             //  Get window width                                              //
             //  return : Window width                                         //
             ////////////////////////////////////////////////////////////////////
-            int getWidth();
+            inline int getWidth()
+            {
+                return m_width;
+            }
 
             ////////////////////////////////////////////////////////////////////
             //  Get window height                                             //
             //  return : Window height                                        //
             ////////////////////////////////////////////////////////////////////
-            int getHeight();
+            inline int getHeight()
+            {
+                return m_height;
+            }
 
 
         private:
@@ -108,6 +111,8 @@
 
         private:
             EMSCRIPTEN_WEBGL_CONTEXT_HANDLE     m_handle;       // Handle
+            int                                 m_width;        // Width
+            int                                 m_height;       // Height
     };
 
 
