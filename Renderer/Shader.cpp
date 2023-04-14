@@ -101,7 +101,7 @@ bool Shader::createShader(const char* vertexShaderSrc,
 	{
 		char infoLog[512];
 		glGetShaderInfoLog(vertexShader, 512, 0, infoLog);
-		std::cout << infoLog << '\n';
+		//std::cout << infoLog << '\n';
 
 		// Unable to compile vertex shader
 		SysMessage::box() << "[0x3007] Unable to compile vertex shader\n";
@@ -129,7 +129,7 @@ bool Shader::createShader(const char* vertexShaderSrc,
 	{
 		char infoLog[512];
 		glGetShaderInfoLog(fragmentShader, 512, 0, infoLog);
-		std::cout << infoLog << '\n';
+		//std::cout << infoLog << '\n';
 
 		// Unable to compile fragment shader
 		SysMessage::box() << "[0x3009] Unable to compile fragment shader\n";

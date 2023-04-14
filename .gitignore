@@ -67,6 +67,8 @@
 !Renderer/VertexBuffer.cpp
 !Renderer/View.h
 !Renderer/View.cpp
+!Renderer/ProcSprite.h
+!Renderer/ProcSprite.cpp
 
 # Shaders
 !Renderer/Shaders/

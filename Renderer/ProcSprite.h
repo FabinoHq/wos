@@ -37,78 +37,127 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Game/Game.h : Main game class management                               //
+//     Renderer/ProcSprite.h : Procedural sprite management                   //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_GAME_GAME_HEADER
-#define WOS_GAME_GAME_HEADER
+#ifndef WOS_RENDERER_PROCSPRITE_HEADER
+#define WOS_RENDERER_PROCSPRITE_HEADER
 
     #include "../System/System.h"
+    #include "../Math/Math.h"
+    #include "../Math/Vector4.h"
+    #include "../Math/Matrix4x4.h"
+    #include "../Math/Transform2.h"
+    #include "Renderer.h"
+    #include "Shader.h"
+    #include "Shaders/Default.h"
+    #include "Shaders/DefaultProc.h"
 
-    #include "../Renderer/Renderer.h"
-    #include "../Renderer/View.h"
-    #include "../Renderer/ProcSprite.h"
+    #include <cstddef>
+    #include <cstdint>
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Game main class definition                                            //
+    //  ProcSprite class definition                                           //
     ////////////////////////////////////////////////////////////////////////////
-    class Game
+    class ProcSprite : public Transform2
     {
         public:
             ////////////////////////////////////////////////////////////////////
-            //  Game default constructor                                      //
+            //  ProcSprite default constructor                                //
             ////////////////////////////////////////////////////////////////////
-            Game();
+            ProcSprite();
 
             ////////////////////////////////////////////////////////////////////
-            //  Game destructor                                               //
+            //  ProcSprite virtual destructor                                 //
             ////////////////////////////////////////////////////////////////////
-            ~Game();
-
-
-            ////////////////////////////////////////////////////////////////////
-            //  Init game                                                     //
-            //  return : True if game is ready, false otherwise               //
-            ////////////////////////////////////////////////////////////////////
-            bool init();
+            virtual ~ProcSprite();
 
 
             ////////////////////////////////////////////////////////////////////
-            //  Compute game events                                           //
+            //  Init procedural sprite                                        //
+            //  return : True if the proc sprite is successfully created      //
             ////////////////////////////////////////////////////////////////////
-            void events();
+            bool init(float width, float height,
+                const char* fragmentSource = 0);
 
             ////////////////////////////////////////////////////////////////////
-            //  Compute game logic                                            //
+            //  Destroy procedural sprite                                     //
             ////////////////////////////////////////////////////////////////////
-            void compute(float frametime);
+            void destroyProcSprite();
 
             ////////////////////////////////////////////////////////////////////
-            //  Render game                                                   //
+            //  Set procedural sprite color                                   //
+            ////////////////////////////////////////////////////////////////////
+            void setColor(const Vector4& color);
+
+            ////////////////////////////////////////////////////////////////////
+            //  Set procedural sprite color                                   //
+            ////////////////////////////////////////////////////////////////////
+            void setColor(float red, float green, float blue, float alpha);
+
+            ////////////////////////////////////////////////////////////////////
+            //  Set procedural sprite red channel                             //
+            ////////////////////////////////////////////////////////////////////
+            inline void setRed(float red)
+            {
+                m_color.vec[0] = red;
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Set procedural sprite green channel                           //
+            ////////////////////////////////////////////////////////////////////
+            inline void setGreen(float green)
+            {
+                m_color.vec[1] = green;
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Set procedural sprite blue channel                            //
+            ////////////////////////////////////////////////////////////////////
+            inline void setBlue(float blue)
+            {
+                m_color.vec[2] = blue;
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Set procedural sprite alpha channel                           //
+            ////////////////////////////////////////////////////////////////////
+            inline void setAlpha(float alpha)
+            {
+                m_color.vec[3] = alpha;
+            }
+
+
+            ////////////////////////////////////////////////////////////////////
+            //  Bind procedural sprite shader                                 //
+            ////////////////////////////////////////////////////////////////////
+            inline void bindShader()
+            {
+                m_shader.bindShader();
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Render procedural sprite                                      //
             ////////////////////////////////////////////////////////////////////
             void render();
 
 
         private:
             ////////////////////////////////////////////////////////////////////
-            //  Game private copy constructor : Not copyable                  //
+            //  ProcSprite private copy constructor : Not copyable            //
             ////////////////////////////////////////////////////////////////////
-            Game(const Game&) = delete;
+            ProcSprite(const ProcSprite&) = delete;
 
             ////////////////////////////////////////////////////////////////////
-            //  Game private copy operator : Not copyable                     //
+            //  ProcSprite private copy operator : Not copyable               //
             ////////////////////////////////////////////////////////////////////
-            Game& operator=(const Game&) = delete;
+            ProcSprite& operator=(const ProcSprite&) = delete;
 
 
         private:
-            View            m_view;             // View
-
-            ProcSprite      m_procSprite;       // Procedural sprite
-
-            float           m_mouseX;           // Mouse X position
-            float           m_mouseY;           // Mouse Y position
+            Shader              m_shader;           // ProcSprite shader
+            Vector4             m_color;            // ProcSprite color
     };
 
 
-#endif // WOS_GAME_GAME_HEADER
+#endif // WOS_RENDERER_PROCSPRITE_HEADER

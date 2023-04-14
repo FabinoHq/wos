@@ -37,85 +37,111 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Game/Game.cpp : Main game class management                             //
+//     Renderer/ProcSprite.cpp : Procedural sprite management                 //
 ////////////////////////////////////////////////////////////////////////////////
-#include "Game.h"
+#include "ProcSprite.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Game default constructor                                                  //
+//  ProcSprite default constructor                                            //
 ////////////////////////////////////////////////////////////////////////////////
-Game::Game() :
-m_view(),
-m_procSprite(),
-m_mouseX(0.0f),
-m_mouseY(0.0f)
+ProcSprite::ProcSprite() :
+Transform2(),
+m_shader(),
+m_color(1.0f, 1.0f, 1.0f, 1.0f)
 {
 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Game destructor                                                           //
+//  ProcSprite virtual destructor                                             //
 ////////////////////////////////////////////////////////////////////////////////
-Game::~Game()
+ProcSprite::~ProcSprite()
 {
-
+    m_color.reset();
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Init Game                                                                 //
-//  return : True if game is ready, false otherwise                           //
+//  Init procedural sprite                                                    //
+//  return : True if the proc sprite is successfully created                  //
 ////////////////////////////////////////////////////////////////////////////////
-bool Game::init()
+bool ProcSprite::init(float width, float height, const char* fragmentSource)
 {
-    // Init view
-    if (!m_view.init())
+    bool shaderCreated = false;
+    if (fragmentSource)
     {
-        // Could not init view
-        return false;
+        // Create procedural sprite shader
+        if (m_shader.createShader(DefaultProcVertexShaderSrc, fragmentSource))
+        {
+            shaderCreated = true;
+        }
     }
 
-    // Init procedural sprite
-    if (!m_procSprite.init(0.5f, 0.5f))
+    if (!shaderCreated)
     {
-        // Could not init procedural sprite
-        return false;
+        // Create default procedural sprite shader
+        if (!m_shader.createShader(
+            DefaultProcVertexShaderSrc, DefaultProcFragmentShaderSrc))
+        {
+            // Could not create default procedural sprite shader
+            return false;
+        }
     }
 
-    // Game is ready
+    // Reset procedural sprite transformations
+    resetTransforms();
+
+    // Set procedural sprite size
+    setSize(width, height);
+
+    // Center procedural sprite origin (anchor)
+    centerOrigin();
+
+    // Reset procedural sprite color
+    m_color.set(1.0f, 1.0f, 1.0f, 1.0f);
+
+    // Procedural sprite successfully created
     return true;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
-//  Compute game events                                                       //
+//  Destroy procedural sprite                                                 //
 ////////////////////////////////////////////////////////////////////////////////
-void Game::events()
+void ProcSprite::destroyProcSprite()
 {
-    
+    m_color.reset();
+    resetTransforms();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Compute game logic                                                        //
+//  Set procedural sprite color                                               //
 ////////////////////////////////////////////////////////////////////////////////
-void Game::compute(float frametime)
+void ProcSprite::setColor(const Vector4& color)
 {
-    
+    m_color.vec[0] = color.vec[0];
+    m_color.vec[1] = color.vec[1];
+    m_color.vec[2] = color.vec[2];
+    m_color.vec[3] = color.vec[3];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Render game                                                               //
+//  Set procedural sprite color                                               //
 ////////////////////////////////////////////////////////////////////////////////
-void Game::render()
+void ProcSprite::setColor(float red, float green, float blue, float alpha)
 {
-    // Start frame rendering
-    if (!GRenderer.startFrame())
-    {
-        return;
-    }
+    m_color.vec[0] = red;
+    m_color.vec[1] = green;
+    m_color.vec[2] = blue;
+    m_color.vec[3] = alpha;
+}
 
-    // Render procedural sprite
-    m_procSprite.bindShader();
-    m_procSprite.render();
+
+////////////////////////////////////////////////////////////////////////////////
+//  Render procedural sprite                                                  //
+////////////////////////////////////////////////////////////////////////////////
+void ProcSprite::render()
+{
+    // Compute sprite transformations
+    computeTransforms();
 }
