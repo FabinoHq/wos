@@ -130,6 +130,7 @@
         public:
             bool                ready;              // Renderer ready state
             Shader              defaultShader;      // Default renderer shader
+            Shader              defaultProcShader;  // Default proc shader
             VertexBuffer        vertexBuffer;       // Default vertex buffer
             View                view;               // Default view
     };

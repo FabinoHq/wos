@@ -81,37 +81,64 @@
             ////////////////////////////////////////////////////////////////////
             //  Bind shader                                                   //
             ////////////////////////////////////////////////////////////////////
-            void bindShader();
+            inline void bindShader()
+            {
+                glUseProgram(m_shader);
+            }
 
             ////////////////////////////////////////////////////////////////////
             //  Get shader uniform location                                   //
             ////////////////////////////////////////////////////////////////////
-            unsigned int getUniformLocation(const char* uniform);
+            inline unsigned int getUniformLocation(const char* uniform)
+            {
+                return glGetUniformLocation(m_shader, uniform);
+            }
 
             ////////////////////////////////////////////////////////////////////
             //  Set shader uniform value                                      //
             ////////////////////////////////////////////////////////////////////
-            void setUniformValue(unsigned int location, int value);
+            inline void setUniformValue(unsigned int location, int value)
+            {
+                glUniform1iv(location, 1, &value);
+            }
 
             ////////////////////////////////////////////////////////////////////
             //  Set shader uniform vec 2                                      //
             ////////////////////////////////////////////////////////////////////
-            void setUniformVec2(unsigned int location, Vector2& vec);
+            inline void setUniformVec2(unsigned int location, Vector2& vec)
+            {
+                glUniform2fv(location, 1, vec.vec);
+            }
 
             ////////////////////////////////////////////////////////////////////
             //  Set projection matrix                                         //
             ////////////////////////////////////////////////////////////////////
-            void setProjectionMatrix(Matrix4x4& projMatrix);
+            inline void setProjectionMatrix(Matrix4x4& projMatrix)
+            {
+                glUniformMatrix4fv(
+                    m_projMatrixLoc, 1, GL_FALSE, projMatrix.mat
+                );
+            }
 
             ////////////////////////////////////////////////////////////////////
             //  Set view matrix                                               //
             ////////////////////////////////////////////////////////////////////
-            void setViewMatrix(Matrix4x4& viewMatrix);
+            inline void setViewMatrix(Matrix4x4& viewMatrix)
+            {
+                glUniformMatrix4fv(
+                    m_viewMatrixLoc, 1, GL_FALSE, viewMatrix.mat
+                );
+            }
 
             ////////////////////////////////////////////////////////////////////
             //  Set model matrix                                              //
             ////////////////////////////////////////////////////////////////////
-            void setModelMatrix(Matrix4x4& modelMatrix);
+            inline void setModelMatrix(Matrix4x4& modelMatrix)
+            {
+                glUniformMatrix4fv(
+                    m_modelMatrixLoc, 1, GL_FALSE, modelMatrix.mat
+                );
+            }
 
 
         private:

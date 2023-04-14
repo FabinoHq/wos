@@ -116,6 +116,6 @@ void Game::render()
     }
 
     // Render procedural sprite
-    m_procSprite.bindShader();
+    GRenderer.defaultProcShader.bindShader();
     m_procSprite.render();
 }

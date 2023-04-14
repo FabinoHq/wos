@@ -54,6 +54,7 @@ Renderer GRenderer = Renderer();
 Renderer::Renderer() :
 ready(false),
 defaultShader(),
+defaultProcShader(),
 vertexBuffer(),
 view()
 {
@@ -97,6 +98,16 @@ bool Renderer::init()
         return false;
     }
 
+    // Create default procedural shader
+    if (!defaultProcShader.createShader(
+        DefaultVertexShaderSrc, DefaultProcFragmentShaderSrc))
+    {
+        // Unable to create default procedural shader
+        SysMessage::box() << "[0x3002] Unable to create default proc shader\n";
+        SysMessage::box() << "Please update your graphics drivers";
+        return false;
+    }
+
     // Create default vertex buffer
     if (!vertexBuffer.createBuffer())
     {
@@ -129,12 +140,6 @@ bool Renderer::init()
     //glPixelStorei(GL_PACK_ALIGNMENT, 1);
     //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    // Bind default shader
-    defaultShader.bindShader();
-
-    // Bind default view
-    view.bind();
-
     // Clear renderer
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -152,6 +157,12 @@ bool Renderer::startFrame()
 {
     // Clear frame
     glClear(GL_COLOR_BUFFER_BIT);
+
+    // Bind default shader
+    defaultShader.bindShader();
+
+    // Bind default view
+    view.bind();
 
     // Rendering frame is ready
     return true;

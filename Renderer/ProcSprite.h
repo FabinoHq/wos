@@ -77,8 +77,7 @@
             //  Init procedural sprite                                        //
             //  return : True if the proc sprite is successfully created      //
             ////////////////////////////////////////////////////////////////////
-            bool init(float width, float height,
-                const char* fragmentSource = 0);
+            bool init(float width, float height);
 
             ////////////////////////////////////////////////////////////////////
             //  Destroy procedural sprite                                     //
@@ -129,14 +128,6 @@
 
 
             ////////////////////////////////////////////////////////////////////
-            //  Bind procedural sprite shader                                 //
-            ////////////////////////////////////////////////////////////////////
-            inline void bindShader()
-            {
-                m_shader.bindShader();
-            }
-
-            ////////////////////////////////////////////////////////////////////
             //  Render procedural sprite                                      //
             ////////////////////////////////////////////////////////////////////
             void render();
@@ -155,7 +146,6 @@
 
 
         private:
-            Shader              m_shader;           // ProcSprite shader
             Vector4             m_color;            // ProcSprite color
     };
 

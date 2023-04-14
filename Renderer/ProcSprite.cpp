@@ -47,7 +47,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 ProcSprite::ProcSprite() :
 Transform2(),
-m_shader(),
 m_color(1.0f, 1.0f, 1.0f, 1.0f)
 {
 
@@ -66,29 +65,8 @@ ProcSprite::~ProcSprite()
 //  Init procedural sprite                                                    //
 //  return : True if the proc sprite is successfully created                  //
 ////////////////////////////////////////////////////////////////////////////////
-bool ProcSprite::init(float width, float height, const char* fragmentSource)
+bool ProcSprite::init(float width, float height)
 {
-    bool shaderCreated = false;
-    if (fragmentSource)
-    {
-        // Create procedural sprite shader
-        if (m_shader.createShader(DefaultProcVertexShaderSrc, fragmentSource))
-        {
-            shaderCreated = true;
-        }
-    }
-
-    if (!shaderCreated)
-    {
-        // Create default procedural sprite shader
-        if (!m_shader.createShader(
-            DefaultProcVertexShaderSrc, DefaultProcFragmentShaderSrc))
-        {
-            // Could not create default procedural sprite shader
-            return false;
-        }
-    }
-
     // Reset procedural sprite transformations
     resetTransforms();
 
@@ -144,4 +122,7 @@ void ProcSprite::render()
 {
     // Compute sprite transformations
     computeTransforms();
+
+    // Render procedural sprite
+    GRenderer.vertexBuffer.render();
 }

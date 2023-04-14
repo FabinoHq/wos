@@ -44,25 +44,6 @@
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Default procedural vertex shader                                      //
-    ////////////////////////////////////////////////////////////////////////////
-    const char DefaultProcVertexShaderSrc[] =
-    "#version 100\n"
-    "precision highp float;\n"
-    "precision highp int;\n"
-    "attribute vec3 vertexPos;\n"
-    "attribute vec2 vertexColor;\n"
-    "varying vec2 texCoord;\n"
-    "uniform mat4 projMatrix;\n"
-    "uniform mat4 viewMatrix;\n"
-    "uniform mat4 modelMatrix;\n"
-    "void main()\n"
-    "{\n"
-    "    texCoord = vertexColor;\n"
-    "    gl_Position = projMatrix*viewMatrix*modelMatrix*vec4(vertexPos,1.0);\n"
-    "}\n";
-
-    ////////////////////////////////////////////////////////////////////////////
     //  Default procedural fragment shader                                    //
     ////////////////////////////////////////////////////////////////////////////
     const char DefaultProcFragmentShaderSrc[] =
@@ -72,7 +53,7 @@
     "varying vec2 texCoord;\n"
     "void main()\n"
     "{\n"
-    "    gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);\n"
+    "    gl_FragColor = vec4(0.0, 0.0, 0.5, 1.0);\n"
     "}\n";
 
 
