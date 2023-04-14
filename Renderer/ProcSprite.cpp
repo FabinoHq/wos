@@ -123,6 +123,9 @@ void ProcSprite::render()
     // Compute sprite transformations
     computeTransforms();
 
+    // Upload model matrix
+    GRenderer.shader->setModelMatrix(m_matrix);
+
     // Render procedural sprite
     GRenderer.vertexBuffer.render();
 }

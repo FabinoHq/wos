@@ -77,7 +77,7 @@ bool Game::init()
     }
 
     // Init procedural sprite
-    if (!m_procSprite.init(0.5f, 0.5f))
+    if (!m_procSprite.init(1.0f, 1.0f))
     {
         // Could not init procedural sprite
         return false;
@@ -107,6 +107,11 @@ void Game::compute(float frametime)
     // Compute views
     GRenderer.defaultView.compute(ratio);
     m_view.compute(ratio);
+
+    // Compute transformations
+    m_procSprite.setSize(1.0f, 1.0f);
+    m_procSprite.centerOrigin();
+    m_procSprite.rotate(frametime*0.1f);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
