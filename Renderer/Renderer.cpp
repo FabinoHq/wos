@@ -164,9 +164,9 @@ bool Renderer::init()
     );
 
     // Init viewport
-    glViewport(offsetx, offsety, width, height);
+    /*glViewport(offsetx, offsety, width, height);
     glScissor(offsetx, offsety, width, height);
-    glDisable(GL_SCISSOR_TEST);
+    glDisable(GL_SCISSOR_TEST);*/
 
     // Disable back face culling
     glDisable(GL_CULL_FACE);
@@ -232,9 +232,9 @@ bool Renderer::startFrame()
     offsety = static_cast<int>((windowHeight-height)*0.5f);
 
     // Update viewport
-    glViewport(offsetx, offsety, width, height);
+    /*glViewport(offsetx, offsety, width, height);
     glScissor(offsetx, offsety, width, height);
-    glDisable(GL_SCISSOR_TEST);
+    glDisable(GL_SCISSOR_TEST);*/
 
     // Clear frame
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);

@@ -54,12 +54,12 @@
     "attribute vec2 vertexColor;\n"
     "varying vec2 texCoord;\n"
     "uniform mat4 projMatrix;\n"
-    "uniform mat4 viewMatrix;\n"
+    "uniform mat4 projViewMatrix;\n"
     "uniform mat4 modelMatrix;\n"
     "void main()\n"
     "{\n"
     "    texCoord = vertexColor;\n"
-    "    gl_Position = projMatrix*viewMatrix*modelMatrix*vec4(vertexPos,1.0);\n"
+    "    gl_Position = projViewMatrix*modelMatrix*vec4(vertexPos,1.0);\n"
     "}\n";
 
     ////////////////////////////////////////////////////////////////////////////

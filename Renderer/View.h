@@ -95,7 +95,7 @@
             {
                 // Upload matrices
                 shader.setProjectionMatrix(m_projMatrix);
-                shader.setViewMatrix(m_projViewMatrix);
+                shader.setProjViewMatrix(m_projViewMatrix);
             }
 
 

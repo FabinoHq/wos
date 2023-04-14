@@ -48,7 +48,7 @@
 Shader::Shader() :
 m_shader(0),
 m_projMatrixLoc(0),
-m_viewMatrixLoc(0),
+m_projViewMatrixLoc(0),
 m_modelMatrixLoc(0)
 {
 
@@ -163,7 +163,7 @@ bool Shader::createShader(const char* vertexShaderSrc,
 	// Get shader uniforms locations
 	glUseProgram(m_shader);
 	m_projMatrixLoc = glGetUniformLocation(m_shader, "projMatrix");
-	m_viewMatrixLoc = glGetUniformLocation(m_shader, "viewMatrix");
+	m_projViewMatrixLoc = glGetUniformLocation(m_shader, "projViewMatrix");
 	m_modelMatrixLoc = glGetUniformLocation(m_shader, "modelMatrix");
 
 	// Set default identity matrices
@@ -185,7 +185,7 @@ bool Shader::createShader(const char* vertexShaderSrc,
     mat[14] = 0.0f;
     mat[15] = 1.0f;
     glUniformMatrix4fv(m_projMatrixLoc, 1, GL_FALSE, mat);
-    glUniformMatrix4fv(m_viewMatrixLoc, 1, GL_FALSE, mat);
+    glUniformMatrix4fv(m_projViewMatrixLoc, 1, GL_FALSE, mat);
     glUniformMatrix4fv(m_modelMatrixLoc, 1, GL_FALSE, mat);
     glUseProgram(0);
 

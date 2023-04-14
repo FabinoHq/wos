@@ -117,10 +117,10 @@
             ////////////////////////////////////////////////////////////////////
             //  Set view matrix                                               //
             ////////////////////////////////////////////////////////////////////
-            inline void setViewMatrix(Matrix4x4& viewMatrix)
+            inline void setProjViewMatrix(Matrix4x4& projViewMatrix)
             {
                 glUniformMatrix4fv(
-                    m_viewMatrixLoc, 1, GL_FALSE, viewMatrix.mat
+                    m_projViewMatrixLoc, 1, GL_FALSE, projViewMatrix.mat
                 );
             }
 
@@ -150,7 +150,7 @@
         private:
             unsigned int    m_shader;           // Shader handle
             unsigned int    m_projMatrixLoc;    // Projection matrix location
-            unsigned int    m_viewMatrixLoc;    // View matrix location
+            unsigned int    m_projViewMatrixLoc;// ProjView matrix location
             unsigned int    m_modelMatrixLoc;   // Model matrix location
     };
 
