@@ -37,114 +37,149 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Game/Game.cpp : Main game class management                             //
+//     Renderer/Sprite.cpp : Sprite management                                //
 ////////////////////////////////////////////////////////////////////////////////
-#include "Game.h"
+#include "Sprite.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Game default constructor                                                  //
+//  Sprite default constructor                                                //
 ////////////////////////////////////////////////////////////////////////////////
-Game::Game() :
-m_view(),
-m_texture(),
-m_sprite(),
-m_procSprite(),
-m_mouseX(0.0f),
-m_mouseY(0.0f)
+Sprite::Sprite() :
+Transform2(),
+m_texture(0),
+m_color(1.0f, 1.0f, 1.0f, 1.0f),
+m_uvOffset(0.0f, 0.0f),
+m_uvSize(1.0f, 1.0f)
 {
 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Game destructor                                                           //
+//  Sprite virtual destructor                                                 //
 ////////////////////////////////////////////////////////////////////////////////
-Game::~Game()
+Sprite::~Sprite()
 {
-
+    m_uvSize.reset();
+    m_uvOffset.reset();
+    m_color.reset();
+    m_texture = 0;
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Init Game                                                                 //
-//  return : True if game is ready, false otherwise                           //
+//  Init sprite                                                               //
+//  return : True if the sprite is successfully created                       //
 ////////////////////////////////////////////////////////////////////////////////
-bool Game::init()
+bool Sprite::init(Texture& texture, float width, float height)
 {
-    // Init view
-    if (!m_view.init())
+    // Check texture handle
+    if (!texture.isValid())
     {
-        // Could not init view
+        // Invalid texture handle
         return false;
     }
 
-    // Init texture
-    if (!m_texture.createTexture(16, 16, 0))
-    {
-        // Could not init texture
-    }
+    // Reset sprite transformations
+    resetTransforms();
 
-    // Init sprite
-    if (!m_sprite.init(m_texture, 0.5f, 0.5f))
-    {
-        // Could not init sprite
-    }
+    // Set sprite size
+    setSize(width, height);
 
-    // Init procedural sprite
-    if (!m_procSprite.init(1.0f, 1.0f))
-    {
-        // Could not init procedural sprite
-        return false;
-    }
+    // Center sprite origin (anchor)
+    centerOrigin();
 
-    // Game is ready
+    // Set sprite texture pointer
+    m_texture = &texture;
+
+    // Reset sprite color
+    m_color.set(1.0f, 1.0f, 1.0f, 1.0f);
+
+    // Reset sprite UV offset
+    m_uvOffset.reset();
+
+    // Reset sprite UV size
+    m_uvSize.set(1.0f, 1.0f);
+
+    // Sprite successfully created
     return true;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
-//  Compute game events                                                       //
+//  Set sprite texture                                                        //
+//  return : True if sprite texture is successfully set                       //
 ////////////////////////////////////////////////////////////////////////////////
-void Game::events()
+bool Sprite::setTexture(Texture& texture)
 {
-    
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//  Compute game logic                                                        //
-////////////////////////////////////////////////////////////////////////////////
-void Game::compute(float frametime)
-{
-    // Get render ratio
-    float ratio = GRenderer.getRatio();
-
-    // Compute views
-    GRenderer.defaultView.compute(ratio);
-    m_view.compute(ratio);
-
-    // Compute procedural sprite
-    m_procSprite.setSize(ratio*2.0f, 2.0f);
-    m_procSprite.centerOrigin();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//  Render game                                                               //
-////////////////////////////////////////////////////////////////////////////////
-void Game::render()
-{
-    // Start frame rendering
-    if (!GRenderer.startFrame())
+    // Check texture handle
+    if (!texture.isValid())
     {
-        return;
+        // Invalid texture handle
+        return false;
     }
 
-    // Render procedural sprite
-    m_procSprite.bindShader();
-    GRenderer.bindView(GRenderer.defaultView);
-    m_procSprite.render();
+    // Set sprite texture pointer
+    m_texture = &texture;
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Set sprite color                                                          //
+////////////////////////////////////////////////////////////////////////////////
+void Sprite::setColor(const Vector4& color)
+{
+    m_color.vec[0] = color.vec[0];
+    m_color.vec[1] = color.vec[1];
+    m_color.vec[2] = color.vec[2];
+    m_color.vec[3] = color.vec[3];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Set sprite color                                                          //
+////////////////////////////////////////////////////////////////////////////////
+void Sprite::setColor(float red, float green, float blue, float alpha)
+{
+    m_color.vec[0] = red;
+    m_color.vec[1] = green;
+    m_color.vec[2] = blue;
+    m_color.vec[3] = alpha;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//  Set sprite subrectangle                                                   //
+////////////////////////////////////////////////////////////////////////////////
+void Sprite::setSubrect(const Vector2& offset, const Vector2& size)
+{
+    m_uvOffset.vec[0] = offset.vec[0];
+    m_uvOffset.vec[1] = offset.vec[1];
+    m_uvSize.vec[0] = size.vec[0];
+    m_uvSize.vec[1] = size.vec[1];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Set sprite subrectangle                                                   //
+////////////////////////////////////////////////////////////////////////////////
+void Sprite::setSubrect(float uOffset, float vOffset, float uSize, float vSize)
+{
+    m_uvOffset.vec[0] = uOffset;
+    m_uvOffset.vec[1] = vOffset;
+    m_uvSize.vec[0] = uSize;
+    m_uvSize.vec[1] = vSize;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//  Render sprite                                                             //
+////////////////////////////////////////////////////////////////////////////////
+void Sprite::render()
+{
+    // Compute sprite transformations
+    computeTransforms();
+
+    // Upload model matrix
+    GRenderer.shader->setModelMatrix(m_matrix);
 
     // Render sprite
-    GRenderer.bindShader(GRenderer.defaultShader);
-    GRenderer.bindView(GRenderer.defaultView);
-    m_sprite.render();
+    GRenderer.vertexBuffer.render();
 }

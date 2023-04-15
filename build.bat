@@ -18,6 +18,7 @@
     Renderer/VertexBuffer.cpp ^
     Renderer/Texture.cpp ^
     Renderer/View.cpp ^
+    Renderer/Sprite.cpp ^
     Renderer/ProcSprite.cpp ^
     Game/Game.cpp ^
     Wos.cpp ^

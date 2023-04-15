@@ -46,6 +46,8 @@
 
     #include "../Renderer/Renderer.h"
     #include "../Renderer/View.h"
+    #include "../Renderer/Texture.h"
+    #include "../Renderer/Sprite.h"
     #include "../Renderer/ProcSprite.h"
 
 
@@ -104,6 +106,8 @@
         private:
             View            m_view;             // View
 
+            Texture         m_texture;          // Texture
+            Sprite          m_sprite;           // Sprite
             ProcSprite      m_procSprite;       // Procedural sprite
 
             float           m_mouseX;           // Mouse X position

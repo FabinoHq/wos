@@ -141,7 +141,7 @@ void ProcSprite::setColor(float red, float green, float blue, float alpha)
 ////////////////////////////////////////////////////////////////////////////////
 void ProcSprite::render()
 {
-    // Compute sprite transformations
+    // Compute procedural sprite transformations
     computeTransforms();
 
     // Upload model matrix
