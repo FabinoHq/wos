@@ -49,8 +49,7 @@
 int main()
 {
     // Start WOS
-    Wos wos;
-    if (!wos.launch())
+    if (!GWos.launch())
     {
         // WOS error occured
         SysMessage::box().display();

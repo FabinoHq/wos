@@ -109,8 +109,6 @@ void Game::compute(float frametime)
     m_view.compute(ratio);
 
     // Compute transformations
-    m_procSprite.setSize(1.0f, 1.0f);
-    m_procSprite.centerOrigin();
     m_procSprite.rotate(frametime*0.1f);
 }
 
