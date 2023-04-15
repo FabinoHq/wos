@@ -47,6 +47,7 @@
     #include "../Math/Vector4.h"
     #include "../Math/Matrix4x4.h"
     #include "../Math/Transform2.h"
+
     #include "Renderer.h"
     #include "Shader.h"
     #include "Shaders/Default.h"
@@ -77,7 +78,8 @@
             //  Init procedural sprite                                        //
             //  return : True if the proc sprite is successfully created      //
             ////////////////////////////////////////////////////////////////////
-            bool init(float width, float height);
+            bool init(float width, float height,
+                const char* fragmentSource = 0);
 
             ////////////////////////////////////////////////////////////////////
             //  Destroy procedural sprite                                     //
@@ -128,6 +130,14 @@
 
 
             ////////////////////////////////////////////////////////////////////
+            //  Bind procedural sprite shader                                 //
+            ////////////////////////////////////////////////////////////////////
+            inline void bindShader()
+            {
+                GRenderer.bindShader(m_shader);
+            }
+
+            ////////////////////////////////////////////////////////////////////
             //  Render procedural sprite                                      //
             ////////////////////////////////////////////////////////////////////
             void render();
@@ -146,6 +156,7 @@
 
 
         private:
+            Shader              m_shader;           // ProcSprite shader
             Vector4             m_color;            // ProcSprite color
     };
 

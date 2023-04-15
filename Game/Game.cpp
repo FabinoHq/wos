@@ -108,8 +108,9 @@ void Game::compute(float frametime)
     GRenderer.defaultView.compute(ratio);
     m_view.compute(ratio);
 
-    // Compute transformations
-    m_procSprite.rotate(frametime*0.1f);
+    // Compute procedural sprite
+    m_procSprite.setSize(ratio*2.0f, 2.0f);
+    m_procSprite.centerOrigin();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -124,7 +125,7 @@ void Game::render()
     }
 
     // Render procedural sprite
-    GRenderer.bindShader(GRenderer.defaultProcShader);
+    m_procSprite.bindShader();
     GRenderer.bindView(GRenderer.defaultView);
     m_procSprite.render();
 }

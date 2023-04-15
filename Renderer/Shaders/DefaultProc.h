@@ -53,7 +53,7 @@
     "varying vec2 texCoord;\n"
     "void main()\n"
     "{\n"
-    "    gl_FragColor = vec4(0.0, 0.0, 0.5, 1.0);\n"
+    "    gl_FragColor = vec4(0.0, 0.0, 0.2, 1.0);\n"
     "}\n";
 
 

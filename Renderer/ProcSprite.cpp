@@ -65,8 +65,29 @@ ProcSprite::~ProcSprite()
 //  Init procedural sprite                                                    //
 //  return : True if the proc sprite is successfully created                  //
 ////////////////////////////////////////////////////////////////////////////////
-bool ProcSprite::init(float width, float height)
+bool ProcSprite::init(float width, float height, const char* fragmentSource)
 {
+    bool shaderCreated = false;
+    if (fragmentSource)
+    {
+        // Create procedural sprite shader
+        if (m_shader.createShader(DefaultVertexShaderSrc, fragmentSource))
+        {
+            shaderCreated = true;
+        }
+    }
+
+    if (!shaderCreated)
+    {
+        // Create default procedural sprite shader
+        if (!m_shader.createShader(
+            DefaultVertexShaderSrc, DefaultProcFragmentShaderSrc))
+        {
+            // Could not create default procedural sprite shader
+            return false;
+        }
+    }
+
     // Reset procedural sprite transformations
     resetTransforms();
 

@@ -57,7 +57,6 @@
     #include "View.h"
 
     #include "Shaders/Default.h"
-    #include "Shaders/DefaultProc.h"
 
     #include <cstddef>
     #include <cstdint>
@@ -225,7 +224,6 @@
 
             Shader*             shader;             // Current shader
             Shader              defaultShader;      // Default renderer shader
-            Shader              defaultProcShader;  // Default proc shader
             VertexBuffer        vertexBuffer;       // Default vertex buffer
             View                defaultView;        // Default view
     };

@@ -59,7 +59,6 @@ offsetx(0),
 offsety(0),
 shader(0),
 defaultShader(),
-defaultProcShader(),
 vertexBuffer(),
 defaultView()
 {
@@ -142,16 +141,6 @@ bool Renderer::init()
     {
         // Unable to create default shader
         SysMessage::box() << "[0x3002] Unable to create default shader\n";
-        SysMessage::box() << "Please update your graphics drivers";
-        return false;
-    }
-
-    // Create default procedural shader
-    if (!defaultProcShader.createShader(
-        DefaultVertexShaderSrc, DefaultProcFragmentShaderSrc))
-    {
-        // Unable to create default procedural shader
-        SysMessage::box() << "[0x3002] Unable to create default proc shader\n";
         SysMessage::box() << "Please update your graphics drivers";
         return false;
     }
