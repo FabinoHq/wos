@@ -16,6 +16,7 @@
     Renderer/Renderer.cpp ^
     Renderer/Shader.cpp ^
     Renderer/VertexBuffer.cpp ^
+    Renderer/Texture.cpp ^
     Renderer/View.cpp ^
     Renderer/ProcSprite.cpp ^
     Game/Game.cpp ^
