@@ -79,9 +79,16 @@ bool Game::init()
     }
 
     // Init texture
-    if (!m_texture.createTexture(16, 16, 0))
+    const unsigned char rawdata[4*4] = {
+        0xFF, 0x00, 0x00, 0xFF,
+        0x00, 0xFF, 0x00, 0xFF,
+        0x00, 0x00, 0xFF, 0xFF,
+        0x00, 0xFF, 0xFF, 0xFF
+    };
+    if (!m_texture.createTexture(2, 2, rawdata))
     {
         // Could not init texture
+        return false;
     }
 
     // Init sprite
@@ -146,5 +153,6 @@ void Game::render()
     // Render sprite
     GRenderer.bindShader(GRenderer.defaultShader);
     GRenderer.bindView(GRenderer.defaultView);
+    m_sprite.bindTexture();
     m_sprite.render();
 }

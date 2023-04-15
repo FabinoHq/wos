@@ -42,7 +42,10 @@
 #ifndef WOS_RENDERER_TEXTURE_HEADER
 #define WOS_RENDERER_TEXTURE_HEADER
 
+    #include <GLES2/gl2.h>
+
     #include "../System/System.h"
+    #include "../System/SysMessage.h"
     #include "../Math/Math.h"
 
     #include <cstdint>
@@ -97,7 +100,7 @@
             ////////////////////////////////////////////////////////////////////
             inline void bind()
             {
-
+                glBindTexture(GL_TEXTURE_2D, m_handle);
             }
 
             ////////////////////////////////////////////////////////////////////
@@ -112,7 +115,7 @@
             ////////////////////////////////////////////////////////////////////
             inline bool isValid()
             {
-                return false;
+                return m_handle;
             }
 
 
@@ -129,6 +132,7 @@
 
 
         private:
+            unsigned int        m_handle;           // Texture handle
             uint32_t            m_width;            // Texture width
             uint32_t            m_height;           // Texture height
     };

@@ -46,6 +46,7 @@
 //  Texture default constructor                                               //
 ////////////////////////////////////////////////////////////////////////////////
 Texture::Texture() :
+m_handle(0),
 m_width(0),
 m_height(0)
 {
@@ -57,8 +58,7 @@ m_height(0)
 ////////////////////////////////////////////////////////////////////////////////
 Texture::~Texture()
 {
-    m_height = 0;
-    m_width = 0;
+    destroyTexture();
 }
 
 
@@ -71,16 +71,19 @@ bool Texture::createTexture(uint32_t width, uint32_t height,
     bool mipmaps, bool smooth, TextureRepeatMode repeat)
 {
     // Check texture handle
-    /*if (m_handle)
+    if (m_handle)
     {
         // Destroy current texture
-    }*/
+        destroyTexture();
+    }
 
     // Check texture size
     if ((width <= 0) || (width > TextureMaxWidth) ||
         (height <= 0) || (height > TextureMaxHeight))
     {
         // Invalid texture size
+        SysMessage::box() << "[0x300C] Invalid texture size :\n";
+        SysMessage::box() << width << "x" << height << "px";
         return false;
     }
 
@@ -91,6 +94,16 @@ bool Texture::createTexture(uint32_t width, uint32_t height,
         return false;
     }
 
+    // Create texture
+    glGenTextures(1, &m_handle);
+    if (!m_handle)
+    {
+        // Unable to create texture
+        SysMessage::box() << "[0x300D] Unable to create texture\n";
+        SysMessage::box() << "Please update your graphics drivers";
+        return false;
+    }
+
     // Set mip levels
     uint32_t mipLevels = 1;
     if (mipmaps)
@@ -98,6 +111,34 @@ bool Texture::createTexture(uint32_t width, uint32_t height,
         mipLevels = (Math::log2(((width > height) ? width : height)) + 1);
     }
     if (mipLevels <= 1) { mipLevels = 1; }
+
+    // Upload texture data
+    glBindTexture(GL_TEXTURE_2D, m_handle);
+    glTexImage2D(
+        GL_TEXTURE_2D, 0, GL_RGBA, width, height,
+        0, GL_RGBA, GL_UNSIGNED_BYTE, data
+    );
+    if (repeat == TEXTUREMODE_REPEAT)
+    {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    }
+    else
+    {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    }
+    if (smooth)
+    {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    }
+    else
+    {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    }
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     // Set texture size
     m_width = width;
@@ -112,6 +153,8 @@ bool Texture::createTexture(uint32_t width, uint32_t height,
 ////////////////////////////////////////////////////////////////////////////////
 void Texture::destroyTexture()
 {
+    if (m_handle) { glDeleteTextures(1, &m_handle); }
+    m_handle = 0;
     m_height = 0;
     m_width = 0;
 }
