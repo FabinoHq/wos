@@ -79,6 +79,11 @@
 !Renderer/Shaders/Default.h
 !Renderer/Shaders/DefaultProc.h
 
+# Game files
+!Game/
+!Game/Game.h
+!Game/Game.cpp
+
 # Cursors files
 !cursors/
 !cursors/default.png
@@ -96,7 +101,6 @@
 !fonts/
 !fonts/wosfont.otf
 
-# Game files
-!Game/
-!Game/Game.h
-!Game/Game.cpp
+# Textures files
+!textures/
+!textures/testsprite.png
