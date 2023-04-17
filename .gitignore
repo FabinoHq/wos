@@ -44,6 +44,11 @@
 !System/SysWindow.h
 !System/SysWindow.cpp
 
+# Compress
+!Compress/
+!Compress/ZLib.h
+!Compress/ZLib.cpp
+
 # Math
 !Math/
 !Math/Math.h

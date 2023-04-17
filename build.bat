@@ -14,6 +14,7 @@
     System/SysClock.cpp ^
     System/SysThread.cpp ^
     System/SysWindow.cpp ^
+    Compress/ZLib.cpp ^
     Renderer/Renderer.cpp ^
     Renderer/Shader.cpp ^
     Renderer/VertexBuffer.cpp ^
