@@ -273,3 +273,20 @@ bool Renderer::startFrame()
     // Rendering frame is ready
     return true;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+//  End rendering frame                                                       //
+//  return : True if the frame is rendering                                   //
+////////////////////////////////////////////////////////////////////////////////
+bool Renderer::endFrame()
+{
+    // Check renderer state
+    if (!ready)
+    {
+        // Renderer is not ready
+        return false;
+    }
+
+    // Current frame is submitted for rendering
+    return true;
+}

@@ -37,225 +37,210 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Renderer/Renderer.h : Renderer management                              //
+//     Resources/TextureLoader.h : Texture loading management                 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_RENDERER_RENDERER_HEADER
-#define WOS_RENDERER_RENDERER_HEADER
+#ifndef WOS_RESOURCES_TEXTURELOADER_HEADER
+#define WOS_RESOURCES_TEXTURELOADER_HEADER
 
+    #include <emscripten/html5.h>
     #include <GLES2/gl2.h>
 
     #include "../System/System.h"
-    #include "../System/SysMessage.h"
-    #include "../System/SysWindow.h"
+    #include "../System/SysThread.h"
+    #include "../System/SysMutex.h"
 
-    #include "../Math/Math.h"
-    #include "../Math/Vector2.h"
-    #include "../Math/Matrix4x4.h"
+    #include "../Renderer/Renderer.h"
+    #include "../Renderer/Texture.h"
 
-    #include "Shader.h"
-    #include "VertexBuffer.h"
-    #include "View.h"
-
-    #include "Shaders/Default.h"
-
-    #include <cstddef>
     #include <cstdint>
-    #include <vector>
+    #include <new>
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Renderer clear color                                                  //
+    //  TextureLoader settings                                                //
     ////////////////////////////////////////////////////////////////////////////
-    const float RendererClearColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  Renderer compositing plane offset                                     //
-    ////////////////////////////////////////////////////////////////////////////
-    const float RendererCompositingPlaneOffset = 0.00001f;
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  Renderer frame max ratios                                             //
-    ////////////////////////////////////////////////////////////////////////////
-    const bool RendererRatioMaxClamping = true;
-    const float RendererRatioXMax = 2.0f;
-    const float RendererRatioYMax = 0.7f;
+    const uint32_t TextureMaxWidth = 4096;
+    const uint32_t TextureMaxHeight = 4096;
+    const uint32_t TextureMaxLayers = 8;
+    const uint32_t CubeMapMaxWidth = 2048;
+    const uint32_t CubeMapMaxHeight = 2048;
+    const uint32_t TextureMaxSize = (TextureMaxWidth*TextureMaxHeight*4);
+    const uint32_t TextureArrayMaxSize =
+        (TextureMaxWidth*TextureMaxHeight*TextureMaxLayers*4);
+    const uint32_t CubeMapMaxSize = (CubeMapMaxWidth*CubeMapMaxHeight*4*6);
+    const double TextureLoaderIdleSleepTime = 0.01;
+    const double TextureLoaderErrorSleepTime = 0.1;
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Renderer class definition                                             //
+    //  TexturesGUI enumeration                                               //
     ////////////////////////////////////////////////////////////////////////////
-    class Renderer
+    enum TexturesGUI
     {
-        public:
-            ////////////////////////////////////////////////////////////////////
-            //  Renderer default constructor                                  //
-            ////////////////////////////////////////////////////////////////////
-            Renderer();
+        TEXTURE_GUICOUNT = 0
+    };
 
-            ////////////////////////////////////////////////////////////////////
-            //  Renderer destructor                                           //
-            ////////////////////////////////////////////////////////////////////
-            ~Renderer();
+    ////////////////////////////////////////////////////////////////////////////
+    //  TexturesAssets enumeration                                            //
+    ////////////////////////////////////////////////////////////////////////////
+    enum TexturesAssets
+    {
+        TEXTURE_TEST = 0,
 
+        TEXTURE_ASSETSCOUNT = 1
+    };
 
-            ////////////////////////////////////////////////////////////////////
-            //  Init renderer                                                 //
-            //  return : True if the renderer is successfully loaded          //
-            ////////////////////////////////////////////////////////////////////
-            bool init();
+    ////////////////////////////////////////////////////////////////////////////
+    //  TexturesArrays enumeration                                            //
+    ////////////////////////////////////////////////////////////////////////////
+    enum TexturesArrays
+    {
+        TEXTURE_ARRAYSCOUNT = 0
+    };
 
-            ////////////////////////////////////////////////////////////////////
-            //  Start rendering frame                                         //
-            //  return : True if the rendering frame is ready                 //
-            ////////////////////////////////////////////////////////////////////
-            bool startFrame();
-
-            ////////////////////////////////////////////////////////////////////
-            //  End rendering frame                                           //
-            //  return : True if the frame is rendering                       //
-            ////////////////////////////////////////////////////////////////////
-            bool endFrame();
-
-
-            ////////////////////////////////////////////////////////////////////
-            //  Start renderer job                                            //
-            ////////////////////////////////////////////////////////////////////
-            inline void startJob()
-            {
-                emscripten_webgl_make_context_current(GSysWindow.getHandle());
-            }
-
-            ////////////////////////////////////////////////////////////////////
-            //  End renderer job                                              //
-            ////////////////////////////////////////////////////////////////////
-            inline void endJob()
-            {
-
-            }
-
-
-            ////////////////////////////////////////////////////////////////////
-            //  Get renderer ready state                                      //
-            //  return : True if the renderer is ready, false otherwise       //
-            ////////////////////////////////////////////////////////////////////
-            inline bool isReady()
-            {
-                return ready;
-            }
-
-
-            ////////////////////////////////////////////////////////////////////
-            //  Bind renderer shader                                          //
-            ////////////////////////////////////////////////////////////////////
-            inline void bindShader(Shader& newshader)
-            {
-                shader = &newshader;
-                shader->bindShader();
-            }
-
-            ////////////////////////////////////////////////////////////////////
-            //  Bind renderer view                                            //
-            ////////////////////////////////////////////////////////////////////
-            inline void bindView(View& view)
-            {
-                // Upload matrices
-                view.bindView();
-            }
-
-
-            ////////////////////////////////////////////////////////////////////
-            //  Get renderer width                                            //
-            //  return : Renderer width                                       //
-            ////////////////////////////////////////////////////////////////////
-            inline int getWidth()
-            {
-                return width;
-            }
-
-            ////////////////////////////////////////////////////////////////////
-            //  Get renderer height                                           //
-            //  return : Renderer height                                      //
-            ////////////////////////////////////////////////////////////////////
-            inline int getHeight()
-            {
-                return height;
-            }
-
-            ////////////////////////////////////////////////////////////////////
-            //  Get renderer X offset                                         //
-            //  return : Renderer X offset                                    //
-            ////////////////////////////////////////////////////////////////////
-            inline int getOffsetX()
-            {
-                return offsetx;
-            }
-
-            ////////////////////////////////////////////////////////////////////
-            //  Get renderer Y offset                                         //
-            //  return : Renderer Y offset                                    //
-            ////////////////////////////////////////////////////////////////////
-            inline int getOffsetY()
-            {
-                return offsety;
-            }
-
-            ////////////////////////////////////////////////////////////////////
-            //  Get renderer scale                                            //
-            //  return : Renderer scale (1/height)                            //
-            ////////////////////////////////////////////////////////////////////
-            inline float getScale()
-            {
-                if (height > 0.0f)
-                {
-                    return (1.0f/(height*1.0f));
-                }
-                return 1.0f;
-            }
-
-            ////////////////////////////////////////////////////////////////////
-            //  Get renderer aspect ratio                                     //
-            //  return : Renderer aspect ratio                                //
-            ////////////////////////////////////////////////////////////////////
-            inline float getRatio()
-            {
-                if (height > 0)
-                {
-                    return ((width*1.0f)/(height*1.0f));
-                }
-                return 1.0f;
-            }
-
-
-        private:
-            ////////////////////////////////////////////////////////////////////
-            //  Renderer private copy constructor : Not copyable              //
-            ////////////////////////////////////////////////////////////////////
-            Renderer(const Renderer&) = delete;
-
-            ////////////////////////////////////////////////////////////////////
-            //  Renderer private copy operator : Not copyable                 //
-            ////////////////////////////////////////////////////////////////////
-            Renderer& operator=(const Renderer&) = delete;
-
-
-        public:
-            bool                ready;              // Renderer ready state
-            int                 width;              // Renderer width
-            int                 height;             // Renderer height
-            int                 offsetx;            // Renderer X offset
-            int                 offsety;            // Renderer Y offset
-
-            Shader*             shader;             // Current shader
-            Shader              defaultShader;      // Default renderer shader
-            VertexBuffer        vertexBuffer;       // Default vertex buffer
-            View                defaultView;        // Default view
+    ////////////////////////////////////////////////////////////////////////////
+    //  TexturesCubeMaps enumeration                                          //
+    ////////////////////////////////////////////////////////////////////////////
+    enum TexturesCubeMaps
+    {
+        TEXTURE_CUBEMAPCOUNT = 0
     };
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Renderer global instance                                              //
+    //  TextureLoaderState enumeration                                        //
     ////////////////////////////////////////////////////////////////////////////
-    extern Renderer GRenderer;
+    enum TextureLoaderState
+    {
+        TEXTURELOADER_STATE_NONE = 0,
+        TEXTURELOADER_STATE_INIT = 1,
+        TEXTURELOADER_STATE_LOADEMBEDDED = 2,
+
+        TEXTURELOADER_STATE_IDLE = 3,
+        TEXTURELOADER_STATE_PRELOAD = 4,
+        TEXTURELOADER_STATE_LOAD = 5,
+
+        TEXTURELOADER_STATE_ERROR = 6
+    };
 
 
-#endif // WOS_RENDERER_RENDERER_HEADER
+    ////////////////////////////////////////////////////////////////////////////
+    //  TextureLoader class definition                                        //
+    ////////////////////////////////////////////////////////////////////////////
+    class TextureLoader : public SysThread
+    {
+        public:
+            ////////////////////////////////////////////////////////////////////
+            //  TextureLoader default constructor                             //
+            ////////////////////////////////////////////////////////////////////
+            TextureLoader();
+
+            ////////////////////////////////////////////////////////////////////
+            //  TextureLoader virtual destructor                              //
+            ////////////////////////////////////////////////////////////////////
+            virtual ~TextureLoader();
+
+
+            ////////////////////////////////////////////////////////////////////
+            //  TextureLoader thread process                                  //
+            ////////////////////////////////////////////////////////////////////
+            virtual void process();
+
+
+            ////////////////////////////////////////////////////////////////////
+            //  Init TextureLoader                                            //
+            //  return : True if texture loader is ready                      //
+            ////////////////////////////////////////////////////////////////////
+            bool init();
+
+            ////////////////////////////////////////////////////////////////////
+            //  Start preloading textures assets                              //
+            //  return : True if textures assets are preloading               //
+            ////////////////////////////////////////////////////////////////////
+            bool startPreload();
+
+            ////////////////////////////////////////////////////////////////////
+            //  Start loading textures assets                                 //
+            //  return : True if textures assets are loading                  //
+            ////////////////////////////////////////////////////////////////////
+            bool startLoading();
+
+            ////////////////////////////////////////////////////////////////////
+            //  Get texture loader state                                      //
+            //  return : Current texture loader state                         //
+            ////////////////////////////////////////////////////////////////////
+            TextureLoaderState getState();
+
+            ////////////////////////////////////////////////////////////////////
+            //  Get high texture                                              //
+            //  return : high texture                                         //
+            ////////////////////////////////////////////////////////////////////
+            inline Texture& high(TexturesAssets texture)
+            {
+                return m_texturesHigh[texture];
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Destroy texture loader                                        //
+            ////////////////////////////////////////////////////////////////////
+            void destroyTextureLoader();
+
+
+            ////////////////////////////////////////////////////////////////////
+            //  Upload texture to graphics memory                             //
+            //  return : True if texture is successfully uploaded             //
+            ////////////////////////////////////////////////////////////////////
+            bool uploadTexture(unsigned int& handle,
+                uint32_t width, uint32_t height, uint32_t mipLevels,
+                const unsigned char* data,
+                bool smooth, TextureRepeatMode repeat);
+
+            ////////////////////////////////////////////////////////////////////
+            //  Generate texture mipmaps                                      //
+            //  return : True if texture mipmaps are generated                //
+            ////////////////////////////////////////////////////////////////////
+            bool generateTextureMipmaps(unsigned int& handle,
+                uint32_t width, uint32_t height, uint32_t mipLevels);
+
+
+        private:
+            ////////////////////////////////////////////////////////////////////
+            //  Load embedded textures                                        //
+            //  return : True if embedded textures are successfully loaded    //
+            ////////////////////////////////////////////////////////////////////
+            bool loadEmbeddedTextures();
+
+            ////////////////////////////////////////////////////////////////////
+            //  Preload textures assets                                       //
+            //  return : True if textures assets are preloaded                //
+            ////////////////////////////////////////////////////////////////////
+            bool preloadTextures();
+
+            ////////////////////////////////////////////////////////////////////
+            //  Load textures assets                                          //
+            //  return : True if textures assets are loaded                   //
+            ////////////////////////////////////////////////////////////////////
+            bool loadTextures();
+
+
+        private:
+            ////////////////////////////////////////////////////////////////////
+            //  TextureLoader private copy constructor : Not copyable         //
+            ////////////////////////////////////////////////////////////////////
+            TextureLoader(const TextureLoader&) = delete;
+
+            ////////////////////////////////////////////////////////////////////
+            //  TextureLoader private copy operator : Not copyable            //
+            ////////////////////////////////////////////////////////////////////
+            TextureLoader& operator=(const TextureLoader&) = delete;
+
+
+        private:
+            TextureLoaderState      m_state;            // TextureLoader state
+            SysMutex                m_stateMutex;       // State mutex
+
+            Texture*                m_texturesHigh;     // High textures
+    };
+
+
+#endif // WOS_RESOURCES_TEXTURELOADER_HEADER

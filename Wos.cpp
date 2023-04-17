@@ -61,11 +61,12 @@ void WosMainLoop()
 //  Wos default constructor                                                   //
 ////////////////////////////////////////////////////////////////////////////////
 Wos::Wos() :
-m_running(false),
+m_state(WOS_STATE_NONE),
 m_clock(),
 m_frametime(0.0f),
 m_framecount(0.0f),
 m_framerate(0.0f),
+m_timer(0.0f),
 m_game()
 {
 
@@ -107,16 +108,8 @@ bool Wos::launch()
         return false;
     }
 
-    // Init game
-    if (!m_game.init())
-    {
-        // Could not init game
-        return false;
-    }
-
     // Run WOS
     m_clock.reset();
-    m_running = true;
     emscripten_set_main_loop(WosMainLoop, 0, 1);
 
     // WOS successfully terminated
@@ -130,6 +123,7 @@ void Wos::run()
 {
     // Compute average framerate
     float frametime = m_clock.getAndResetF();
+    m_timer += frametime;
     m_frametime += frametime;
     m_framecount += 1.0f;
     if (m_framecount >= 30.0f)
@@ -140,12 +134,78 @@ void Wos::run()
         m_frametime = 0.0f;
     }
 
-    // Compute events
-    m_game.events();
+    switch (m_state)
+    {
+        case WOS_STATE_NONE:
+            // Boot to init state
+            m_timer = 0.0f;
+            m_state = WOS_STATE_INIT;
+            break;
 
-    // Compute logic
-    m_game.compute(frametime);
+        case WOS_STATE_INIT:
+            // Init resources
+            GResources.init();
+            m_state = WOS_STATE_PRELOAD;
+            break;
 
-    // Render frame
-    m_game.render();
+        case WOS_STATE_PRELOAD:
+            if (m_timer >= ResourcesWaitSleepTime)
+            {
+                if (GResources.isInitDone())
+                {
+                    // Preload resources
+                    GResources.preload();
+                    m_state = WOS_STATE_LOAD;
+                }
+                m_timer = 0.0f;
+            }
+            break;
+
+        case WOS_STATE_LOAD:
+            if (m_timer >= ResourcesWaitSleepTime)
+            {
+                if (GResources.isInitDone())
+                {
+                    // Load resources
+                    GResources.startLoading();
+                    m_state = WOS_STATE_WAIT;
+                }
+                m_timer = 0.0f;
+            }
+            break;
+
+        case WOS_STATE_WAIT:
+            if (m_timer >= ResourcesWaitSleepTime)
+            {
+                if (GResources.isLoadingDone())
+                {
+                    // Init game
+                    if (m_game.init())
+                    {
+                        // Run WOS
+                        m_state = WOS_STATE_RUN;
+                    }
+                    else
+                    {
+                        // Could not init game
+                        m_state = WOS_STATE_ERROR;
+                    }
+                }
+                m_timer = 0.0f;
+            }
+            break;
+
+        case WOS_STATE_RUN:
+            // Compute events
+            m_game.events();
+            // Compute logic
+            m_game.compute(frametime);
+            // Render frame
+            m_game.render();
+            break;
+
+        default:
+            // Invalid state
+            break;
+    }
 }

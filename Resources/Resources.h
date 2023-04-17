@@ -37,111 +37,96 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Wos.h : WOS Main class management                                      //
+//     Resources/Resources.h : Resources management                           //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_WOS_HEADER
-#define WOS_WOS_HEADER
+#ifndef WOS_RESOURCES_RESOURCES_HEADER
+#define WOS_RESOURCES_RESOURCES_HEADER
 
-    #include <emscripten/html5.h>
-
-    #include "System/System.h"
-    #include "System/SysMessage.h"
-    #include "System/SysCPU.h"
-    #include "System/SysClock.h"
-    #include "System/SysSleep.h"
-    #include "System/SysWindow.h"
-
-    #include "Renderer/Renderer.h"
-
-    #include "Resources/Resources.h"
-
-    #include "Game/Game.h"
-
-    #include <cstddef>
-    #include <cstdint>
-    #include <new>
+    #include "../System/System.h"
+    #include "../System/SysMessage.h"
+    #include "TextureLoader.h"
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  WosState enumeration                                                  //
+    //  Resources settings                                                    //
     ////////////////////////////////////////////////////////////////////////////
-    enum WosState
-    {
-        WOS_STATE_NONE = 0,
-        WOS_STATE_INIT = 1,
-        WOS_STATE_PRELOAD = 2,
-        WOS_STATE_LOAD = 3,
-        WOS_STATE_WAIT = 4,
-
-        WOS_STATE_RUN = 5,
-
-        WOS_STATE_ERROR = 6
-    };
+    const float ResourcesWaitSleepTime = 0.02f;
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  WOS main loop callback function                                       //
+    //  Resources class definition                                            //
     ////////////////////////////////////////////////////////////////////////////
-    void WosMainLoop();
-
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  WOS main class definition                                             //
-    ////////////////////////////////////////////////////////////////////////////
-    class Wos
+    class Resources
     {
         public:
             ////////////////////////////////////////////////////////////////////
-            //  Wos default constructor                                       //
+            //  Resources default constructor                                 //
             ////////////////////////////////////////////////////////////////////
-            Wos();
+            Resources();
 
             ////////////////////////////////////////////////////////////////////
-            //  Wos destructor                                                //
+            //  Resources destructor                                          //
             ////////////////////////////////////////////////////////////////////
-            ~Wos();
+            ~Resources();
 
 
             ////////////////////////////////////////////////////////////////////
-            //  Launch WOS                                                    //
-            //  return : True if WOS successfully started, false otherwise    //
+            //  Init resources loaders                                        //
+            //  return : True if resources loaders are ready                  //
             ////////////////////////////////////////////////////////////////////
-            bool launch();
+            bool init();
 
             ////////////////////////////////////////////////////////////////////
-            //  Run WOS                                                       //
+            //  Preload resources assets                                      //
+            //  return : True if resources assets are successfully preloaded  //
             ////////////////////////////////////////////////////////////////////
-            void run();
+            bool preload();
+
+            ////////////////////////////////////////////////////////////////////
+            //  Start loading resources assets                                //
+            //  return : True if resources assets are loading                 //
+            ////////////////////////////////////////////////////////////////////
+            bool startLoading();
+
+            ////////////////////////////////////////////////////////////////////
+            //  Get resources init status                                     //
+            //  return : True if resource loader is ready, false otherwise    //
+            ////////////////////////////////////////////////////////////////////
+            bool isInitDone();
+
+            ////////////////////////////////////////////////////////////////////
+            //  Get resources loading status                                  //
+            //  return : True if resources assets are loaded, false otherwise //
+            ////////////////////////////////////////////////////////////////////
+            bool isLoadingDone();
+
+            ////////////////////////////////////////////////////////////////////
+            //  Destroy resources                                             //
+            ////////////////////////////////////////////////////////////////////
+            void destroyResources();
 
 
         private:
             ////////////////////////////////////////////////////////////////////
-            //  Wos private copy constructor : Not copyable                   //
+            //  Resources private copy constructor : Not copyable             //
             ////////////////////////////////////////////////////////////////////
-            Wos(const Wos&) = delete;
+            Resources(const Resources&) = delete;
 
             ////////////////////////////////////////////////////////////////////
-            //  Wos private copy operator : Not copyable                      //
+            //  Resources private copy operator : Not copyable                //
             ////////////////////////////////////////////////////////////////////
-            Wos& operator=(const Wos&) = delete;
+            Resources& operator=(const Resources&) = delete;
 
 
-        private:
-            WosState        m_state;            // WOS state
-            SysClock        m_clock;            // WOS clock
-            float           m_frametime;        // WOS frametime
-            float           m_framecount;       // WOS framecount
-            float           m_framerate;        // WOS framerate
-            float           m_timer;            // WOS timer
-
-            Game            m_game;             // Game instance
+        public:
+            TextureLoader       textures;       // Texture loader
     };
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  WOS global instance                                                   //
+    //  Resources global instance                                             //
     ////////////////////////////////////////////////////////////////////////////
-    extern Wos GWos;
+    extern Resources GResources;
 
 
-#endif // WOS_WOS_HEADER
+#endif // WOS_RESOURCES_RESOURCES_HEADER

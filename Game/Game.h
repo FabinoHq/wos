@@ -50,6 +50,8 @@
     #include "../Renderer/Sprite.h"
     #include "../Renderer/ProcSprite.h"
 
+    #include "../Resources/Resources.h"
+
 
     ////////////////////////////////////////////////////////////////////////////
     //  Game main class definition                                            //
@@ -106,7 +108,6 @@
         private:
             View            m_view;             // View
 
-            Texture         m_texture;          // Texture
             Sprite          m_sprite;           // Sprite
             ProcSprite      m_procSprite;       // Procedural sprite
 

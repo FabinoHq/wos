@@ -47,7 +47,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 Game::Game() :
 m_view(),
-m_texture(),
 m_sprite(),
 m_procSprite(),
 m_mouseX(0.0f),
@@ -78,21 +77,8 @@ bool Game::init()
         return false;
     }
 
-    // Init texture
-    const unsigned char rawdata[4*4] = {
-        0xFF, 0x00, 0x00, 0xFF,
-        0x00, 0xFF, 0x00, 0xFF,
-        0x00, 0x00, 0xFF, 0xFF,
-        0x00, 0xFF, 0xFF, 0xFF
-    };
-    if (!m_texture.createTexture(2, 2, rawdata))
-    {
-        // Could not init texture
-        return false;
-    }
-
     // Init sprite
-    if (!m_sprite.init(m_texture, 0.5f, 0.5f))
+    if (!m_sprite.init(GResources.textures.high(TEXTURE_TEST), 0.5f, 0.5f))
     {
         // Could not init sprite
     }
@@ -153,6 +139,10 @@ void Game::render()
     // Render sprite
     GRenderer.bindShader(GRenderer.defaultShader);
     GRenderer.bindView(GRenderer.defaultView);
+    m_sprite.setTexture(GResources.textures.high(TEXTURE_TEST));
     m_sprite.bindTexture();
     m_sprite.render();
+
+    // End frame rendering
+    GRenderer.endFrame();
 }

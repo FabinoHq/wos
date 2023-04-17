@@ -20,6 +20,7 @@
 !wos.js
 !wos.worker.js
 !wos.wasm
+!wos.data
 
 !main.cpp
 !Wos.h
@@ -78,6 +79,13 @@
 !Renderer/Shaders/
 !Renderer/Shaders/Default.h
 !Renderer/Shaders/DefaultProc.h
+
+# Resources
+!Resources/
+!Resources/Resources.h
+!Resources/Resources.cpp
+!Resources/TextureLoader.h
+!Resources/TextureLoader.cpp
 
 # Game files
 !Game/

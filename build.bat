@@ -8,6 +8,7 @@
     -s USE_WEBGL2=1 -s MAX_WEBGL_VERSION=2 -s OFFSCREENCANVAS_SUPPORT=1 ^
     -s OFFSCREEN_FRAMEBUFFER=1 ^
     -o wos.js ^
+    --use-preload-plugins --preload-file textures ^
     System/SysMessage.cpp ^
     System/SysCPU.cpp ^
     System/SysClock.cpp ^
@@ -20,6 +21,8 @@
     Renderer/View.cpp ^
     Renderer/Sprite.cpp ^
     Renderer/ProcSprite.cpp ^
+    Resources/Resources.cpp ^
+    Resources/TextureLoader.cpp ^
     Game/Game.cpp ^
     Wos.cpp ^
     main.cpp

@@ -37,95 +37,128 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Renderer/Texture.cpp : Texture management                              //
+//     Resources/Resources.cpp : Resources management                         //
 ////////////////////////////////////////////////////////////////////////////////
-#include "Texture.h"
-#include "../Resources/Resources.h"
+#include "Resources.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Texture default constructor                                               //
+//  Resources global instance                                                 //
 ////////////////////////////////////////////////////////////////////////////////
-Texture::Texture() :
-m_handle(0),
-m_width(0),
-m_height(0)
+Resources GResources = Resources();
+
+
+////////////////////////////////////////////////////////////////////////////////
+//  Resources default constructor                                             //
+////////////////////////////////////////////////////////////////////////////////
+Resources::Resources() :
+textures()
 {
 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Texture destructor                                                        //
+//  Resources destructor                                                      //
 ////////////////////////////////////////////////////////////////////////////////
-Texture::~Texture()
+Resources::~Resources()
 {
-    destroyTexture();
+
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Create texture                                                            //
-//  return : True if texture is successfully created                          //
+//  Init resources loaders                                                    //
+//  return : True if resources loaders starting                               //
 ////////////////////////////////////////////////////////////////////////////////
-bool Texture::createTexture(uint32_t width, uint32_t height,
-    const unsigned char* data,
-    bool mipmaps, bool smooth, TextureRepeatMode repeat)
+bool Resources::init()
 {
-    // Check texture handle
-    if (m_handle)
-    {
-        // Destroy current texture
-        destroyTexture();
-    }
+    // Start texture loader thread
+    textures.start();
 
-    // Check texture size
-    if ((width <= 0) || (width > TextureMaxWidth) ||
-        (height <= 0) || (height > TextureMaxHeight))
-    {
-        // Invalid texture size
-        SysMessage::box() << "[0x300C] Invalid texture size :\n";
-        SysMessage::box() << width << "x" << height << "px";
-        return false;
-    }
-
-    // Check texture data
-    if (!data)
-    {
-        // Invalid texture data
-        return false;
-    }
-
-    // Set mip levels
-    uint32_t mipLevels = 1;
-    if (mipmaps)
-    {
-        mipLevels = (Math::log2(((width > height) ? width : height)) + 1);
-    }
-    if (mipLevels <= 1) { mipLevels = 1; }
-
-    // Upload texture to graphics memory
-    if (!GResources.textures.uploadTexture(
-        m_handle, width, height, mipLevels, data, smooth, repeat))
-    {
-        // Could not upload texture to graphics memory
-        return false;
-    }
-
-    // Set texture size
-    m_width = width;
-    m_height = height;
-
-    // Texture successfully created
+    // Resources loaders are starting
     return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Destroy texture                                                           //
+//  Preload resources assets                                                  //
+//  return : True if resources assets are preloading                          //
 ////////////////////////////////////////////////////////////////////////////////
-void Texture::destroyTexture()
+bool Resources::preload()
 {
-    if (m_handle) { glDeleteTextures(1, &m_handle); }
-    m_handle = 0;
-    m_height = 0;
-    m_width = 0;
+    // Start texture preloading
+    textures.startPreload();
+
+    // Resources assets are preloading
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Start loading resources assets                                            //
+//  return : True if resources assets are loading                             //
+////////////////////////////////////////////////////////////////////////////////
+bool Resources::startLoading()
+{
+    // Start textures assets loading
+    if (!textures.startLoading())
+    {
+        // Could not start textures loading
+        SysMessage::box() << "[0x4002] Could not start textures loader\n";
+        SysMessage::box() << "Please check your resources files";
+        return false;
+    }
+
+    // Resources assets are loading
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Get resources init status                                                 //
+//  return : True if resource loader is ready, false otherwise                //
+////////////////////////////////////////////////////////////////////////////////
+bool Resources::isInitDone()
+{
+    // Get resources loader states
+    TextureLoaderState textureState = textures.getState();
+
+    // Check resources loader states
+    if (textureState == TEXTURELOADER_STATE_IDLE)
+    {
+        // Resources loaders are ready
+        return true;
+    }
+
+    // Resources assets are not ready, or an error occured
+    return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Get resources loading status                                              //
+//  return : True if resources assets are loaded, false otherwise             //
+////////////////////////////////////////////////////////////////////////////////
+bool Resources::isLoadingDone()
+{
+    // Get resources loader states
+    TextureLoaderState textureState = textures.getState();
+
+    // Check resources loader states
+    if (textureState == TEXTURELOADER_STATE_IDLE)
+    {
+        // Resources assets are loaded
+        return true;
+    }
+
+    // Resources assets are still loading, or an error occured
+    return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Destroy resources                                                         //
+////////////////////////////////////////////////////////////////////////////////
+void Resources::destroyResources()
+{
+    // Stop texture loader thread
+    textures.stop();
+
+    // Destroy texture loader
+    textures.destroyTextureLoader();
 }
