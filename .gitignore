@@ -63,6 +63,11 @@
 !Math/Transform2.h
 !Math/Transform3.h
 
+# Images
+!Images/
+!Images/PNGFile.h
+!Images/PNGFile.cpp
+
 # Renderer
 !Renderer/
 !Renderer/Renderer.h

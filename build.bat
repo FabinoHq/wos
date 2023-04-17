@@ -15,6 +15,7 @@
     System/SysThread.cpp ^
     System/SysWindow.cpp ^
     Compress/ZLib.cpp ^
+    Images/PNGFile.cpp ^
     Renderer/Renderer.cpp ^
     Renderer/Shader.cpp ^
     Renderer/VertexBuffer.cpp ^
