@@ -89,13 +89,16 @@ bool Renderer::init()
     ready = false;
 
     // Check SysWindow
-    /*if (!GSysWindow.isValid())
+    if (!GSysWindow.isValid())
     {
         // Invalid SysWindow
         SysMessage::box() << "[0x3001] Invalid system window\n";
         SysMessage::box() << "System window must be valid";
         return false;
-    }*/
+    }
+
+    // Set current thread as current context
+    GSysWindow.setThread();
 
     // Set renderer size
     width = GSysWindow.getWidth();
@@ -206,6 +209,7 @@ bool Renderer::init()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Renderer successfully loaded
+    GSysWindow.releaseThread();
     ready = true;
     return true;
 }
@@ -217,6 +221,9 @@ bool Renderer::init()
 ////////////////////////////////////////////////////////////////////////////////
 bool Renderer::startFrame()
 {
+    // Set current thread as current context
+    GSysWindow.setThread();
+
     // Set renderer size
     GSysWindow.update();
     width = GSysWindow.getWidth();
@@ -286,6 +293,9 @@ bool Renderer::endFrame()
         // Renderer is not ready
         return false;
     }
+
+    // Release current thread from current context
+    GSysWindow.releaseThread();
 
     // Current frame is submitted for rendering
     return true;

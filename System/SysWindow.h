@@ -45,6 +45,7 @@
     #include <emscripten/html5.h>
 
     #include "System.h"
+    #include "SysMutex.h"
     #include "SysSleep.h"
     #include "SysMessage.h"
 
@@ -73,9 +74,33 @@
             bool create();
 
             ////////////////////////////////////////////////////////////////////
+            //  Close the window                                              //
+            ////////////////////////////////////////////////////////////////////
+            void close();
+
+            ////////////////////////////////////////////////////////////////////
             //  Update window                                                 //
             ////////////////////////////////////////////////////////////////////
             void update();
+
+
+            ////////////////////////////////////////////////////////////////////
+            //  Set current thread as current context                         //
+            ////////////////////////////////////////////////////////////////////
+            inline void setThread()
+            {
+                m_mutex.lock();
+                emscripten_webgl_make_context_current(m_handle);
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Release current thread from current context                   //
+            ////////////////////////////////////////////////////////////////////
+            inline void releaseThread()
+            {
+                emscripten_webgl_make_context_current(0);
+                m_mutex.unlock();
+            }
 
 
             ////////////////////////////////////////////////////////////////////
@@ -83,6 +108,15 @@
             //  return : Reference to the window handle                       //
             ////////////////////////////////////////////////////////////////////
             inline EMSCRIPTEN_WEBGL_CONTEXT_HANDLE& getHandle()
+            {
+                return m_handle;
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Check if the window has a valid handle                        //
+            //  return : True if the window is valid                          //
+            ////////////////////////////////////////////////////////////////////
+            inline bool isValid() const
             {
                 return m_handle;
             }
@@ -120,6 +154,7 @@
 
         private:
             EMSCRIPTEN_WEBGL_CONTEXT_HANDLE     m_handle;       // Handle
+            SysMutex                            m_mutex;        // Mutex
             int                                 m_width;        // Width
             int                                 m_height;       // Height
     };

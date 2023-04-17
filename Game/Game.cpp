@@ -70,10 +70,14 @@ Game::~Game()
 ////////////////////////////////////////////////////////////////////////////////
 bool Game::init()
 {
+    // Set current thread as current context
+    GSysWindow.setThread();
+
     // Init view
     if (!m_view.init())
     {
         // Could not init view
+        GSysWindow.releaseThread();
         return false;
     }
 
@@ -81,16 +85,20 @@ bool Game::init()
     if (!m_sprite.init(GResources.textures.high(TEXTURE_TEST), 0.5f, 0.5f))
     {
         // Could not init sprite
+        GSysWindow.releaseThread();
+        return false;
     }
 
     // Init procedural sprite
     if (!m_procSprite.init(1.0f, 1.0f))
     {
         // Could not init procedural sprite
+        GSysWindow.releaseThread();
         return false;
     }
 
     // Game is ready
+    GSysWindow.releaseThread();
     return true;
 }
 

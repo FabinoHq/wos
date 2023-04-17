@@ -67,7 +67,8 @@ EM_JS(int, SysGetWindowHeight, (), {
 //  SysWindow default constructor                                             //
 ////////////////////////////////////////////////////////////////////////////////
 SysWindow::SysWindow() :
-m_handle(),
+m_handle(0),
+m_mutex(),
 m_width(1),
 m_height(1)
 {
@@ -79,8 +80,9 @@ m_height(1)
 ////////////////////////////////////////////////////////////////////////////////
 SysWindow::~SysWindow()
 {
-    m_width = 0;
     m_height = 0;
+    m_width = 0;
+    m_handle = 0;
 }
 
 
@@ -90,19 +92,44 @@ SysWindow::~SysWindow()
 ////////////////////////////////////////////////////////////////////////////////
 bool SysWindow::create()
 {
+    m_mutex.lock();
+
     // Set window attributes
     EmscriptenWebGLContextAttributes attributes;
     emscripten_webgl_init_context_attributes(&attributes);
-    attributes.alpha = 0;
-    attributes.depth = 0;
-    attributes.stencil = 0;
-    attributes.antialias = 0;
-    attributes.preserveDrawingBuffer = 0;
-    attributes.failIfMajorPerformanceCaveat = 0;
+    attributes.alpha = EM_FALSE;
+    attributes.depth = EM_FALSE;
+    attributes.stencil = EM_FALSE;
+    attributes.antialias = EM_FALSE;
+    attributes.premultipliedAlpha = EM_TRUE;
+    attributes.preserveDrawingBuffer = EM_FALSE;
+    attributes.powerPreference = EM_WEBGL_POWER_PREFERENCE_HIGH_PERFORMANCE;
+    attributes.failIfMajorPerformanceCaveat = EM_FALSE;
+    attributes.majorVersion = 1;
+    attributes.minorVersion = 0;
+    attributes.enableExtensionsByDefault = EM_TRUE;
+    attributes.explicitSwapControl = EM_FALSE;
+    attributes.renderViaOffscreenBackBuffer = EM_FALSE;
+    attributes.proxyContextToMainThread =
+        EMSCRIPTEN_WEBGL_CONTEXT_PROXY_DISALLOW;
 
     // Init window
     m_handle = emscripten_webgl_create_context("#woscreen", &attributes);
     emscripten_webgl_make_context_current(m_handle);
+    if (!m_handle)
+    {
+        // Invalid window handle
+        m_mutex.unlock();
+        return false;
+    }
+
+    // Check supported features
+    if (!emscripten_supports_offscreencanvas())
+    {
+        // Offscreen canvas not supported
+        m_mutex.unlock();
+        return false;
+    }
 
     // Update window size
     m_width = SysGetWindowWidth();
@@ -110,7 +137,23 @@ bool SysWindow::create()
     emscripten_set_canvas_element_size("#woscreen", m_width, m_height);
 
     // System window successfully created
+    m_mutex.unlock();
     return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Close the window                                                          //
+////////////////////////////////////////////////////////////////////////////////
+void SysWindow::close()
+{
+    if (m_handle)
+    {
+        // Destroy the window
+        emscripten_webgl_destroy_context(m_handle);
+    }
+    m_handle = 0;
+    m_height = 0;
+    m_width = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

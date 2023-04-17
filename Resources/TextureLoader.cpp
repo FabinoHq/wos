@@ -264,6 +264,9 @@ bool TextureLoader::uploadTexture(unsigned int& handle,
     uint32_t width, uint32_t height, uint32_t mipLevels,
     const unsigned char* data, bool smooth, TextureRepeatMode repeat)
 {
+    // Set current thread as current context
+    GSysWindow.setThread();
+
     // Create texture
     glGenTextures(1, &handle);
     if (!handle)
@@ -310,6 +313,7 @@ bool TextureLoader::uploadTexture(unsigned int& handle,
     }
 
     // Texture successfully uploaded
+    GSysWindow.releaseThread();
     return true;
 }
 
