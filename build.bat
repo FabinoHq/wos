@@ -6,6 +6,7 @@
     -ffunction-sections -fno-trapping-math -fno-math-errno -fno-signed-zeros ^
     -W -Wall -pthread -lGL -s WASM=1 -s USE_PTHREADS=1 -s MAX_WEBGL_VERSION=2 ^
     -s OFFSCREENCANVAS_SUPPORT=1 -s OFFSCREEN_FRAMEBUFFER=1 ^
+    -s DYNAMIC_EXECUTION=0 ^
     -o wos.js ^
     --use-preload-plugins --preload-file textures ^
     System/SysMessage.cpp ^
