@@ -159,10 +159,10 @@
             bool loadImage(const std::string& filepath);
 
             ////////////////////////////////////////////////////////////////////
-            //  Load PNG file                                                 //
-            //  return : True if PNG file is successfully loaded              //
+            //  Load PNG buffer                                               //
+            //  return : True if PNG buffer is successfully loaded            //
             ////////////////////////////////////////////////////////////////////
-            bool loadImage(unsigned char* image, size_t size);
+            bool loadImage(unsigned char* buffer, size_t size);
 
             ////////////////////////////////////////////////////////////////////
             //  Save PNG file                                                 //
@@ -243,10 +243,10 @@
                 PNGFileIHDRChunk& pngIHDRChunk);
 
             ////////////////////////////////////////////////////////////////////
-            //  Load PNG file image data                                      //
-            //  return : True if PNG file image data is successfully loaded   //
+            //  Load PNG buffer image data                                    //
+            //  return : True if PNG buffer image data is successfully loaded //
             ////////////////////////////////////////////////////////////////////
-            bool loadPNGData(unsigned char* image, size_t size,
+            bool loadPNGData(unsigned char* bufferEnd,
                 PNGFileIHDRChunk& pngIHDRChunk);
 
             ////////////////////////////////////////////////////////////////////
@@ -315,7 +315,7 @@
 
         private:
             bool                m_loaded;       // Image loaded state
-            unsigned char*      m_buffer;       // Image loading buffer
+            unsigned char*      m_buffer;       // Image buffer
             unsigned char*      m_image;        // Image data
             uint32_t            m_width;        // Image width
             uint32_t            m_height;       // Image height

@@ -281,10 +281,10 @@ bool PNGFile::loadImage(const std::string& filepath)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Load PNG file                                                             //
-//  return : True if PNG file is successfully loaded                          //
+//  Load PNG buffer                                                           //
+//  return : True if PNG buffer is successfully loaded                        //
 ////////////////////////////////////////////////////////////////////////////////
-bool PNGFile::loadImage(unsigned char* image, size_t size)
+bool PNGFile::loadImage(unsigned char* buffer, size_t size)
 {
     // Check image loaded state
     if (m_loaded)
@@ -294,18 +294,19 @@ bool PNGFile::loadImage(unsigned char* image, size_t size)
     }
 
     // Check image data
-    if (!image || (size <= 0))
+    if (!buffer || (size <= 0))
     {
         // Invalid image data
         return false;
     }
 
     // Reset image cursor
-    m_buffer = image;
+    m_buffer = buffer;
+    unsigned char* bufferEnd = (m_buffer+size);
 
     // Read PNG file signature
     unsigned char pngSignature[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-    if ((m_buffer+8) >= (image+size))
+    if ((m_buffer+8) >= bufferEnd)
     {
         // Could not read PNG file signature
         return false;
@@ -329,7 +330,7 @@ bool PNGFile::loadImage(unsigned char* image, size_t size)
 
     // Read PNG file IHDR chunk header
     PNGFileChunkHeader pngIHDRChunkHeader = {0, {0, 0, 0, 0}};
-    if ((m_buffer+PNGFileChunkHeaderSize) >= (image+size))
+    if ((m_buffer+PNGFileChunkHeaderSize) >= bufferEnd)
     {
         // Could not read PNG file IHDR chunk header
         return false;
@@ -357,7 +358,7 @@ bool PNGFile::loadImage(unsigned char* image, size_t size)
 
     // Read PNG file IHDR chunk
     PNGFileIHDRChunk pngIHDRChunk = {0, 0, 0, 0, 0, 0, 0};
-    if ((m_buffer+PNGFileIHDRChunkSize) >= (image+size))
+    if ((m_buffer+PNGFileIHDRChunkSize) >= bufferEnd)
     {
         // Could not read PNG file IHDR chunk
         return false;
@@ -367,7 +368,7 @@ bool PNGFile::loadImage(unsigned char* image, size_t size)
 
     // Read PNG file IHDR chunk CRC
     uint32_t pngIHDRChunkCRC = 0;
-    if ((m_buffer+PNGFileChunkCRCSize) >= (image+size))
+    if ((m_buffer+PNGFileChunkCRCSize) >= bufferEnd)
     {
         // Could not read PNG file IHDR chunk CRC
         return false;
@@ -431,14 +432,14 @@ bool PNGFile::loadImage(unsigned char* image, size_t size)
         return false;
     }
 
-    // Load PNG file image data
-    if (!loadPNGData(image, size, pngIHDRChunk))
+    // Load PNG buffer image data
+    if (!loadPNGData(bufferEnd, pngIHDRChunk))
     {
         // Could not load PNG image data
         return false;
     }
 
-    // PNG file is successfully loaded
+    // PNG buffer is successfully loaded
     m_loaded = true;
     return true;
 }
@@ -479,6 +480,7 @@ void PNGFile::destroyImage()
     m_image = 0;
     m_height = 0;
     m_width = 0;
+    m_buffer = 0;
     m_loaded = false;
 }
 
@@ -667,9 +669,7 @@ bool PNGFile::loadPNGData(std::ifstream& pngFile,
             // Could not read PNG file chunk header
             break;
         }
-        pngIDATChunkHeader.length = SysByteSwap32(
-            pngIDATChunkHeader.length
-        );
+        pngIDATChunkHeader.length = SysByteSwap32(pngIDATChunkHeader.length);
         if ((pngIDATChunkHeader.type[0] == PNGFileIDATChunkType[0]) &&
             (pngIDATChunkHeader.type[1] == PNGFileIDATChunkType[1]) &&
             (pngIDATChunkHeader.type[2] == PNGFileIDATChunkType[2]) &&
@@ -714,9 +714,7 @@ bool PNGFile::loadPNGData(std::ifstream& pngFile,
             if (rawData) { delete[] rawData; }
             return false;
         }
-        pngIDATChunkHeader.length = SysByteSwap32(
-            pngIDATChunkHeader.length
-        );
+        pngIDATChunkHeader.length = SysByteSwap32(pngIDATChunkHeader.length);
         if ((pngIDATChunkHeader.type[0] != PNGFileIDATChunkType[0]) ||
             (pngIDATChunkHeader.type[1] != PNGFileIDATChunkType[1]) ||
             (pngIDATChunkHeader.type[2] != PNGFileIDATChunkType[2]) ||
@@ -887,10 +885,10 @@ bool PNGFile::loadPNGData(std::ifstream& pngFile,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Load PNG file image data                                                  //
-//  return : True if PNG file image data is successfully loaded               //
+//  Load PNG buffer image data                                                //
+//  return : True if PNG buffer image data is successfully loaded             //
 ////////////////////////////////////////////////////////////////////////////////
-bool PNGFile::loadPNGData(unsigned char* image, size_t size,
+bool PNGFile::loadPNGData(unsigned char* bufferEnd,
     PNGFileIHDRChunk& pngIHDRChunk)
 {
     // Set pixel depth
@@ -922,10 +920,10 @@ bool PNGFile::loadPNGData(unsigned char* image, size_t size,
     size_t pngIDATChunksLength = 0;
     unsigned int pngIDATChunksCount = 0;
     PNGFileChunkHeader pngIDATChunkHeader;
-    while (m_buffer < (image+size))
+    while (m_buffer < bufferEnd)
     {
         pngIDATChunkHeader = {0, {0, 0, 0, 0}};
-        if ((m_buffer+PNGFileChunkHeaderSize) >= (image+size))
+        if ((m_buffer+PNGFileChunkHeaderSize) >= bufferEnd)
         {
             // Could not read PNG file chunk header
             break;
@@ -972,7 +970,7 @@ bool PNGFile::loadPNGData(unsigned char* image, size_t size,
     for (unsigned int i = 0; i < pngIDATChunksCount;)
     {
         pngIDATChunkHeader = {0, {0, 0, 0, 0}};
-        if ((m_buffer+PNGFileChunkHeaderSize) >= (image+size))
+        if ((m_buffer+PNGFileChunkHeaderSize) >= bufferEnd)
         {
             // Could not read PNG file chunk header
             if (rawData) { delete[] rawData; }
@@ -995,7 +993,7 @@ bool PNGFile::loadPNGData(unsigned char* image, size_t size,
         else
         {
             // Read PNG file raw image data
-            if ((m_buffer+pngIDATChunkHeader.length) >= (image+size))
+            if ((m_buffer+pngIDATChunkHeader.length) >= bufferEnd)
             {
                 // Could not read PNG raw image data
                 if (rawData) { delete[] rawData; }
@@ -1009,7 +1007,7 @@ bool PNGFile::loadPNGData(unsigned char* image, size_t size,
 
             // Read PNG file IDAT chunk CRC
             uint32_t pngIDATChunkCRC = 0;
-            if ((m_buffer+PNGFileChunkCRCSize) >= (image+size))
+            if ((m_buffer+PNGFileChunkCRCSize) >= bufferEnd)
             {
                 // Could not read PNG file IDAT chunk CRC
                 if (rawData) { delete[] rawData; }
@@ -1152,7 +1150,7 @@ bool PNGFile::loadPNGData(unsigned char* image, size_t size,
     m_width = pngIHDRChunk.width;
     m_height = pngIHDRChunk.height;
 
-    // PNG file image data is successfully loaded
+    // PNG buffer image data is successfully loaded
     return true;
 }
 
