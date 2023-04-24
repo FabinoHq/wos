@@ -37,7 +37,7 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Images/PNGFile.g : PNGFile image management                            //
+//     Images/PNGFile.h : PNGFile image management                            //
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef WOS_IMAGES_PNGFILE_HEADER
 #define WOS_IMAGES_PNGFILE_HEADER
@@ -246,7 +246,7 @@
             //  Load PNG buffer image data                                    //
             //  return : True if PNG buffer image data is successfully loaded //
             ////////////////////////////////////////////////////////////////////
-            bool loadPNGData(unsigned char* bufferEnd,
+            bool loadPNGData(unsigned char* buffer, unsigned char* bufferEnd,
                 PNGFileIHDRChunk& pngIHDRChunk);
 
             ////////////////////////////////////////////////////////////////////
@@ -315,7 +315,6 @@
 
         private:
             bool                m_loaded;       // Image loaded state
-            unsigned char*      m_buffer;       // Image buffer
             unsigned char*      m_image;        // Image data
             uint32_t            m_width;        // Image width
             uint32_t            m_height;       // Image height
