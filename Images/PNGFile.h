@@ -52,7 +52,6 @@
     #include <cstring>
     #include <string>
     #include <fstream>
-    #include <sstream>  // Todo : Remove stringstream
     #include <new>
 
 
@@ -247,7 +246,7 @@
             //  Load PNG file image data                                      //
             //  return : True if PNG file image data is successfully loaded   //
             ////////////////////////////////////////////////////////////////////
-            bool loadPNGData(std::stringstream& pngFile,
+            bool loadPNGData(unsigned char* image, size_t size,
                 PNGFileIHDRChunk& pngIHDRChunk);
 
             ////////////////////////////////////////////////////////////////////
@@ -316,6 +315,7 @@
 
         private:
             bool                m_loaded;       // Image loaded state
+            unsigned char*      m_buffer;       // Image loading buffer
             unsigned char*      m_image;        // Image data
             uint32_t            m_width;        // Image width
             uint32_t            m_height;       // Image height

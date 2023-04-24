@@ -20,7 +20,6 @@
 !wos.js
 !wos.worker.js
 !wos.wasm
-!wos.data
 
 !main.cpp
 !Wos.h
