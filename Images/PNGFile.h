@@ -52,6 +52,7 @@
     #include <cstring>
     #include <string>
     #include <fstream>
+    #include <sstream>  // Todo : Remove stringstream
     #include <new>
 
 
@@ -159,6 +160,12 @@
             bool loadImage(const std::string& filepath);
 
             ////////////////////////////////////////////////////////////////////
+            //  Load PNG file                                                 //
+            //  return : True if PNG file is successfully loaded              //
+            ////////////////////////////////////////////////////////////////////
+            bool loadImage(unsigned char* image, size_t size);
+
+            ////////////////////////////////////////////////////////////////////
             //  Save PNG file                                                 //
             //  return : True if PNG file is successfully saved               //
             ////////////////////////////////////////////////////////////////////
@@ -234,6 +241,13 @@
             //  return : True if PNG file image data is successfully loaded   //
             ////////////////////////////////////////////////////////////////////
             bool loadPNGData(std::ifstream& pngFile,
+                PNGFileIHDRChunk& pngIHDRChunk);
+
+            ////////////////////////////////////////////////////////////////////
+            //  Load PNG file image data                                      //
+            //  return : True if PNG file image data is successfully loaded   //
+            ////////////////////////////////////////////////////////////////////
+            bool loadPNGData(std::stringstream& pngFile,
                 PNGFileIHDRChunk& pngIHDRChunk);
 
             ////////////////////////////////////////////////////////////////////

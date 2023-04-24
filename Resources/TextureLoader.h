@@ -52,6 +52,8 @@
     #include "../Renderer/Renderer.h"
     #include "../Renderer/Texture.h"
 
+    #include "../Images/PNGFile.h"
+
     #include <cstdint>
     #include <new>
 
@@ -201,6 +203,17 @@
             ////////////////////////////////////////////////////////////////////
             bool generateTextureMipmaps(unsigned int& handle,
                 uint32_t width, uint32_t height, uint32_t mipLevels);
+
+
+            ////////////////////////////////////////////////////////////////////
+            //  Texture loaded callback function                              //
+            ////////////////////////////////////////////////////////////////////
+            void onTextureLoaded(void* arg, void* buffer, int size);
+
+            ////////////////////////////////////////////////////////////////////
+            //  Texture error callback function                               //
+            ////////////////////////////////////////////////////////////////////
+            void onTextureError(void* arg);
 
 
         private:

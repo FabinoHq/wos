@@ -40,6 +40,24 @@
 //     Resources/TextureLoader.cpp : Texture loading management               //
 ////////////////////////////////////////////////////////////////////////////////
 #include "TextureLoader.h"
+#include "Resources.h"
+
+
+////////////////////////////////////////////////////////////////////////////////
+//  Texture loaded generic callback function                                  //
+////////////////////////////////////////////////////////////////////////////////
+inline void OnTextureLoaded(void* arg, void* buffer, int size)
+{
+    GResources.textures.onTextureLoaded(arg, buffer, size);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Texture error generic callback function                                   //
+////////////////////////////////////////////////////////////////////////////////
+inline void OnTextureError(void* arg)
+{
+    GResources.textures.onTextureError(arg);
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -337,6 +355,36 @@ bool TextureLoader::generateTextureMipmaps(unsigned int& handle,
 
 
 ////////////////////////////////////////////////////////////////////////////////
+//  Texture loaded callback function                                          //
+////////////////////////////////////////////////////////////////////////////////
+void TextureLoader::onTextureLoaded(void* arg, void* buffer, int size)
+{
+    // Load texture
+    PNGFile pngfile;
+    if (!pngfile.loadImage((unsigned char*)buffer, size))
+    {
+        return;
+    }
+    if (!m_texturesHigh[TEXTURE_TEST].createTexture(
+        pngfile.getWidth(), pngfile.getHeight(), pngfile.getImage(),
+        false, false, TEXTUREMODE_CLAMP))
+    {
+        // Could not load texture
+        return;
+    }
+    pngfile.destroyImage();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Texture error callback function                                           //
+////////////////////////////////////////////////////////////////////////////////
+void TextureLoader::onTextureError(void* arg)
+{
+
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 //  Load embedded textures                                                    //
 //  return : True if embedded textures are successfully loaded                //
 ////////////////////////////////////////////////////////////////////////////////
@@ -353,20 +401,10 @@ bool TextureLoader::loadEmbeddedTextures()
 bool TextureLoader::preloadTextures()
 {
     // Load test texture
-    unsigned char* rawdata = 0;
-    int width = 0;
-    int height = 0;
-    rawdata = (unsigned char*)emscripten_get_preloaded_image_data(
-        "textures/testsprite.png", &width, &height
+    emscripten_async_wget_data(
+        "textures/testsprite.png", (void*)TEXTURE_TEST,
+        OnTextureLoaded, OnTextureError
     );
-    if (!m_texturesHigh[TEXTURE_TEST].createTexture(
-        width, height, rawdata, false, false, TEXTUREMODE_CLAMP))
-    {
-        // Could not load test texture
-        return false;
-    }
-    if (rawdata) { delete[] rawdata; }
-    rawdata = 0;
 
     // Textures assets are successfully preloaded
     return true;

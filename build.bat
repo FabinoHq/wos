@@ -8,7 +8,6 @@
     -s OFFSCREENCANVAS_SUPPORT=1 -s OFFSCREEN_FRAMEBUFFER=1 ^
     -s DYNAMIC_EXECUTION=0 ^
     -o wos.js ^
-    --use-preload-plugins --preload-file textures ^
     System/SysMessage.cpp ^
     System/SysCPU.cpp ^
     System/SysClock.cpp ^
