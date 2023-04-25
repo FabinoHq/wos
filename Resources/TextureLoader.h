@@ -127,6 +127,20 @@
 
 
     ////////////////////////////////////////////////////////////////////////////
+    //  TextureLoaderTable structure                                          //
+    ////////////////////////////////////////////////////////////////////////////
+    struct TextureLoaderTable
+    {
+        int type;
+        int index;
+        bool loaded;
+        bool mipmaps;
+        bool smooth;
+        TextureRepeatMode repeat;
+    };
+
+
+    ////////////////////////////////////////////////////////////////////////////
     //  TextureLoader class definition                                        //
     ////////////////////////////////////////////////////////////////////////////
     class TextureLoader : public SysThread
@@ -251,6 +265,8 @@
         private:
             TextureLoaderState      m_state;            // TextureLoader state
             SysMutex                m_stateMutex;       // State mutex
+            TextureLoaderTable*     m_texturesTable;    // TextureLoader table
+            size_t                  m_texturesIndex;    // TextureLoader index
 
             Texture*                m_texturesHigh;     // High textures
     };
