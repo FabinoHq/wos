@@ -379,13 +379,13 @@ bool TextureLoader::loadHighTexture(const char* path, TexturesAssets texture,
     callbackData.size = 0;
     callbackData.mutex.unlock();
 
-    // Load texture asynchronously
+    // Download texture asynchronously
     emscripten_async_wget_data(
         path, (void*)&callbackData, OnTextureLoaded, OnTextureError
     );
     TextureCallbackState state = TEXTURELOADER_CALLBACK_NONE;
 
-    // Wait for the texture to be loaded
+    // Wait for the texture to be downloaded
     while (state == TEXTURELOADER_CALLBACK_NONE)
     {
         callbackData.mutex.lock();
@@ -395,13 +395,15 @@ bool TextureLoader::loadHighTexture(const char* path, TexturesAssets texture,
     }
     if ((state == TEXTURELOADER_CALLBACK_ERROR) || (!callbackData.data))
     {
-        // Could not load texture
+        // Could not download texture
         return false;
     }
 
+    // Load texture
     PNGFile pngfile;
     if (!pngfile.loadImage(callbackData.data, callbackData.size))
     {
+        // Could not load texture
         if (callbackData.data) { delete[] callbackData.data; }
         return false;
     }
@@ -409,12 +411,14 @@ bool TextureLoader::loadHighTexture(const char* path, TexturesAssets texture,
         pngfile.getWidth(), pngfile.getHeight(), pngfile.getImage(),
         mipmaps, smooth, repeat))
     {
-        // Could not load texture
+        // Could not create texture
         if (callbackData.data) { delete[] callbackData.data; }
         return false;
     }
     pngfile.destroyImage();
     if (callbackData.data) { delete[] callbackData.data; }
+
+    // High texture is successfully loaded
     return true;
 }
 
