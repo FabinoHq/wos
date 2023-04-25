@@ -40,7 +40,6 @@
 //     Resources/TextureLoader.cpp : Texture loading management               //
 ////////////////////////////////////////////////////////////////////////////////
 #include "TextureLoader.h"
-#include "Resources.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -52,6 +51,7 @@ inline void OnTextureLoaded(void* arg, void* buffer, int size)
     if (!callbackData) { return; }
     callbackData->mutex.lock();
     callbackData->data = new (std::nothrow) unsigned char[size];
+    if (!callbackData->data) { return; }
     memcpy(callbackData->data, buffer, size);
     callbackData->size = size;
     callbackData->state = TEXTURELOADER_CALLBACK_LOADED;
