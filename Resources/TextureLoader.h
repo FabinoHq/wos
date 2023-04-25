@@ -127,16 +127,24 @@
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  TextureLoaderTable structure                                          //
+    //  TextureCallbackState enumeration                                      //
     ////////////////////////////////////////////////////////////////////////////
-    struct TextureLoaderTable
+    enum TextureCallbackState
     {
-        int type;
-        int index;
-        bool loaded;
-        bool mipmaps;
-        bool smooth;
-        TextureRepeatMode repeat;
+        TEXTURELOADER_CALLBACK_NONE = 0,
+        TEXTURELOADER_CALLBACK_LOADED = 1,
+        TEXTURELOADER_CALLBACK_ERROR = 2
+    };
+
+    ////////////////////////////////////////////////////////////////////////////
+    //  TextureCallbackData structure                                         //
+    ////////////////////////////////////////////////////////////////////////////
+    struct TextureCallbackData
+    {
+        SysMutex mutex;
+        TextureCallbackState state;
+        unsigned char* data;
+        int size;
     };
 
 
@@ -220,14 +228,11 @@
 
 
             ////////////////////////////////////////////////////////////////////
-            //  Texture loaded callback function                              //
+            //  Load high texture                                             //
+            //  return : True if high texture is loaded, false otherwise      //
             ////////////////////////////////////////////////////////////////////
-            void onTextureLoaded(void* arg, void* buffer, int size);
-
-            ////////////////////////////////////////////////////////////////////
-            //  Texture error callback function                               //
-            ////////////////////////////////////////////////////////////////////
-            void onTextureError(void* arg);
+            bool loadHighTexture(const char* path, TexturesAssets texture,
+                bool mipmaps, bool smooth, TextureRepeatMode repeat);
 
 
         private:
@@ -265,8 +270,6 @@
         private:
             TextureLoaderState      m_state;            // TextureLoader state
             SysMutex                m_stateMutex;       // State mutex
-            TextureLoaderTable*     m_texturesTable;    // TextureLoader table
-            size_t                  m_texturesIndex;    // TextureLoader index
 
             Texture*                m_texturesHigh;     // High textures
     };

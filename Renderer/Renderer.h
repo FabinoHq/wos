@@ -118,33 +118,6 @@
 
 
             ////////////////////////////////////////////////////////////////////
-            //  Start renderer job                                            //
-            ////////////////////////////////////////////////////////////////////
-            inline void startJob()
-            {
-                emscripten_webgl_make_context_current(GSysWindow.getHandle());
-            }
-
-            ////////////////////////////////////////////////////////////////////
-            //  End renderer job                                              //
-            ////////////////////////////////////////////////////////////////////
-            inline void endJob()
-            {
-
-            }
-
-
-            ////////////////////////////////////////////////////////////////////
-            //  Get renderer ready state                                      //
-            //  return : True if the renderer is ready, false otherwise       //
-            ////////////////////////////////////////////////////////////////////
-            inline bool isReady()
-            {
-                return ready;
-            }
-
-
-            ////////////////////////////////////////////////////////////////////
             //  Bind renderer shader                                          //
             ////////////////////////////////////////////////////////////////////
             inline void bindShader(Shader& newshader)
@@ -162,6 +135,15 @@
                 view.bindView();
             }
 
+
+            ////////////////////////////////////////////////////////////////////
+            //  Get renderer ready state                                      //
+            //  return : True if the renderer is ready, false otherwise       //
+            ////////////////////////////////////////////////////////////////////
+            inline bool isReady()
+            {
+                return ready;
+            }
 
             ////////////////////////////////////////////////////////////////////
             //  Get renderer width                                            //

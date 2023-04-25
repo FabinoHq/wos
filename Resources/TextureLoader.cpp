@@ -48,7 +48,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 inline void OnTextureLoaded(void* arg, void* buffer, int size)
 {
-    GResources.textures.onTextureLoaded(arg, buffer, size);
+    TextureCallbackData* callbackData = (TextureCallbackData*)arg;
+    if (!callbackData) { return; }
+    callbackData->mutex.lock();
+    callbackData->data = new (std::nothrow) unsigned char[size];
+    memcpy(callbackData->data, buffer, size);
+    callbackData->size = size;
+    callbackData->state = TEXTURELOADER_CALLBACK_LOADED;
+    callbackData->mutex.unlock();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -56,7 +63,13 @@ inline void OnTextureLoaded(void* arg, void* buffer, int size)
 ////////////////////////////////////////////////////////////////////////////////
 inline void OnTextureError(void* arg)
 {
-    GResources.textures.onTextureError(arg);
+    TextureCallbackData* callbackData = (TextureCallbackData*)arg;
+    if (!callbackData) { return; }
+    callbackData->mutex.lock();
+    callbackData->data = 0;
+    callbackData->size = 0;
+    callbackData->state = TEXTURELOADER_CALLBACK_ERROR;
+    callbackData->mutex.unlock();
 }
 
 
@@ -66,8 +79,6 @@ inline void OnTextureError(void* arg)
 TextureLoader::TextureLoader() :
 m_state(TEXTURELOADER_STATE_NONE),
 m_stateMutex(),
-m_texturesTable(0),
-m_texturesIndex(0),
 m_texturesHigh(0)
 {
 
@@ -191,19 +202,6 @@ void TextureLoader::process()
 ////////////////////////////////////////////////////////////////////////////////
 bool TextureLoader::init()
 {
-    // Start renderer job
-    GRenderer.startJob();
-
-    // Allocate texture loader table
-    m_texturesIndex = 0;
-    size_t texturesTableSize = (TEXTURE_GUICOUNT + TEXTURE_ASSETSCOUNT);
-    m_texturesTable = new (std::nothrow) TextureLoaderTable[texturesTableSize];
-    if (!m_texturesTable)
-    {
-        // Could not allocate texture loader table
-        return false;
-    }
-
     // Allocate high textures
     m_texturesHigh = new (std::nothrow) Texture[TEXTURE_ASSETSCOUNT];
     if (!m_texturesHigh)
@@ -283,9 +281,6 @@ void TextureLoader::destroyTextureLoader()
     }
     if (m_texturesHigh) { delete[] m_texturesHigh; }
     m_texturesHigh = 0;
-    if (m_texturesTable) { delete[] m_texturesTable; }
-    m_texturesTable = 0;
-    m_texturesIndex = 0;
 }
 
 
@@ -370,60 +365,57 @@ bool TextureLoader::generateTextureMipmaps(unsigned int& handle,
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Texture loaded callback function                                          //
+//  Load high texture                                                         //
+//  return : True if high texture is loaded, false otherwise                  //
 ////////////////////////////////////////////////////////////////////////////////
-void TextureLoader::onTextureLoaded(void* arg, void* buffer, int size)
+bool TextureLoader::loadHighTexture(const char* path, TexturesAssets texture,
+    bool mipmaps, bool smooth, TextureRepeatMode repeat)
 {
-    // Get texture loading table
-    TextureLoaderTable* textureTable = (TextureLoaderTable*)arg;
-    switch (textureTable->type)
+    // Reset callback data
+    TextureCallbackData callbackData;
+    callbackData.mutex.lock();
+    callbackData.state = TEXTURELOADER_CALLBACK_NONE;
+    callbackData.data = 0;
+    callbackData.size = 0;
+    callbackData.mutex.unlock();
+
+    // Load texture asynchronously
+    emscripten_async_wget_data(
+        path, (void*)&callbackData, OnTextureLoaded, OnTextureError
+    );
+    TextureCallbackState state = TEXTURELOADER_CALLBACK_NONE;
+
+    // Wait for the texture to be loaded
+    while (state == TEXTURELOADER_CALLBACK_NONE)
     {
-        case 0:
-        {
-            // Load gui texture
-            break;
-        }
-        case 1:
-        {
-            // Check texture index
-            if ((textureTable->index < 0) ||
-                (textureTable->index >= TEXTURE_ASSETSCOUNT))
-            {
-                return;
-            }
-
-            // Load high texture
-            PNGFile pngfile;
-            if (!pngfile.loadImage((unsigned char*)buffer, size))
-            {
-                return;
-            }
-            if (!m_texturesHigh[textureTable->index].createTexture(
-                pngfile.getWidth(), pngfile.getHeight(), pngfile.getImage(),
-                textureTable->mipmaps, textureTable->smooth,
-                textureTable->repeat))
-            {
-                // Could not load texture
-                return;
-            }
-            pngfile.destroyImage();
-            textureTable->loaded = true;
-            break;
-        }
-        default:
-        {
-            break;
-        }
+        callbackData.mutex.lock();
+        state = callbackData.state;
+        callbackData.mutex.unlock();
+        SysSleep(TextureLoaderIdleSleepTime);
     }
-}
+    if ((state == TEXTURELOADER_CALLBACK_ERROR) || (!callbackData.data))
+    {
+        // Could not load texture
+        return false;
+    }
 
-////////////////////////////////////////////////////////////////////////////////
-//  Texture error callback function                                           //
-////////////////////////////////////////////////////////////////////////////////
-void TextureLoader::onTextureError(void* arg)
-{
-    // Get texture loading table
-    TextureLoaderTable* textureTable = (TextureLoaderTable*)arg;
+    PNGFile pngfile;
+    if (!pngfile.loadImage(callbackData.data, callbackData.size))
+    {
+        if (callbackData.data) { delete[] callbackData.data; }
+        return false;
+    }
+    if (!m_texturesHigh[texture].createTexture(
+        pngfile.getWidth(), pngfile.getHeight(), pngfile.getImage(),
+        mipmaps, smooth, repeat))
+    {
+        // Could not load texture
+        if (callbackData.data) { delete[] callbackData.data; }
+        return false;
+    }
+    pngfile.destroyImage();
+    if (callbackData.data) { delete[] callbackData.data; }
+    return true;
 }
 
 
@@ -444,17 +436,12 @@ bool TextureLoader::loadEmbeddedTextures()
 bool TextureLoader::preloadTextures()
 {
     // Load test texture
-    m_texturesTable[m_texturesIndex].type = 1;
-    m_texturesTable[m_texturesIndex].index = TEXTURE_TEST;
-    m_texturesTable[m_texturesIndex].loaded = false;
-    m_texturesTable[m_texturesIndex].mipmaps = false;
-    m_texturesTable[m_texturesIndex].smooth = false;
-    m_texturesTable[m_texturesIndex].repeat = TEXTUREMODE_CLAMP;
-    emscripten_async_wget_data(
-        "textures/testsprite.png",
-        (void*)&m_texturesTable[m_texturesIndex++],
-        OnTextureLoaded, OnTextureError
-    );
+    if (!loadHighTexture("textures/testsprite.png",
+        TEXTURE_TEST, false, false, TEXTUREMODE_CLAMP))
+    {
+        // Could not load test texture
+        return false;
+    }
 
     // Textures assets are successfully preloaded
     return true;
