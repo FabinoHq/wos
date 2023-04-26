@@ -71,6 +71,7 @@
         (TextureMaxWidth*TextureMaxHeight*TextureMaxLayers*4);
     const uint32_t CubeMapMaxSize = (CubeMapMaxWidth*CubeMapMaxHeight*4*6);
     const double TextureLoaderIdleSleepTime = 0.01;
+    const double TextureLoaderWaitAsyncSleepTime = 0.002;
     const double TextureLoaderErrorSleepTime = 0.1;
 
 
@@ -211,6 +212,13 @@
 
 
             ////////////////////////////////////////////////////////////////////
+            //  Load texture asynchronously and wait for callback             //
+            //  return : True if texture is loaded, false otherwise           //
+            ////////////////////////////////////////////////////////////////////
+            bool loadTextureAsync(Texture& texture, const char* path,
+                bool mipmaps, bool smooth, TextureRepeatMode repeat);
+
+            ////////////////////////////////////////////////////////////////////
             //  Upload texture to graphics memory                             //
             //  return : True if texture is successfully uploaded             //
             ////////////////////////////////////////////////////////////////////
@@ -225,14 +233,6 @@
             ////////////////////////////////////////////////////////////////////
             bool generateTextureMipmaps(unsigned int& handle,
                 uint32_t width, uint32_t height, uint32_t mipLevels);
-
-
-            ////////////////////////////////////////////////////////////////////
-            //  Load high texture                                             //
-            //  return : True if high texture is loaded, false otherwise      //
-            ////////////////////////////////////////////////////////////////////
-            bool loadHighTexture(const char* path, TexturesAssets texture,
-                bool mipmaps, bool smooth, TextureRepeatMode repeat);
 
 
         private:

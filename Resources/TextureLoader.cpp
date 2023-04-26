@@ -43,15 +43,28 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Texture loaded generic callback function                                  //
+//  Texture loaded callback function                                          //
 ////////////////////////////////////////////////////////////////////////////////
-inline void OnTextureLoaded(void* arg, void* buffer, int size)
+void OnTextureLoaded(void* arg, void* buffer, int size)
 {
+    // Get callback data
     TextureCallbackData* callbackData = (TextureCallbackData*)arg;
     if (!callbackData) { return; }
+
+    // Allocate data memory for copy
     callbackData->mutex.lock();
     callbackData->data = new (std::nothrow) unsigned char[size];
-    if (!callbackData->data) { return; }
+    if (!callbackData->data)
+    {
+        // Could not allocate data memory
+        callbackData->data = 0;
+        callbackData->size = 0;
+        callbackData->state = TEXTURELOADER_CALLBACK_ERROR;
+        callbackData->mutex.unlock();
+        return;
+    }
+
+    // Copy downloaded data into memory
     memcpy(callbackData->data, buffer, size);
     callbackData->size = size;
     callbackData->state = TEXTURELOADER_CALLBACK_LOADED;
@@ -59,12 +72,15 @@ inline void OnTextureLoaded(void* arg, void* buffer, int size)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Texture error generic callback function                                   //
+//  Texture error callback function                                           //
 ////////////////////////////////////////////////////////////////////////////////
-inline void OnTextureError(void* arg)
+void OnTextureError(void* arg)
 {
+    // Get callback data
     TextureCallbackData* callbackData = (TextureCallbackData*)arg;
     if (!callbackData) { return; }
+
+    // Set callback data error
     callbackData->mutex.lock();
     callbackData->data = 0;
     callbackData->size = 0;
@@ -285,6 +301,64 @@ void TextureLoader::destroyTextureLoader()
 
 
 ////////////////////////////////////////////////////////////////////////////////
+//  Load texture asynchronously and wait for callback                         //
+//  return : True if texture is loaded, false otherwise                       //
+////////////////////////////////////////////////////////////////////////////////
+bool TextureLoader::loadTextureAsync(Texture& texture, const char* path,
+    bool mipmaps, bool smooth, TextureRepeatMode repeat)
+{
+    // Reset callback data
+    TextureCallbackData callbackData;
+    callbackData.mutex.lock();
+    callbackData.state = TEXTURELOADER_CALLBACK_NONE;
+    callbackData.data = 0;
+    callbackData.size = 0;
+    callbackData.mutex.unlock();
+
+    // Download texture asynchronously
+    emscripten_async_wget_data(
+        path, (void*)&callbackData, OnTextureLoaded, OnTextureError
+    );
+    TextureCallbackState state = TEXTURELOADER_CALLBACK_NONE;
+
+    // Wait for the texture to be downloaded
+    while (state == TEXTURELOADER_CALLBACK_NONE)
+    {
+        callbackData.mutex.lock();
+        state = callbackData.state;
+        callbackData.mutex.unlock();
+        SysSleep(TextureLoaderWaitAsyncSleepTime);
+    }
+    if ((state == TEXTURELOADER_CALLBACK_ERROR) || (!callbackData.data))
+    {
+        // Could not download texture
+        return false;
+    }
+
+    // Load texture from PNG buffer
+    PNGFile pngfile;
+    if (!pngfile.loadImage(callbackData.data, callbackData.size))
+    {
+        // Could not load PNG buffer
+        if (callbackData.data) { delete[] callbackData.data; }
+        return false;
+    }
+    if (!texture.createTexture(
+        pngfile.getWidth(), pngfile.getHeight(), pngfile.getImage(),
+        mipmaps, smooth, repeat))
+    {
+        // Could not create texture
+        if (callbackData.data) { delete[] callbackData.data; }
+        return false;
+    }
+    pngfile.destroyImage();
+    if (callbackData.data) { delete[] callbackData.data; }
+
+    // Texture is successfully loaded
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 //  Upload texture to graphics memory                                         //
 //  return : True if texture is successfully uploaded                         //
 ////////////////////////////////////////////////////////////////////////////////
@@ -365,65 +439,6 @@ bool TextureLoader::generateTextureMipmaps(unsigned int& handle,
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Load high texture                                                         //
-//  return : True if high texture is loaded, false otherwise                  //
-////////////////////////////////////////////////////////////////////////////////
-bool TextureLoader::loadHighTexture(const char* path, TexturesAssets texture,
-    bool mipmaps, bool smooth, TextureRepeatMode repeat)
-{
-    // Reset callback data
-    TextureCallbackData callbackData;
-    callbackData.mutex.lock();
-    callbackData.state = TEXTURELOADER_CALLBACK_NONE;
-    callbackData.data = 0;
-    callbackData.size = 0;
-    callbackData.mutex.unlock();
-
-    // Download texture asynchronously
-    emscripten_async_wget_data(
-        path, (void*)&callbackData, OnTextureLoaded, OnTextureError
-    );
-    TextureCallbackState state = TEXTURELOADER_CALLBACK_NONE;
-
-    // Wait for the texture to be downloaded
-    while (state == TEXTURELOADER_CALLBACK_NONE)
-    {
-        callbackData.mutex.lock();
-        state = callbackData.state;
-        callbackData.mutex.unlock();
-        SysSleep(TextureLoaderIdleSleepTime);
-    }
-    if ((state == TEXTURELOADER_CALLBACK_ERROR) || (!callbackData.data))
-    {
-        // Could not download texture
-        return false;
-    }
-
-    // Load texture
-    PNGFile pngfile;
-    if (!pngfile.loadImage(callbackData.data, callbackData.size))
-    {
-        // Could not load texture
-        if (callbackData.data) { delete[] callbackData.data; }
-        return false;
-    }
-    if (!m_texturesHigh[texture].createTexture(
-        pngfile.getWidth(), pngfile.getHeight(), pngfile.getImage(),
-        mipmaps, smooth, repeat))
-    {
-        // Could not create texture
-        if (callbackData.data) { delete[] callbackData.data; }
-        return false;
-    }
-    pngfile.destroyImage();
-    if (callbackData.data) { delete[] callbackData.data; }
-
-    // High texture is successfully loaded
-    return true;
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
 //  Load embedded textures                                                    //
 //  return : True if embedded textures are successfully loaded                //
 ////////////////////////////////////////////////////////////////////////////////
@@ -440,8 +455,9 @@ bool TextureLoader::loadEmbeddedTextures()
 bool TextureLoader::preloadTextures()
 {
     // Load test texture
-    if (!loadHighTexture("textures/testsprite.png",
-        TEXTURE_TEST, false, false, TEXTUREMODE_CLAMP))
+    if (!loadTextureAsync(m_texturesHigh[TEXTURE_TEST],
+        "textures/testsprite.png",
+        false, false, TEXTUREMODE_CLAMP))
     {
         // Could not load test texture
         return false;
