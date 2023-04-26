@@ -80,9 +80,7 @@ m_height(1)
 ////////////////////////////////////////////////////////////////////////////////
 SysWindow::~SysWindow()
 {
-    m_height = 0;
-    m_width = 0;
-    m_handle = 0;
+    close();
 }
 
 
@@ -92,6 +90,7 @@ SysWindow::~SysWindow()
 ////////////////////////////////////////////////////////////////////////////////
 bool SysWindow::create()
 {
+    // Lock window context mutex
     m_mutex.lock();
 
     // Set window attributes
@@ -149,7 +148,10 @@ void SysWindow::close()
     if (m_handle)
     {
         // Destroy the window
+        m_mutex.lock();
+        emscripten_webgl_make_context_current(0);
         emscripten_webgl_destroy_context(m_handle);
+        m_mutex.unlock();
     }
     m_handle = 0;
     m_height = 0;

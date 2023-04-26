@@ -46,6 +46,7 @@
 
     #include "../System/System.h"
     #include "../System/SysMessage.h"
+    #include "../System/SysWindow.h"
     #include "../Math/Math.h"
 
     #include <cstdint>

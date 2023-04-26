@@ -124,7 +124,13 @@ bool Texture::createTexture(uint32_t width, uint32_t height,
 ////////////////////////////////////////////////////////////////////////////////
 void Texture::destroyTexture()
 {
-    if (m_handle) { glDeleteTextures(1, &m_handle); }
+    if (m_handle)
+    {
+        // Destroy texture
+        GSysWindow.setThread();
+        glDeleteTextures(1, &m_handle);
+        GSysWindow.releaseThread();
+    }
     m_handle = 0;
     m_height = 0;
     m_width = 0;

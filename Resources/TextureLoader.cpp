@@ -426,12 +426,29 @@ bool TextureLoader::uploadTexture(unsigned int& handle,
 bool TextureLoader::generateTextureMipmaps(unsigned int& handle,
     uint32_t width, uint32_t height, uint32_t mipLevels)
 {
+    // Check texture size
+    if ((width <= 0) || (width > TextureMaxWidth) ||
+        (height <= 0) || (height > TextureMaxHeight))
+    {
+        // Invalid texture size
+        return false;
+    }
+
     // Check mip levels
     if (mipLevels <= 1)
     {
         // No mipmaps generation
         return true;
     }
+
+    // Generate texture mipmaps
+    glBindTexture(GL_TEXTURE_2D, handle);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glTexParameteri(
+        GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR
+    );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     // Texture mipmaps generated
     return true;
