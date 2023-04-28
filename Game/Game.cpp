@@ -160,11 +160,11 @@ void Game::events(Event& event)
         // Mouse moved
         case EVENT_MOUSEMOVED:
             m_mouseX = (
-                ((event.mouse.x-GRenderer.getOffsetX())/
+                ((event.mouse.x-GRenderer.getOffsetXF())/
                 (GRenderer.getWidthF()*0.5f))*ratio
             )-ratio;
             m_mouseY = (
-                -(event.mouse.y-GRenderer.getOffsetY())/
+                -(event.mouse.y-GRenderer.getOffsetYF())/
                 (GRenderer.getHeightF()*0.5f)
             )+1.0f;
             if (m_mouseX <= -ratio) { m_mouseX = -ratio; }
