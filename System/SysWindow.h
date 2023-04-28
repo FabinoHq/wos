@@ -48,6 +48,9 @@
     #include "SysMutex.h"
     #include "SysSleep.h"
     #include "SysMessage.h"
+    #include "SysEvent.h"
+
+    #include <queue>
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -82,6 +85,12 @@
             //  Update window size                                            //
             ////////////////////////////////////////////////////////////////////
             void updateSize();
+
+            ////////////////////////////////////////////////////////////////////
+            //  Update window mouse                                           //
+            ////////////////////////////////////////////////////////////////////
+            void updateMouse(
+                long int mouseX, long int mouseY, unsigned short buttons);
 
 
             ////////////////////////////////////////////////////////////////////
@@ -152,11 +161,24 @@
             SysWindow& operator=(const SysWindow&) = delete;
 
 
+            ////////////////////////////////////////////////////////////////////
+            //  Transcript key event                                          //
+            ////////////////////////////////////////////////////////////////////
+            EventKey transcriptKey();
+
+
         private:
             EMSCRIPTEN_WEBGL_CONTEXT_HANDLE     m_handle;       // Handle
             SysMutex                            m_mutex;        // Mutex
+
             int                                 m_width;        // Width
             int                                 m_height;       // Height
+
+            long int                            m_mouseX;       // Mouse X
+            long int                            m_mouseY;       // Mouse Y
+            unsigned short                      m_buttons;      // Mouse buttons
+
+            std::queue<Event>   m_events;       // Events FIFO queue
     };
 
 

@@ -66,14 +66,22 @@ EM_JS(int, SysGetWindowHeight, (), {
 ////////////////////////////////////////////////////////////////////////////////
 //  Window resize callback function                                           //
 ////////////////////////////////////////////////////////////////////////////////
-static EM_BOOL OnWindowResize(
-    int event, const EmscriptenUiEvent* uievent, void* user)
+EM_BOOL OnWindowResize(int event, const EmscriptenUiEvent* uievent, void* user)
 {
     // Update window size
     (void)event;
     (void)uievent;
     (void)user;
     GSysWindow.updateSize();
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Window mouse callback function                                            //
+////////////////////////////////////////////////////////////////////////////////
+EM_BOOL OnWindowMouse(int event, const EmscriptenMouseEvent* mouse, void* user)
+{
+    GSysWindow.updateMouse(mouse->clientX, mouse->clientY, mouse->buttons);
     return true;
 }
 
@@ -85,7 +93,11 @@ SysWindow::SysWindow() :
 m_handle(0),
 m_mutex(),
 m_width(1),
-m_height(1)
+m_height(1),
+m_mouseX(0),
+m_mouseY(0),
+m_buttons(0),
+m_events()
 {
 
 }
@@ -155,6 +167,23 @@ bool SysWindow::create()
         EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, false, OnWindowResize
     );
 
+    // Set mouse events callbacks
+    emscripten_set_mousemove_callback(
+        EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, false, OnWindowMouse
+    );
+    emscripten_set_click_callback(
+        EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, false, OnWindowMouse
+    );
+    emscripten_set_dblclick_callback(
+        EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, false, OnWindowMouse
+    );
+    emscripten_set_mousedown_callback(
+        EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, false, OnWindowMouse
+    );
+    emscripten_set_mouseup_callback(
+        EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, false, OnWindowMouse
+    );
+
     // System window successfully created
     m_mutex.unlock();
     return true;
@@ -165,6 +194,9 @@ bool SysWindow::create()
 ////////////////////////////////////////////////////////////////////////////////
 void SysWindow::close()
 {
+    m_buttons = 0;
+    m_mouseY = 0;
+    m_mouseX = 0;
     if (m_handle)
     {
         // Destroy the window
@@ -187,4 +219,95 @@ void SysWindow::updateSize()
     m_width = SysGetWindowWidth();
     m_height = SysGetWindowHeight();
     emscripten_set_canvas_element_size("#woscreen", m_width, m_height);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Update window mouse                                                       //
+////////////////////////////////////////////////////////////////////////////////
+void SysWindow::updateMouse(
+    long int mouseX, long int mouseY, unsigned short buttons)
+{
+    Event event;
+    event.type = EVENT_NONE;
+
+    // Mouse move event
+    if ((mouseX != m_mouseX) || (mouseY != m_mouseY))
+    {
+        m_mouseX = mouseX;
+        m_mouseY = mouseY;
+        event.type = EVENT_MOUSEMOVED;
+        event.mouse.x = m_mouseX;
+        event.mouse.y = m_mouseY;
+        m_events.push(event);
+    }
+
+    // Mouse press event
+    if ((buttons & 0x01) && !(m_buttons & 0x01))
+    {
+        // Left button pressed
+        event.type = EVENT_MOUSEPRESSED;
+        event.mouse.button = EVENT_MOUSE_LEFT;
+        event.mouse.x = m_mouseX;
+        event.mouse.y = m_mouseY;
+        m_events.push(event);
+    }
+    if ((buttons & 0x02) && !(m_buttons & 0x02))
+    {
+        // Middle button pressed
+        event.type = EVENT_MOUSEPRESSED;
+        event.mouse.button = EVENT_MOUSE_MIDDLE;
+        event.mouse.x = m_mouseX;
+        event.mouse.y = m_mouseY;
+        m_events.push(event);
+    }
+    if ((buttons & 0x04) && !(m_buttons & 0x04))
+    {
+        // Right button pressed
+        event.type = EVENT_MOUSEPRESSED;
+        event.mouse.button = EVENT_MOUSE_RIGHT;
+        event.mouse.x = m_mouseX;
+        event.mouse.y = m_mouseY;
+        m_events.push(event);
+    }
+
+    // Mouse released event
+    if (!(buttons & 0x01) && (m_buttons & 0x01))
+    {
+        // Left button released
+        event.type = EVENT_MOUSERELEASED;
+        event.mouse.button = EVENT_MOUSE_LEFT;
+        event.mouse.x = m_mouseX;
+        event.mouse.y = m_mouseY;
+        m_events.push(event);
+    }
+    if (!(buttons & 0x02) && (m_buttons & 0x02))
+    {
+        // Middle button released
+        event.type = EVENT_MOUSERELEASED;
+        event.mouse.button = EVENT_MOUSE_MIDDLE;
+        event.mouse.x = m_mouseX;
+        event.mouse.y = m_mouseY;
+        m_events.push(event);
+    }
+    if (!(buttons & 0x04) && (m_buttons & 0x04))
+    {
+        // Right button released
+        event.type = EVENT_MOUSERELEASED;
+        event.mouse.button = EVENT_MOUSE_RIGHT;
+        event.mouse.x = m_mouseX;
+        event.mouse.y = m_mouseY;
+        m_events.push(event);
+    }
+
+    // Update mouse buttons states
+    m_buttons = buttons;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//  Transcript key event                                                      //
+////////////////////////////////////////////////////////////////////////////////
+EventKey SysWindow::transcriptKey()
+{
+
 }
