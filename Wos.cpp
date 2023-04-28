@@ -196,13 +196,22 @@ void Wos::run()
             break;
 
         case WOS_STATE_RUN:
-            // Compute events
-            m_game.events();
+        {
+            // Get main window event
+            Event event;
+            while (GSysWindow.getEvent(event))
+            {
+                // Compute events
+                m_game.events(event);
+            }
+
             // Compute logic
             m_game.compute(frametime);
+
             // Render frame
             m_game.render();
             break;
+        }
 
         default:
             // Invalid state

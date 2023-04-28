@@ -81,6 +81,9 @@ EM_BOOL OnWindowResize(int event, const EmscriptenUiEvent* uievent, void* user)
 ////////////////////////////////////////////////////////////////////////////////
 EM_BOOL OnWindowMouse(int event, const EmscriptenMouseEvent* mouse, void* user)
 {
+    // Update window mouse
+    (void)event;
+    (void)user;
     GSysWindow.updateMouse(mouse->clientX, mouse->clientY, mouse->buttons);
     return true;
 }
@@ -236,8 +239,8 @@ void SysWindow::updateMouse(
         m_mouseX = mouseX;
         m_mouseY = mouseY;
         event.type = EVENT_MOUSEMOVED;
-        event.mouse.x = m_mouseX;
-        event.mouse.y = m_mouseY;
+        event.mouse.x = mouseX;
+        event.mouse.y = mouseY;
         m_events.push(event);
     }
 
@@ -253,18 +256,18 @@ void SysWindow::updateMouse(
     }
     if ((buttons & 0x02) && !(m_buttons & 0x02))
     {
-        // Middle button pressed
+        // Right button pressed
         event.type = EVENT_MOUSEPRESSED;
-        event.mouse.button = EVENT_MOUSE_MIDDLE;
+        event.mouse.button = EVENT_MOUSE_RIGHT;
         event.mouse.x = m_mouseX;
         event.mouse.y = m_mouseY;
         m_events.push(event);
     }
     if ((buttons & 0x04) && !(m_buttons & 0x04))
     {
-        // Right button pressed
+        // Middle button pressed
         event.type = EVENT_MOUSEPRESSED;
-        event.mouse.button = EVENT_MOUSE_RIGHT;
+        event.mouse.button = EVENT_MOUSE_MIDDLE;
         event.mouse.x = m_mouseX;
         event.mouse.y = m_mouseY;
         m_events.push(event);
@@ -282,15 +285,6 @@ void SysWindow::updateMouse(
     }
     if (!(buttons & 0x02) && (m_buttons & 0x02))
     {
-        // Middle button released
-        event.type = EVENT_MOUSERELEASED;
-        event.mouse.button = EVENT_MOUSE_MIDDLE;
-        event.mouse.x = m_mouseX;
-        event.mouse.y = m_mouseY;
-        m_events.push(event);
-    }
-    if (!(buttons & 0x04) && (m_buttons & 0x04))
-    {
         // Right button released
         event.type = EVENT_MOUSERELEASED;
         event.mouse.button = EVENT_MOUSE_RIGHT;
@@ -298,9 +292,37 @@ void SysWindow::updateMouse(
         event.mouse.y = m_mouseY;
         m_events.push(event);
     }
+    if (!(buttons & 0x04) && (m_buttons & 0x04))
+    {
+        // Middle button released
+        event.type = EVENT_MOUSERELEASED;
+        event.mouse.button = EVENT_MOUSE_MIDDLE;
+        event.mouse.x = m_mouseX;
+        event.mouse.y = m_mouseY;
+        m_events.push(event);
+    }
 
     // Update mouse buttons states
     m_buttons = buttons;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//  Get window event                                                          //
+//  return : True if an event occurred, false otherwise                       //
+////////////////////////////////////////////////////////////////////////////////
+bool SysWindow::getEvent(Event& event)
+{
+    // Get event in the FIFO queue
+    event.type = EVENT_NONE;
+    if (!m_events.empty())
+    {
+        event = m_events.front();
+        m_events.pop();
+        return true;
+    }
+
+    return false;
 }
 
 

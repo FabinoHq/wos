@@ -43,6 +43,7 @@
 #define WOS_GAME_GAME_HEADER
 
     #include "../System/System.h"
+    #include "../System/SysEvent.h"
 
     #include "../Renderer/Renderer.h"
     #include "../Renderer/View.h"
@@ -80,7 +81,7 @@
             ////////////////////////////////////////////////////////////////////
             //  Compute game events                                           //
             ////////////////////////////////////////////////////////////////////
-            void events();
+            void events(Event& event);
 
             ////////////////////////////////////////////////////////////////////
             //  Compute game logic                                            //

@@ -106,9 +106,96 @@ bool Game::init()
 ////////////////////////////////////////////////////////////////////////////////
 //  Compute game events                                                       //
 ////////////////////////////////////////////////////////////////////////////////
-void Game::events()
+void Game::events(Event& event)
 {
-    
+    // Get renderer scale and ratio
+    float scale = GRenderer.getScale();
+    float ratio = GRenderer.getRatio();
+
+    // Process event
+    switch (event.type)
+    {
+        // Key pressed
+        case EVENT_KEYPRESSED:
+            switch (event.key)
+            {
+                case EVENT_KEY_Z:
+                    break;
+
+                case EVENT_KEY_S:
+                    break;
+
+                case EVENT_KEY_Q:
+                    break;
+
+                case EVENT_KEY_D:
+                    break;
+
+                default:
+                    break;
+            }
+            break;
+
+        // Key released
+        case EVENT_KEYRELEASED:
+            switch (event.key)
+            {
+                case EVENT_KEY_Z:
+                    break;
+
+                case EVENT_KEY_S:
+                    break;
+
+                case EVENT_KEY_Q:
+                    break;
+
+                case EVENT_KEY_D:
+                    break;
+
+                default:
+                    break;
+            }
+            break;
+
+        // Mouse moved
+        case EVENT_MOUSEMOVED:
+            m_mouseX = (
+                ((event.mouse.x-GRenderer.getOffsetX())/
+                (GRenderer.getWidthF()*0.5f))*ratio
+            )-ratio;
+            m_mouseY = (
+                -(event.mouse.y-GRenderer.getOffsetY())/
+                (GRenderer.getHeightF()*0.5f)
+            )+1.0f;
+            if (m_mouseX <= -ratio) { m_mouseX = -ratio; }
+            if (m_mouseX >= ratio) { m_mouseX = ratio; }
+            if (m_mouseY <= -1.0f) { m_mouseY = -1.0f; }
+            if (m_mouseY >= 1.0f) { m_mouseY = 1.0f; }
+            break;
+
+        // Mouse button pressed
+        case EVENT_MOUSEPRESSED:
+            if (event.mouse.button == EVENT_MOUSE_LEFT)
+            {
+
+            }
+            break;
+
+        // Mouse button released
+        case EVENT_MOUSERELEASED:
+            if (event.mouse.button == EVENT_MOUSE_LEFT)
+            {
+
+            }
+            break;
+
+        // Mouse wheel
+        case EVENT_MOUSEWHEEL:
+            break;
+
+        default:
+            break;
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -45,6 +45,7 @@
     #include <emscripten/html5.h>
 
     #include "System/System.h"
+    #include "System/SysEvent.h"
     #include "System/SysMessage.h"
     #include "System/SysCPU.h"
     #include "System/SysClock.h"
