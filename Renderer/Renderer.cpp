@@ -210,6 +210,7 @@ bool Renderer::init()
 
     // Renderer successfully loaded
     GSysWindow.releaseThread();
+    GSysWindow.updateSize();
     ready = true;
     return true;
 }
@@ -225,7 +226,6 @@ bool Renderer::startFrame()
     GSysWindow.setThread();
 
     // Set renderer size
-    GSysWindow.update();
     width = GSysWindow.getWidth();
     height = GSysWindow.getHeight();
     offsetx = 0;

@@ -64,6 +64,21 @@ EM_JS(int, SysGetWindowHeight, (), {
 
 
 ////////////////////////////////////////////////////////////////////////////////
+//  Window resize callback function                                           //
+////////////////////////////////////////////////////////////////////////////////
+static EM_BOOL OnWindowResize(
+    int event, const EmscriptenUiEvent* uievent, void* user)
+{
+    // Update window size
+    (void)event;
+    (void)uievent;
+    (void)user;
+    GSysWindow.updateSize();
+    return true;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 //  SysWindow default constructor                                             //
 ////////////////////////////////////////////////////////////////////////////////
 SysWindow::SysWindow() :
@@ -135,6 +150,11 @@ bool SysWindow::create()
     m_height = SysGetWindowHeight();
     emscripten_set_canvas_element_size("#woscreen", m_width, m_height);
 
+    // Set window resize callback
+    emscripten_set_resize_callback(
+        EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, false, OnWindowResize
+    );
+
     // System window successfully created
     m_mutex.unlock();
     return true;
@@ -159,9 +179,9 @@ void SysWindow::close()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Update window                                                             //
+//  Update window size                                                        //
 ////////////////////////////////////////////////////////////////////////////////
-void SysWindow::update()
+void SysWindow::updateSize()
 {
     // Update window size
     m_width = SysGetWindowWidth();
