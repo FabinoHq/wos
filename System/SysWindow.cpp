@@ -97,7 +97,7 @@ EM_BOOL OnWindowMouseWheel(
     // Update window mouse wheel
     (void)event;
     (void)user;
-    GSysWindow.updateMouseWheel(mouse->deltaY);
+    if (mouse->deltaY != 0.0) { GSysWindow.updateMouseWheel(mouse->deltaY); }
     return EM_FALSE;
 }
 
