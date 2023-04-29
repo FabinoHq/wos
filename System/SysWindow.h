@@ -92,6 +92,11 @@
             void updateMouse(
                 long int mouseX, long int mouseY, unsigned short buttons);
 
+            ////////////////////////////////////////////////////////////////////
+            //  Update window mouse wheel                                     //
+            ////////////////////////////////////////////////////////////////////
+            void updateMouseWheel(double delta);
+
 
             ////////////////////////////////////////////////////////////////////
             //  Set current thread as current context                         //

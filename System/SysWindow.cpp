@@ -73,7 +73,7 @@ EM_BOOL OnWindowResize(int event, const EmscriptenUiEvent* uievent, void* user)
     (void)uievent;
     (void)user;
     GSysWindow.updateSize();
-    return true;
+    return EM_TRUE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -85,7 +85,20 @@ EM_BOOL OnWindowMouse(int event, const EmscriptenMouseEvent* mouse, void* user)
     (void)event;
     (void)user;
     GSysWindow.updateMouse(mouse->clientX, mouse->clientY, mouse->buttons);
-    return true;
+    return EM_TRUE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Window mouse wheel callback function                                      //
+////////////////////////////////////////////////////////////////////////////////
+EM_BOOL OnWindowMouseWheel(
+    int event, const EmscriptenWheelEvent* mouse, void* user)
+{
+    // Update window mouse wheel
+    (void)event;
+    (void)user;
+    GSysWindow.updateMouseWheel(mouse->deltaY);
+    return EM_FALSE;
 }
 
 
@@ -167,24 +180,27 @@ bool SysWindow::create()
 
     // Set window resize callback
     emscripten_set_resize_callback(
-        EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, false, OnWindowResize
+        EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, EM_FALSE, OnWindowResize
     );
 
     // Set mouse events callbacks
     emscripten_set_mousemove_callback(
-        EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, false, OnWindowMouse
+        EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, EM_FALSE, OnWindowMouse
     );
     emscripten_set_click_callback(
-        EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, false, OnWindowMouse
+        EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, EM_FALSE, OnWindowMouse
     );
     emscripten_set_dblclick_callback(
-        EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, false, OnWindowMouse
+        EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, EM_FALSE, OnWindowMouse
     );
     emscripten_set_mousedown_callback(
-        EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, false, OnWindowMouse
+        EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, EM_FALSE, OnWindowMouse
     );
     emscripten_set_mouseup_callback(
-        EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, false, OnWindowMouse
+        EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, EM_FALSE, OnWindowMouse
+    );
+    emscripten_set_wheel_callback(
+        EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, EM_FALSE, OnWindowMouseWheel
     );
 
     // System window successfully created
@@ -304,6 +320,20 @@ void SysWindow::updateMouse(
 
     // Update mouse buttons states
     m_buttons = buttons;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Update window mouse wheel                                                 //
+////////////////////////////////////////////////////////////////////////////////
+void SysWindow::updateMouseWheel(double delta)
+{
+    Event event;
+    event.type = EVENT_NONE;
+
+    // Mouse wheel event
+    event.type = EVENT_MOUSEWHEEL;
+    event.mouse.wheel = ((delta < 0.0) ? 127 : -127);
+    m_events.push(event);
 }
 
 
