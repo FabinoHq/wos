@@ -97,6 +97,16 @@
             ////////////////////////////////////////////////////////////////////
             void updateMouseWheel(double delta);
 
+            ////////////////////////////////////////////////////////////////////
+            //  Update window keyboard down                                   //
+            ////////////////////////////////////////////////////////////////////
+            void updateKeyDown(const EM_UTF8 key[32], unsigned long location);
+
+            ////////////////////////////////////////////////////////////////////
+            //  Update window keyboard up                                     //
+            ////////////////////////////////////////////////////////////////////
+            void updateKeyUp(const EM_UTF8 key[32], unsigned long location);
+
 
             ////////////////////////////////////////////////////////////////////
             //  Set current thread as current context                         //
@@ -175,7 +185,8 @@
             ////////////////////////////////////////////////////////////////////
             //  Transcript key event                                          //
             ////////////////////////////////////////////////////////////////////
-            EventKey transcriptKey();
+            EventKey transcriptKey(
+                const EM_UTF8 key[32], unsigned long location);
 
 
         private:

@@ -101,6 +101,32 @@ EM_BOOL OnWindowMouseWheel(
     return EM_FALSE;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//  Window keyboard down callback function                                    //
+////////////////////////////////////////////////////////////////////////////////
+EM_BOOL OnWindowKeyDown(
+    int event, const EmscriptenKeyboardEvent* key, void* user)
+{
+    // Update window keyboard down
+    (void)event;
+    (void)user;
+    GSysWindow.updateKeyDown(key->key, key->location);
+    return EM_FALSE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Window keyboard up callback function                                      //
+////////////////////////////////////////////////////////////////////////////////
+EM_BOOL OnWindowKeyUp(
+    int event, const EmscriptenKeyboardEvent* key, void* user)
+{
+    // Update window keyboard up
+    (void)event;
+    (void)user;
+    GSysWindow.updateKeyUp(key->key, key->location);
+    return EM_FALSE;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //  SysWindow default constructor                                             //
@@ -201,6 +227,14 @@ bool SysWindow::create()
     );
     emscripten_set_wheel_callback(
         EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, EM_FALSE, OnWindowMouseWheel
+    );
+
+    // Set key events callbacks
+    emscripten_set_keydown_callback(
+        EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, EM_FALSE, OnWindowKeyDown
+    );
+    emscripten_set_keyup_callback(
+        EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, EM_FALSE, OnWindowKeyUp
     );
 
     // System window successfully created
@@ -336,6 +370,34 @@ void SysWindow::updateMouseWheel(double delta)
     m_events.push(event);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//  Update window keyboard down                                               //
+////////////////////////////////////////////////////////////////////////////////
+void SysWindow::updateKeyDown(const EM_UTF8 key[32], unsigned long location)
+{
+    Event event;
+    event.type = EVENT_NONE;
+
+    // Key pressed event
+    event.type = EVENT_KEYPRESSED;
+    event.key = transcriptKey(key, location);
+    m_events.push(event);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Update window keyboard up                                                 //
+////////////////////////////////////////////////////////////////////////////////
+void SysWindow::updateKeyUp(const EM_UTF8 key[32], unsigned long location)
+{
+    Event event;
+    event.type = EVENT_NONE;
+
+    // Key released event
+    event.type = EVENT_KEYRELEASED;
+    event.key = transcriptKey(key, location);
+    m_events.push(event);
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //  Get window event                                                          //
@@ -359,7 +421,136 @@ bool SysWindow::getEvent(Event& event)
 ////////////////////////////////////////////////////////////////////////////////
 //  Transcript key event                                                      //
 ////////////////////////////////////////////////////////////////////////////////
-EventKey SysWindow::transcriptKey()
+EventKey SysWindow::transcriptKey(
+    const EM_UTF8 key[32], unsigned long location)
 {
+    switch (key[0])
+    {
+        case 69:
+        {
+            switch (key[1])
+            {
+                case 115: return EVENT_KEY_ESCAPE;
+                case 110: return EVENT_KEY_RETURN;
+                default: return EVENT_KEY_E;
+            }
+            return EVENT_KEY_E;
+        }
+        case 32: return EVENT_KEY_SPACE;
+        case 66: return ((key[1] != 0) ? EVENT_KEY_BACKSPACE : EVENT_KEY_B);
 
+        case 77:
+        {
+            if (key[1] != 0)
+            {
+                return ((location == DOM_KEY_LOCATION_LEFT) ?
+                    EVENT_KEY_LSYS : EVENT_KEY_RSYS);
+            }
+            return EVENT_KEY_M;
+        }
+        case 67:
+        {
+            if (key[1] != 0)
+            {
+                return ((location == DOM_KEY_LOCATION_LEFT) ?
+                    EVENT_KEY_LCTRL : EVENT_KEY_RCTRL);
+            }
+            return EVENT_KEY_C;
+        }
+        case 65:
+        {
+            if (key[1] != 0)
+            {
+                switch (key[5])
+                {
+                    case 85: return EVENT_KEY_UP;
+                    case 68: return EVENT_KEY_DOWN;
+                    case 76: return EVENT_KEY_LEFT;
+                    case 82: return EVENT_KEY_RIGHT;
+                    default: return ((location == DOM_KEY_LOCATION_LEFT) ?
+                        EVENT_KEY_LALT : EVENT_KEY_RALT);
+                }
+                return EVENT_KEY_A;
+            }
+            return EVENT_KEY_A;
+        }
+        case 83:
+        {
+            if (key[1] != 0)
+            {
+                return ((location == DOM_KEY_LOCATION_LEFT) ?
+                    EVENT_KEY_LSHIFT : EVENT_KEY_RSHIFT);
+            }
+            return EVENT_KEY_S;
+        }
+        case 84: return ((key[1] != 0) ? EVENT_KEY_TAB : EVENT_KEY_T);
+
+        case 70:
+        {
+            switch (key[1])
+            {
+                case 49:
+                {
+                    switch (key[2])
+                    {
+                        case 48: return EVENT_KEY_F10;
+                        case 49: return EVENT_KEY_F11;
+                        case 50: return EVENT_KEY_F12;
+                        default: return EVENT_KEY_F1;
+                    }
+                    return EVENT_KEY_F;
+                }
+                case 50: return EVENT_KEY_F2;
+                case 51: return EVENT_KEY_F3;
+                case 52: return EVENT_KEY_F4;
+                case 53: return EVENT_KEY_F5;
+                case 54: return EVENT_KEY_F6;
+                case 55: return EVENT_KEY_F7;
+                case 56: return EVENT_KEY_F8;
+                case 57: return EVENT_KEY_F9;
+                default: return EVENT_KEY_F;
+            }
+            return EVENT_KEY_F;
+        }
+
+        case 'a': return EVENT_KEY_A;
+        case 'b': return EVENT_KEY_B;
+        case 'c': return EVENT_KEY_C;
+        case 'D': case 'd': return EVENT_KEY_D;
+        case 'e': return EVENT_KEY_E;
+        case 'f': return EVENT_KEY_F;
+        case 'G': case 'g': return EVENT_KEY_G;
+        case 'H': case 'h': return EVENT_KEY_H;
+        case 'I': case 'i': return EVENT_KEY_I;
+        case 'J': case 'j': return EVENT_KEY_J;
+        case 'K': case 'k': return EVENT_KEY_K;
+        case 'L': case 'l': return EVENT_KEY_L;
+        case 'm': return EVENT_KEY_M;
+        case 'N': case 'n': return EVENT_KEY_N;
+        case 'O': case 'o': return EVENT_KEY_O;
+        case 'P': case 'p': return EVENT_KEY_P;
+        case 'Q': case 'q': return EVENT_KEY_Q;
+        case 'R': case 'r': return EVENT_KEY_R;
+        case 's': return EVENT_KEY_S;
+        case 't': return EVENT_KEY_T;
+        case 'U': case 'u': return EVENT_KEY_U;
+        case 'V': case 'v': return EVENT_KEY_V;
+        case 'W': case 'w': return EVENT_KEY_W;
+        case 'X': case 'x': return EVENT_KEY_X;
+        case 'Y': case 'y': return EVENT_KEY_Y;
+        case 'Z': case 'z': return EVENT_KEY_Z;
+
+        case '0': return EVENT_KEY_0;
+        case '1': return EVENT_KEY_1;
+        case '2': return EVENT_KEY_2;
+        case '3': return EVENT_KEY_3;
+        case '4': return EVENT_KEY_4;
+        case '5': return EVENT_KEY_5;
+        case '6': return EVENT_KEY_6;
+        case '7': return EVENT_KEY_7;
+        case '8': return EVENT_KEY_8;
+        case '9': return EVENT_KEY_9;
+
+        default: return EVENT_KEY_NONE;
+    }
 }
