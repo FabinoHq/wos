@@ -57,8 +57,8 @@ width(1),
 height(1),
 offsetx(0),
 offsety(0),
-shader(0),
-defaultShader(),
+shaders(0),
+currentShader(0),
 vertexBuffer(),
 defaultView()
 {
@@ -70,7 +70,8 @@ defaultView()
 ////////////////////////////////////////////////////////////////////////////////
 Renderer::~Renderer()
 {
-    shader = 0;
+    currentShader = 0;
+    shaders = 0;
     offsety = 0;
     offsetx = 0;
     height = 0;
@@ -138,13 +139,10 @@ bool Renderer::init()
     if (width <= 1) { width = 1; }
     if (height <= 1) { height = 1; }
 
-    // Create default shader
-    if (!defaultShader.createShader(
-        DefaultVertexShaderSrc, DefaultFragmentShaderSrc))
+    // Init renderer shaders
+    if (!initShaders())
     {
-        // Unable to create default shader
-        SysMessage::box() << "[0x3002] Unable to create default shader\n";
-        SysMessage::box() << "Please update your graphics drivers";
+        // Could not init renderer shaders
         return false;
     }
 
@@ -215,6 +213,42 @@ bool Renderer::init()
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//  Init renderer shaders                                                     //
+//  return : True if the renderer shaders are ready                           //
+////////////////////////////////////////////////////////////////////////////////
+bool Renderer::initShaders()
+{
+    // Check shaders
+    if (shaders)
+    {
+        // Shaders already allocated
+        return false;
+    }
+
+    // Allocate shaders
+    shaders = new (std::nothrow) Shader[RENDERER_SHADER_SHADERSCOUNT];
+    if (!shaders)
+    {
+        // Could not allocate shaders
+        return false;
+    }
+
+
+    // Create default shaders
+    if (!shaders[RENDERER_SHADER_DEFAULT].createShader(
+        DefaultVertexShaderSrc, DefaultFragmentShaderSrc))
+    {
+        // Could not create default shader
+        SysMessage::box() << "[0x3053] Could not create default shader\n";
+        SysMessage::box() << "Please update your graphics drivers";
+        return false;
+    }
+
+    // Renderer shaders are ready
+    return true;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //  Start rendering frame                                                     //
@@ -272,7 +306,7 @@ bool Renderer::startFrame()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Bind default shader
-    bindShader(defaultShader);
+    bindShader(RENDERER_SHADER_DEFAULT);
 
     // Bind default view
     bindView(defaultView);

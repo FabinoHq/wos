@@ -105,6 +105,12 @@
             bool init();
 
             ////////////////////////////////////////////////////////////////////
+            //  Init renderer shaders                                         //
+            //  return : True if the renderer shaders are ready               //
+            ////////////////////////////////////////////////////////////////////
+            bool initShaders();
+
+            ////////////////////////////////////////////////////////////////////
             //  Start rendering frame                                         //
             //  return : True if the rendering frame is ready                 //
             ////////////////////////////////////////////////////////////////////
@@ -120,10 +126,19 @@
             ////////////////////////////////////////////////////////////////////
             //  Bind renderer shader                                          //
             ////////////////////////////////////////////////////////////////////
-            inline void bindShader(Shader& newshader)
+            inline void bindShader(RendererShader rendererShader)
             {
-                shader = &newshader;
-                shader->bindShader();
+                shaders[rendererShader].bind();
+                currentShader = &shaders[rendererShader];
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Bind renderer shader                                          //
+            ////////////////////////////////////////////////////////////////////
+            inline void bindShader(Shader& shader)
+            {
+                shader.bind();
+                currentShader = &shader;
             }
 
             ////////////////////////////////////////////////////////////////////
@@ -265,8 +280,8 @@
             int                 offsetx;            // Renderer X offset
             int                 offsety;            // Renderer Y offset
 
-            Shader*             shader;             // Current shader
-            Shader              defaultShader;      // Default renderer shader
+            Shader*             shaders;            // Shaders
+            Shader*             currentShader;      // Current shader
             VertexBuffer        vertexBuffer;       // Default vertex buffer
             View                defaultView;        // Default view
     };

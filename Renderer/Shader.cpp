@@ -197,13 +197,3 @@ bool Shader::createShader(const char* vertexShaderSrc,
 	// Shader successfully created
 	return true;
 }
-
-
-////////////////////////////////////////////////////////////////////////////////
-//  Bind shader                                                               //
-////////////////////////////////////////////////////////////////////////////////
-void Shader::bindShader()
-{
-	// Bind shader program
-	glUseProgram(m_shader);
-}

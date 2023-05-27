@@ -235,7 +235,7 @@ void Game::render()
     m_procSprite.render();
 
     // Render sprite
-    GRenderer.bindShader(GRenderer.defaultShader);
+    GRenderer.bindShader(RENDERER_SHADER_DEFAULT);
     GRenderer.bindView(GRenderer.defaultView);
     m_sprite.setTexture(GResources.textures.high(TEXTURE_TEST));
     m_sprite.bindTexture();
