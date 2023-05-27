@@ -49,6 +49,7 @@
     #include "../Math/Vector3.h"
     #include "../Math/Vector4.h"
     #include "../Math/Matrix4x4.h"
+    #include "../Images/PNGFile.h"
 
     #include <cstddef>
     #include <cstdint>
@@ -165,6 +166,12 @@
     //  return : True if the system CPU maths representations are correct     //
     ////////////////////////////////////////////////////////////////////////////
     bool SysCPUCheckMaths();
+
+    ////////////////////////////////////////////////////////////////////////////
+    //  Check system CPU images representations                               //
+    //  return : True if the system CPU images representations are correct    //
+    ////////////////////////////////////////////////////////////////////////////
+    bool SysCPUCheckImages();
 
 
 #endif // WOS_SYSTEM_SYSCPU_HEADER

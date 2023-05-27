@@ -69,6 +69,9 @@ bool SysCPUCheck()
     // Check math representation
     if (!SysCPUCheckMaths()) return false;
 
+    // Check images representation
+    if (!SysCPUCheckImages()) return false;
+
     // System CPU is ready
     return true;
 }
@@ -701,5 +704,38 @@ bool SysCPUCheckMaths()
     }
 
     // System maths representations are correct
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Check system CPU images representations                                   //
+//  return : True if the system CPU images representations are correct        //
+////////////////////////////////////////////////////////////////////////////////
+bool SysCPUCheckImages()
+{
+    // Check PNGFileChunkHeader size
+    size_t pngFileChunkHeader = sizeof(PNGFileChunkHeader);
+    if (pngFileChunkHeader < PNGFileChunkHeaderSize)
+    {
+        // PNGFileChunkHeader size is invalid
+        SysMessage::box() <<
+            "[0x103E] Invalid PNGFileChunkHeader size\n";
+        SysMessage::box() << "PNGFileChunkHeader size should be " <<
+            PNGFileChunkHeaderSize << " bytes";
+        return false;
+    }
+
+    // Check PNGFileIHDRChunk size
+    size_t pngFileIHDRChunk = sizeof(PNGFileIHDRChunk);
+    if (pngFileIHDRChunk < PNGFileIHDRChunkSize)
+    {
+        // PNGFileIHDRChunk size is invalid
+        SysMessage::box() << "[0x103F] Invalid PNGFileIHDRChunk size\n";
+        SysMessage::box() << "PNGFileIHDRChunk size should be " <<
+            PNGFileIHDRChunkSize << " bytes";
+        return false;
+    }
+
+    // System CPU images representations are correct
     return true;
 }
