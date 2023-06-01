@@ -96,6 +96,10 @@
 !Renderer/Shapes/
 !Renderer/Shapes/RectangleShape.h
 !Renderer/Shapes/RectangleShape.cpp
+!Renderer/Shapes/EllipseShape.h
+!Renderer/Shapes/EllipseShape.cpp
+!Renderer/Shapes/CuboidShape.h
+!Renderer/Shapes/CuboidShape.cpp
 
 # Resources
 !Resources/
