@@ -52,6 +52,7 @@
     ////////////////////////////////////////////////////////////////////////////
     //  Default vertex buffer vertices                                        //
     ////////////////////////////////////////////////////////////////////////////
+    const uint32_t DefaultVerticesCount = 20;
     const float DefaultVertices[] = {
         0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
         1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
@@ -62,7 +63,8 @@
     ////////////////////////////////////////////////////////////////////////////
     //  Default vertex buffer indices                                         //
     ////////////////////////////////////////////////////////////////////////////
-    const unsigned int DefaultIndices[] = {
+    const uint32_t DefaultIndicesCount = 6;
+    const uint32_t DefaultIndices[] = {
         0, 1, 2,
         2, 3, 0
     };
@@ -98,6 +100,13 @@
                 uint32_t verticesCount, uint32_t indicesCount);
 
             ////////////////////////////////////////////////////////////////////
+            //  Update Vertex buffer                                          //
+            ////////////////////////////////////////////////////////////////////
+            bool updateBuffer(
+                const float* vertices, const unsigned int* indices,
+                uint32_t verticesCount, uint32_t indicesCount);
+
+            ////////////////////////////////////////////////////////////////////
             //  Render Vertex buffer                                          //
             ////////////////////////////////////////////////////////////////////
             void render();
@@ -116,8 +125,8 @@
 
 
         private:
-            unsigned int    m_vertexBuffer;     // Vertex buffer handle
-            unsigned int    m_elementBuffer;    // Element buffer handle
+            uint32_t        m_vertexBuffer;     // Vertex buffer handle
+            uint32_t        m_elementBuffer;    // Element buffer handle
             uint32_t        m_indicesCount;     // Indices count
     };
 

@@ -40,6 +40,7 @@
 //     Renderer/VertexBuffer.cpp : VertexBuffer management                    //
 ////////////////////////////////////////////////////////////////////////////////
 #include "VertexBuffer.h"
+#include "Renderer.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -87,25 +88,16 @@ bool VertexBuffer::createBuffer()
         return false;
     }
 
-    // Upload data to vertex buffer
-    glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER,
-        sizeof(DefaultVertices), DefaultVertices, GL_STATIC_DRAW
-    );
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-        sizeof(DefaultIndices), DefaultIndices, GL_STATIC_DRAW
-    );
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), 0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(
-        1, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(3*sizeof(float))
-    );
-    glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    // Update VBO
+    if (!updateBuffer(DefaultVertices, DefaultIndices,
+        DefaultVerticesCount, DefaultIndicesCount))
+    {
+        // Unable to update VBO
+        return false;
+    }
 
     // Set indices count
-    m_indicesCount = 6;
+    m_indicesCount = DefaultIndicesCount;
 
     // Vertex buffer is successfully created
     return true;
@@ -134,31 +126,42 @@ bool VertexBuffer::createBuffer(
         return false;
     }
 
-    // Upload data to vertex buffer
-    glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER,
-        verticesCount*sizeof(float), vertices, GL_STATIC_DRAW
-    );
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-        indicesCount*sizeof(unsigned int), indices, GL_STATIC_DRAW
-    );
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), 0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(
-        1, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3*sizeof(float))
-    );
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(
-        2, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(5*sizeof(float))
-    );
-    glEnableVertexAttribArray(2);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    // Update VBO
+    if (!updateBuffer(vertices, indices, verticesCount, indicesCount))
+    {
+        // Unable to update VBO
+        return false;
+    }
 
     // Set indices count
     m_indicesCount = indicesCount;
 
     // Vertex buffer is successfully created
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Update Vertex buffer                                                      //
+////////////////////////////////////////////////////////////////////////////////
+bool VertexBuffer::updateBuffer(
+    const float* vertices, const unsigned int* indices,
+    uint32_t verticesCount, uint32_t indicesCount)
+{
+    // Upload data to vertex buffer
+    glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER,
+        verticesCount*sizeof(float), vertices, GL_STATIC_DRAW
+    );
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // Upload indices data
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+        indicesCount*sizeof(unsigned int), indices, GL_STATIC_DRAW
+    );
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    // Vertex buffer is successfully updated
     return true;
 }
 
@@ -168,6 +171,22 @@ bool VertexBuffer::createBuffer(
 ////////////////////////////////////////////////////////////////////////////////
 void VertexBuffer::render()
 {
-    // Render vertex array
+    // Bind buffer
+    glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
+
+    // Enable vertices array
+    glEnableVertexAttribArray(GRenderer.currentShader->getVerticesLocation());
+    glVertexAttribPointer(
+        0, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), 0
+    );
+
+    // Enable texcoords array
+    glEnableVertexAttribArray(GRenderer.currentShader->getTexCoordsLocation());
+    glVertexAttribPointer(
+        1, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(3*sizeof(float))
+    );
+
+    // Render vertex buffer
     glDrawElements(GL_TRIANGLES, m_indicesCount, GL_UNSIGNED_INT, 0);
 }
