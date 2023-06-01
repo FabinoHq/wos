@@ -146,8 +146,7 @@
             ////////////////////////////////////////////////////////////////////
             inline void bindView(View& view)
             {
-                // Upload matrices
-                view.bindView();
+                view.bind();
             }
 
 

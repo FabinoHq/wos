@@ -50,7 +50,6 @@ Shader::Shader() :
 m_shader(-1),
 m_verticesLoc(-1),
 m_texCoordsLoc(-1),
-m_projMatrixLoc(-1),
 m_projViewMatrixLoc(-1),
 m_modelMatrixLoc(-1)
 {
@@ -149,10 +148,14 @@ bool Shader::createShader(const char* vertexShaderSrc,
 	}
 	glAttachShader(m_shader, vertexShader);
 	glAttachShader(m_shader, fragmentShader);
-	glLinkProgram(m_shader);
+
+	// Bind vertex and texcoord attributes
+	glBindAttribLocation(m_shader, 0, "vertexPos");
+	glBindAttribLocation(m_shader, 1, "vertexCoord");
 
 	// Link shader
 	int linked = 0;
+	glLinkProgram(m_shader);
 	glGetProgramiv(m_shader, GL_LINK_STATUS, &linked);
 	if (!linked)
 	{
@@ -167,12 +170,15 @@ bool Shader::createShader(const char* vertexShaderSrc,
 
 	// Get shader attributes locations
 	m_verticesLoc = glGetAttribLocation(m_shader, "vertexPos");
+	if (m_verticesLoc < 0) { return false; }
 	m_texCoordsLoc = glGetAttribLocation(m_shader, "vertexCoord");
+	if (m_texCoordsLoc < 0) { return false; }
 
 	// Get shader uniforms locations
-	m_projMatrixLoc = glGetUniformLocation(m_shader, "projMatrix");
 	m_projViewMatrixLoc = glGetUniformLocation(m_shader, "projViewMatrix");
+	if (m_projViewMatrixLoc < 0) { return false; }
 	m_modelMatrixLoc = glGetUniformLocation(m_shader, "modelMatrix");
+	if (m_modelMatrixLoc < 0) { return false; }
 
 	// Set default identity matrices
 	float mat[16];
@@ -192,7 +198,6 @@ bool Shader::createShader(const char* vertexShaderSrc,
     mat[13] = 0.0f;
     mat[14] = 0.0f;
     mat[15] = 1.0f;
-    glUniformMatrix4fv(m_projMatrixLoc, 1, GL_FALSE, mat);
     glUniformMatrix4fv(m_projViewMatrixLoc, 1, GL_FALSE, mat);
     glUniformMatrix4fv(m_modelMatrixLoc, 1, GL_FALSE, mat);
     glUseProgram(0);

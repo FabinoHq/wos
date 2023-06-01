@@ -112,17 +112,7 @@
             }
 
             ////////////////////////////////////////////////////////////////////
-            //  Send projection matrix                                        //
-            ////////////////////////////////////////////////////////////////////
-            inline void sendProjectionMatrix(Matrix4x4& projMatrix)
-            {
-                glUniformMatrix4fv(
-                    m_projMatrixLoc, 1, GL_FALSE, projMatrix.mat
-                );
-            }
-
-            ////////////////////////////////////////////////////////////////////
-            //  Send view matrix                                              //
+            //  Send projview matrix                                          //
             ////////////////////////////////////////////////////////////////////
             inline void sendProjViewMatrix(Matrix4x4& projViewMatrix)
             {
@@ -232,7 +222,6 @@
             int32_t     m_shader;               // Shader handle
             int32_t     m_verticesLoc;          // Vertices location
             int32_t     m_texCoordsLoc;         // Texcoords locations
-            int32_t     m_projMatrixLoc;        // Projection matrix location
             int32_t     m_projViewMatrixLoc;    // ProjView matrix location
             int32_t     m_modelMatrixLoc;       // Model matrix location
     };

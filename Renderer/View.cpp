@@ -126,9 +126,8 @@ void View::compute(float ratio)
 ////////////////////////////////////////////////////////////////////////////////
 //  Bind view                                                                 //
 ////////////////////////////////////////////////////////////////////////////////
-void View::bindView()
+void View::bind()
 {
-    // Upload matrices
-    GRenderer.currentShader->sendProjectionMatrix(m_projMatrix);
+    // Upload projview matrix
     GRenderer.currentShader->sendProjViewMatrix(m_projViewMatrix);
 }
