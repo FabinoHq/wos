@@ -61,8 +61,10 @@
     enum RendererShader
     {
         RENDERER_SHADER_DEFAULT = 0,
+        RENDERER_SHADER_RECTANGLE = 1,
+        RENDERER_SHADER_ELLIPSE = 2,
 
-        RENDERER_SHADER_SHADERSCOUNT = 1
+        RENDERER_SHADER_SHADERSCOUNT = 3
     };
 
 

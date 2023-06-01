@@ -149,9 +149,9 @@ bool Shader::createShader(const char* vertexShaderSrc,
 	glAttachShader(m_shader, vertexShader);
 	glAttachShader(m_shader, fragmentShader);
 
-	// Bind vertex and texcoord attributes
+	// Bind vertex and texcoords attributes
 	glBindAttribLocation(m_shader, 0, "vertexPos");
-	glBindAttribLocation(m_shader, 1, "vertexCoord");
+	glBindAttribLocation(m_shader, 1, "vertexCoords");
 
 	// Link shader
 	int linked = 0;
@@ -171,7 +171,7 @@ bool Shader::createShader(const char* vertexShaderSrc,
 	// Get shader attributes locations
 	m_verticesLoc = glGetAttribLocation(m_shader, "vertexPos");
 	if (m_verticesLoc < 0) { return false; }
-	m_texCoordsLoc = glGetAttribLocation(m_shader, "vertexCoord");
+	m_texCoordsLoc = glGetAttribLocation(m_shader, "vertexCoords");
 	if (m_texCoordsLoc < 0) { return false; }
 
 	// Get shader uniforms locations

@@ -37,49 +37,34 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Renderer/Shaders/Default.h : Default shader                            //
+//     Renderer/Shaders/Ellipse.h : Ellipse shader                            //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_RENDERER_SHADERS_DEFAULT_HEADER
-#define WOS_RENDERER_SHADERS_DEFAULT_HEADER
+#ifndef WOS_RENDERER_SHADERS_ELLIPSE_HEADER
+#define WOS_RENDERER_SHADERS_ELLIPSE_HEADER
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Default vertex shader                                                 //
+    //  Ellipse fragment shader                                               //
     ////////////////////////////////////////////////////////////////////////////
-    const char DefaultVertexShaderSrc[] =
-    "#version 100\n"
-    "precision highp float;\n"
-    "precision highp int;\n"
-    "attribute vec3 vertexPos;\n"
-    "attribute vec2 vertexCoords;\n"
-    "uniform mat4 projViewMatrix;\n"
-    "uniform mat4 modelMatrix;\n"
-    "varying vec2 texCoords;\n"
-    "\n"
-    "// Main shader entry point\n"
-    "void main()\n"
-    "{\n"
-    "    // Compute vertex position\n"
-    "    texCoords = vertexCoords;\n"
-    "    gl_Position = projViewMatrix*modelMatrix*vec4(vertexPos,1.0);\n"
-    "}\n";
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  Default fragment shader                                               //
-    ////////////////////////////////////////////////////////////////////////////
-    const char DefaultFragmentShaderSrc[] =
+    const char EllipseFragmentShaderSrc[] =
     "#version 100\n"
     "precision highp float;\n"
     "precision highp int;\n"
     "varying vec2 texCoords;\n"
-    "uniform sampler2D texture;\n"
+    "uniform vec4 constants_color;\n"
+    "uniform float constants_time;\n"
     "\n"
     "// Main shader entry point\n"
     "void main()\n"
     "{\n"
+    "    // Compute ellipse shape (constants_time is the smooth amount)\n"
+    "    vec4 ellipseShape = vec4(1.0, 1.0, 1.0, smoothstep(\n"
+    "        0.499, 0.498-constants_time, length(vec2(0.5, 0.5)-texCoords))\n"
+    "    );\n"
+    "\n"
     "    // Compute output color\n"
-    "    gl_FragColor = texture2D(texture, texCoords);\n"
+    "    gl_FragColor = (constants_color*ellipseShape);\n"
     "}\n";
 
 
-#endif // WOS_RENDERER_SHADERS_DEFAULT_HEADER
+#endif // WOS_RENDERER_SHADERS_ELLIPSE_HEADER

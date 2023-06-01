@@ -37,49 +37,40 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Renderer/Shaders/Default.h : Default shader                            //
+//     Renderer/Shaders/Rectangle.h : Rectangle shader                        //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_RENDERER_SHADERS_DEFAULT_HEADER
-#define WOS_RENDERER_SHADERS_DEFAULT_HEADER
+#ifndef WOS_RENDERER_SHADERS_RECTANGLE_HEADER
+#define WOS_RENDERER_SHADERS_RECTANGLE_HEADER
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Default vertex shader                                                 //
+    //  Rectangle fragment shader                                             //
     ////////////////////////////////////////////////////////////////////////////
-    const char DefaultVertexShaderSrc[] =
-    "#version 100\n"
-    "precision highp float;\n"
-    "precision highp int;\n"
-    "attribute vec3 vertexPos;\n"
-    "attribute vec2 vertexCoords;\n"
-    "uniform mat4 projViewMatrix;\n"
-    "uniform mat4 modelMatrix;\n"
-    "varying vec2 texCoords;\n"
-    "\n"
-    "// Main shader entry point\n"
-    "void main()\n"
-    "{\n"
-    "    // Compute vertex position\n"
-    "    texCoords = vertexCoords;\n"
-    "    gl_Position = projViewMatrix*modelMatrix*vec4(vertexPos,1.0);\n"
-    "}\n";
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  Default fragment shader                                               //
-    ////////////////////////////////////////////////////////////////////////////
-    const char DefaultFragmentShaderSrc[] =
+    const char RectangleFragmentShaderSrc[] =
     "#version 100\n"
     "precision highp float;\n"
     "precision highp int;\n"
     "varying vec2 texCoords;\n"
-    "uniform sampler2D texture;\n"
+    "uniform vec4 constants_color;\n"
+    "uniform float constants_time;\n"
     "\n"
     "// Main shader entry point\n"
     "void main()\n"
     "{\n"
+    "    // Compute rectangle shape (constants_time is the smooth amount)\n"
+    "    vec2 bottomLeft = smoothstep(\n"
+    "        vec2(0.0), vec2(constants_time), texCoords\n"
+    "    );\n"
+    "    vec2 topRight = smoothstep(\n"
+    "        vec2(0.0), vec2(constants_time), 1.0-texCoords\n"
+    "    );\n"
+    "    vec4 rectangleShape = vec4(1.0, 1.0, 1.0,\n"
+    "        (bottomLeft.x * bottomLeft.y * topRight.x * topRight.y)\n"
+    "    );\n"
+    "\n"
     "    // Compute output color\n"
-    "    gl_FragColor = texture2D(texture, texCoords);\n"
+    "    gl_FragColor = (constants_color*rectangleShape);\n"
     "}\n";
 
 
-#endif // WOS_RENDERER_SHADERS_DEFAULT_HEADER
+#endif // WOS_RENDERER_SHADERS_RECTANGLE_HEADER

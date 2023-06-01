@@ -50,10 +50,13 @@
     "#version 100\n"
     "precision highp float;\n"
     "precision highp int;\n"
-    "varying vec2 texCoord;\n"
+    "varying vec2 texCoords;\n"
+    "\n"
+    "// Main shader entry point\n"
     "void main()\n"
     "{\n"
-    "    gl_FragColor = vec4(0.0, 0.0, 0.2, 1.0);\n"
+    "    // Compute output color\n"
+    "    gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);\n"
     "}\n";
 
 

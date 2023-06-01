@@ -235,12 +235,32 @@ bool Renderer::initShaders()
     }
 
 
-    // Create default shaders
+    // Create default shader
     if (!shaders[RENDERER_SHADER_DEFAULT].createShader(
         DefaultVertexShaderSrc, DefaultFragmentShaderSrc))
     {
         // Could not create default shader
         SysMessage::box() << "[0x3053] Could not create default shader\n";
+        SysMessage::box() << "Please update your graphics drivers";
+        return false;
+    }
+
+    // Create rectangle shader
+    if (!shaders[RENDERER_SHADER_RECTANGLE].createShader(
+        DefaultVertexShaderSrc, RectangleFragmentShaderSrc))
+    {
+        // Could not create default shader
+        SysMessage::box() << "[0x3053] Could not create rectangle shader\n";
+        SysMessage::box() << "Please update your graphics drivers";
+        return false;
+    }
+
+    // Create ellipse shader
+    if (!shaders[RENDERER_SHADER_ELLIPSE].createShader(
+        DefaultVertexShaderSrc, EllipseFragmentShaderSrc))
+    {
+        // Could not create ellipse shader
+        SysMessage::box() << "[0x3053] Could not create ellipse shader\n";
         SysMessage::box() << "Please update your graphics drivers";
         return false;
     }
