@@ -92,6 +92,11 @@
 !Renderer/Shaders/Default.h
 !Renderer/Shaders/DefaultProc.h
 
+# Shapes
+!Renderer/Shapes/
+!Renderer/Shapes/RectangleShape.h
+!Renderer/Shapes/RectangleShape.cpp
+
 # Resources
 !Resources/
 !Resources/Resources.h

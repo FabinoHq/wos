@@ -23,6 +23,7 @@
     Renderer/Camera.cpp ^
     Renderer/Sprite.cpp ^
     Renderer/ProcSprite.cpp ^
+    Renderer/Shapes/RectangleShape.cpp ^
     Resources/Resources.cpp ^
     Resources/TextureLoader.cpp ^
     Game/Game.cpp ^
