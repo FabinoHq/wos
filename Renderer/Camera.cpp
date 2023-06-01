@@ -37,98 +37,150 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Renderer/View.cpp : View management                                    //
+//     Renderer/Camera.cpp : Camera management                                //
 ////////////////////////////////////////////////////////////////////////////////
-#include "View.h"
+#include "Camera.h"
 #include "Renderer.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  View default constructor                                                  //
+//  Camera default constructor                                                //
 ////////////////////////////////////////////////////////////////////////////////
-View::View() :
-Transform2(),
+Camera::Camera() :
+Transform3(),
 m_projMatrix(),
-m_projViewMatrix()
+m_projViewMatrix(),
+m_target(0.0f, 0.0f, 0.0f),
+m_upward(0.0f, 0.0f, 0.0f),
+m_fovy(0.0f),
+m_nearPlane(0.0f),
+m_farPlane(0.0f)
 {
     m_projMatrix.reset();
     m_projViewMatrix.reset();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//  View virtual destructor                                                   //
+//  Camera virtual destructor                                                 //
 ////////////////////////////////////////////////////////////////////////////////
-View::~View()
+Camera::~Camera()
 {
+    m_farPlane = 0.0f;
+    m_nearPlane = 0.0f;
+    m_fovy = 0.0f;
+    m_upward.reset();
+    m_target.reset();
     m_projViewMatrix.reset();
     m_projMatrix.reset();
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Init view                                                                 //
-//  return : True if the view is successfully created                         //
+//  Init camera                                                               //
+//  return : True if the camera is successfully created                       //
 ////////////////////////////////////////////////////////////////////////////////
-bool View::init()
+bool Camera::init()
 {
-    // Reset view transformations
+    // Reset camera transforms
     resetTransforms();
 
-    // Set view size
-    setSize(1.0f, 1.0f);
+    // Reset camera target vector
+    m_target.reset();
+
+    // Reset camera upward vector
+    m_upward.set(0.0f, 1.0f, 0.0f);
+
+    // Reset camera fovy
+    m_fovy = CameraDefaultFovy;
+
+    // Reset camera Z near and Z far
+    m_nearPlane = CameraDefaultNearPlane;
+    m_farPlane = CameraDefaultFarPlane;
 
     // Reset projection matrix
-    m_projMatrix.setOrthographic(-1.0f, 1.0f, 1.0f, -1.0f, -2.0f, 2.0f);
-    m_projMatrix.translateZ(-1.0f);
+    m_projMatrix.setPerspective(
+        m_fovy, GRenderer.getRatio(), m_nearPlane, m_farPlane
+    );
+
+    // Reset view matrix
+    m_matrix.setIdentity();
 
     // Reset projview matrix
     m_projViewMatrix.set(m_projMatrix);
     m_projViewMatrix *= m_matrix;
 
-    // Reset view matrix
-    m_matrix.setIdentity();
-
-    // View is successfully created
+    // Camera is successfully created
     return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Destroy view                                                              //
+//  Destroy camera                                                            //
 ////////////////////////////////////////////////////////////////////////////////
-void View::destroyView()
+void Camera::destroyCamera()
 {
+    m_farPlane = 0.0f;
+    m_nearPlane = 0.0f;
+    m_fovy = 0.0f;
+    m_upward.reset();
+    m_target.reset();
+    m_angles.reset();
     m_projViewMatrix.reset();
     m_projMatrix.reset();
     resetTransforms();
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
-//  Compute view                                                              //
+//  Compute camera                                                            //
+//  return : True if the camera is successfully computed                      //
 ////////////////////////////////////////////////////////////////////////////////
-void View::compute(float ratio)
+bool Camera::compute(float ratio)
 {
+    // Compute camera target
+    m_target.vec[0] = std::cos(m_angles.vec[0]);
+    m_target.vec[0] *= std::sin(m_angles.vec[1]);
+    m_target.vec[1] = std::sin(m_angles.vec[0]);
+    m_target.vec[2] = std::cos(m_angles.vec[0]);
+    m_target.vec[2] *= std::cos(m_angles.vec[1]);
+    m_target.normalize();
+
     // Compute projection matrix
-    m_projMatrix.setOrthographic(-ratio, ratio, 1.0f, -1.0f, -2.0f, 2.0f);
-    m_projMatrix.translateZ(-1.0f);
+    m_projMatrix.setPerspective(m_fovy, ratio, m_nearPlane, m_farPlane);
 
     // Compute view matrix
     m_matrix.setIdentity();
+    m_matrix.rotate(-m_angles);
     m_matrix.translate(-m_position);
-    m_matrix.rotateZ(-m_angle);
-    m_matrix.translate(m_origin);
-    m_matrix.scale(m_size);
 
     // Compute projview matrix
     m_projViewMatrix.set(m_projMatrix);
     m_projViewMatrix *= m_matrix;
+
+    // Camera successfully computed
+    return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Bind view                                                                 //
+//  Compute camera from another camera                                        //
+//  return : True if the camera is successfully computed                      //
 ////////////////////////////////////////////////////////////////////////////////
-void View::bind()
+bool Camera::compute(float ratio, Camera& camera)
 {
-    // Upload projview matrix
-    GRenderer.currentShader->sendProjViewMatrix(m_projViewMatrix);
+    // Copy camera parameters
+    m_origin = camera.m_origin;
+    m_position = camera.m_position;
+    m_scale = camera.m_scale;
+    m_angles = camera.m_angles;
+
+    // Compute projection matrix
+    m_projMatrix.setPerspective(m_fovy, ratio, m_nearPlane, m_farPlane);
+
+    // Compute view matrix
+    m_matrix.set(camera.m_matrix);
+
+    // Compute projview matrix
+    m_projViewMatrix.set(m_projMatrix);
+    m_projViewMatrix *= m_matrix;
+
+    // Camera successfully computed
+    return true;
 }

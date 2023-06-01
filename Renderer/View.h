@@ -80,11 +80,11 @@
             ////////////////////////////////////////////////////////////////////
             void destroyView();
 
+
             ////////////////////////////////////////////////////////////////////
             //  Compute view                                                  //
             ////////////////////////////////////////////////////////////////////
             void compute(float ratio);
-
 
             ////////////////////////////////////////////////////////////////////
             //  Bind view                                                     //
@@ -105,8 +105,8 @@
 
 
         private:
-            Matrix4x4           m_projMatrix;           // Projection matrix
-            Matrix4x4           m_projViewMatrix;       // Projview matrix
+            Matrix4x4           m_projMatrix;       // Projection matrix
+            Matrix4x4           m_projViewMatrix;   // Projview matrix
     };
 
 

@@ -20,6 +20,7 @@
     Renderer/VertexBuffer.cpp ^
     Renderer/Texture.cpp ^
     Renderer/View.cpp ^
+    Renderer/Camera.cpp ^
     Renderer/Sprite.cpp ^
     Renderer/ProcSprite.cpp ^
     Resources/Resources.cpp ^
