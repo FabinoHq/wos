@@ -46,7 +46,13 @@
 
     #include "../System/System.h"
     #include "../System/SysMessage.h"
+    #include "../Math/Math.h"
+    #include "../Math/Vector2.h"
+    #include "../Math/Vector3.h"
+    #include "../Math/Vector4.h"
     #include "../Math/Matrix4x4.h"
+
+    #include <cstdint>
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -84,33 +90,31 @@
                 const char* fragmentShaderSrc);
 
             ////////////////////////////////////////////////////////////////////
-            //  Get shader uniform location                                   //
+            //  Destroy shader                                                //
             ////////////////////////////////////////////////////////////////////
-            inline unsigned int getUniformLocation(const char* uniform)
+            void destroyShader();
+
+
+            ////////////////////////////////////////////////////////////////////
+            //  Get shader vertices location                                  //
+            ////////////////////////////////////////////////////////////////////
+            inline int32_t getVerticesLocation()
             {
-                return glGetUniformLocation(m_shader, uniform);
+                return m_verticesLoc;
             }
 
             ////////////////////////////////////////////////////////////////////
-            //  Set shader uniform value                                      //
+            //  Get shader texcoords location                                 //
             ////////////////////////////////////////////////////////////////////
-            inline void setUniformValue(unsigned int location, int value)
+            inline int32_t getTexCoordsLocation()
             {
-                glUniform1iv(location, 1, &value);
+                return m_texCoordsLoc;
             }
 
             ////////////////////////////////////////////////////////////////////
-            //  Set shader uniform vec 2                                      //
+            //  Send projection matrix                                        //
             ////////////////////////////////////////////////////////////////////
-            inline void setUniformVec2(unsigned int location, Vector2& vec)
-            {
-                glUniform2fv(location, 1, vec.vec);
-            }
-
-            ////////////////////////////////////////////////////////////////////
-            //  Set projection matrix                                         //
-            ////////////////////////////////////////////////////////////////////
-            inline void setProjectionMatrix(Matrix4x4& projMatrix)
+            inline void sendProjectionMatrix(Matrix4x4& projMatrix)
             {
                 glUniformMatrix4fv(
                     m_projMatrixLoc, 1, GL_FALSE, projMatrix.mat
@@ -118,9 +122,9 @@
             }
 
             ////////////////////////////////////////////////////////////////////
-            //  Set view matrix                                               //
+            //  Send view matrix                                              //
             ////////////////////////////////////////////////////////////////////
-            inline void setProjViewMatrix(Matrix4x4& projViewMatrix)
+            inline void sendProjViewMatrix(Matrix4x4& projViewMatrix)
             {
                 glUniformMatrix4fv(
                     m_projViewMatrixLoc, 1, GL_FALSE, projViewMatrix.mat
@@ -128,13 +132,70 @@
             }
 
             ////////////////////////////////////////////////////////////////////
-            //  Set model matrix                                              //
+            //  Send model matrix                                             //
             ////////////////////////////////////////////////////////////////////
-            inline void setModelMatrix(Matrix4x4& modelMatrix)
+            inline void sendModelMatrix(Matrix4x4& modelMatrix)
             {
                 glUniformMatrix4fv(
                     m_modelMatrixLoc, 1, GL_FALSE, modelMatrix.mat
                 );
+            }
+
+
+            ////////////////////////////////////////////////////////////////////
+            //  Get shader uniform location                                   //
+            ////////////////////////////////////////////////////////////////////
+            inline int32_t getUniform(const char* uniform)
+            {
+                return glGetUniformLocation(m_shader, uniform);
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Send shader uniform value                                     //
+            ////////////////////////////////////////////////////////////////////
+            inline void sendUniform(int32_t location, float value)
+            {
+                glUniform1fv(location, 1, &value);
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Send shader uniform integer value                             //
+            ////////////////////////////////////////////////////////////////////
+            inline void sendIntUniform(int32_t location, int32_t value)
+            {
+                glUniform1iv(location, 1, &value);
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Send shader uniform vec 2                                     //
+            ////////////////////////////////////////////////////////////////////
+            inline void sendUniformVec2(int32_t location, Vector2& vec)
+            {
+                glUniform2fv(location, 1, vec.vec);
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Send shader uniform vec 3                                     //
+            ////////////////////////////////////////////////////////////////////
+            inline void sendUniformVec3(int32_t location, Vector3& vec)
+            {
+                glUniform3fv(location, 1, vec.vec);
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Send shader uniform vec 4                                     //
+            ////////////////////////////////////////////////////////////////////
+            inline void sendUniformVec4(int32_t location, Vector4& vec)
+            {
+                glUniform4fv(location, 1, vec.vec);
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Send shader uniform mat 4                                     //
+            ////////////////////////////////////////////////////////////////////
+            inline void sendUniformMat4(int32_t location, Matrix4x4& mat)
+            {
+                glUniformMatrix4fv(location, 1, GL_FALSE, mat.mat);
             }
 
 
@@ -144,6 +205,14 @@
             void bind()
             {
                 glUseProgram(m_shader);
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Unbind shader                                                 //
+            ////////////////////////////////////////////////////////////////////
+            void unbind()
+            {
+                glUseProgram(0);
             }
 
 
@@ -160,10 +229,12 @@
 
 
         private:
-            unsigned int    m_shader;           // Shader handle
-            unsigned int    m_projMatrixLoc;    // Projection matrix location
-            unsigned int    m_projViewMatrixLoc;// ProjView matrix location
-            unsigned int    m_modelMatrixLoc;   // Model matrix location
+            int32_t     m_shader;               // Shader handle
+            int32_t     m_verticesLoc;          // Vertices location
+            int32_t     m_texCoordsLoc;         // Texcoords locations
+            int32_t     m_projMatrixLoc;        // Projection matrix location
+            int32_t     m_projViewMatrixLoc;    // ProjView matrix location
+            int32_t     m_modelMatrixLoc;       // Model matrix location
     };
 
 

@@ -129,6 +129,6 @@ void View::compute(float ratio)
 void View::bindView()
 {
     // Upload matrices
-    GRenderer.currentShader->setProjectionMatrix(m_projMatrix);
-    GRenderer.currentShader->setProjViewMatrix(m_projViewMatrix);
+    GRenderer.currentShader->sendProjectionMatrix(m_projMatrix);
+    GRenderer.currentShader->sendProjViewMatrix(m_projViewMatrix);
 }

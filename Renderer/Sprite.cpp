@@ -178,7 +178,7 @@ void Sprite::render()
     computeTransforms();
 
     // Upload model matrix
-    GRenderer.currentShader->setModelMatrix(m_matrix);
+    GRenderer.currentShader->sendModelMatrix(m_matrix);
 
     // Render sprite
     GRenderer.vertexBuffer.render();

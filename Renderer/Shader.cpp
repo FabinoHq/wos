@@ -47,10 +47,12 @@
 //  Shader default constructor                                                //
 ////////////////////////////////////////////////////////////////////////////////
 Shader::Shader() :
-m_shader(0),
-m_projMatrixLoc(0),
-m_projViewMatrixLoc(0),
-m_modelMatrixLoc(0)
+m_shader(-1),
+m_verticesLoc(-1),
+m_texCoordsLoc(-1),
+m_projMatrixLoc(-1),
+m_projViewMatrixLoc(-1),
+m_modelMatrixLoc(-1)
 {
 
 }
@@ -61,8 +63,7 @@ m_modelMatrixLoc(0)
 Shader::~Shader()
 {
 	// Destroy shader
-	if (m_shader) { glDeleteProgram(m_shader); }
-	m_shader = 0;
+	destroyShader();
 }
 
 
@@ -161,8 +162,14 @@ bool Shader::createShader(const char* vertexShaderSrc,
 		return false;
 	}
 
-	// Get shader uniforms locations
+	// Bind shader
 	glUseProgram(m_shader);
+
+	// Get shader attributes locations
+	m_verticesLoc = glGetAttribLocation(m_shader, "vertexPos");
+	m_texCoordsLoc = glGetAttribLocation(m_shader, "vertexCoord");
+
+	// Get shader uniforms locations
 	m_projMatrixLoc = glGetUniformLocation(m_shader, "projMatrix");
 	m_projViewMatrixLoc = glGetUniformLocation(m_shader, "projViewMatrix");
 	m_modelMatrixLoc = glGetUniformLocation(m_shader, "modelMatrix");
@@ -196,4 +203,14 @@ bool Shader::createShader(const char* vertexShaderSrc,
 
 	// Shader successfully created
 	return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Destroy shader                                                            //
+////////////////////////////////////////////////////////////////////////////////
+void Shader::destroyShader()
+{
+	glUseProgram(0);
+	if (m_shader) { glDeleteProgram(m_shader); }
+	m_shader = 0;
 }
