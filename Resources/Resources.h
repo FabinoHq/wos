@@ -45,6 +45,7 @@
     #include "../System/System.h"
     #include "../System/SysMessage.h"
     #include "TextureLoader.h"
+    #include "MeshLoader.h"
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -120,6 +121,7 @@
 
         public:
             TextureLoader       textures;       // Texture loader
+            MeshLoader          meshes;         // Mesh loader
     };
 
 

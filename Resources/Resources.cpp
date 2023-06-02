@@ -52,7 +52,8 @@ Resources GResources = Resources();
 //  Resources default constructor                                             //
 ////////////////////////////////////////////////////////////////////////////////
 Resources::Resources() :
-textures()
+textures(),
+meshes()
 {
 
 }
@@ -75,6 +76,9 @@ bool Resources::init()
     // Start texture loader thread
     textures.start();
 
+    // Start mesh loader thread
+    meshes.start();
+
     // Resources loaders are starting
     return true;
 }
@@ -87,6 +91,9 @@ bool Resources::preload()
 {
     // Start texture preloading
     textures.startPreload();
+
+    // Start mesh preloading
+    meshes.startPreload();
 
     // Resources assets are preloading
     return true;
@@ -107,6 +114,15 @@ bool Resources::startLoading()
         return false;
     }
 
+    // Start meshes assets loading
+    if (!meshes.startLoading())
+    {
+        // Could not start meshes loading
+        SysMessage::box() << "[0x4002] Could not start meshes loader\n";
+        SysMessage::box() << "Please check your resources files";
+        return false;
+    }
+
     // Resources assets are loading
     return true;
 }
@@ -119,9 +135,11 @@ bool Resources::isInitDone()
 {
     // Get resources loader states
     TextureLoaderState textureState = textures.getState();
+    MeshLoaderState meshState = meshes.getState();
 
     // Check resources loader states
-    if (textureState == TEXTURELOADER_STATE_IDLE)
+    if ((textureState == TEXTURELOADER_STATE_IDLE) &&
+        (meshState == MESHLOADER_STATE_IDLE))
     {
         // Resources loaders are ready
         return true;
@@ -139,9 +157,11 @@ bool Resources::isLoadingDone()
 {
     // Get resources loader states
     TextureLoaderState textureState = textures.getState();
+    MeshLoaderState meshState = meshes.getState();
 
     // Check resources loader states
-    if (textureState == TEXTURELOADER_STATE_IDLE)
+    if ((textureState == TEXTURELOADER_STATE_IDLE) &&
+        (meshState == MESHLOADER_STATE_IDLE))
     {
         // Resources assets are loaded
         return true;
@@ -156,8 +176,14 @@ bool Resources::isLoadingDone()
 ////////////////////////////////////////////////////////////////////////////////
 void Resources::destroyResources()
 {
+    // Stop mesh loader thread
+    meshes.stop();
+
     // Stop texture loader thread
     textures.stop();
+
+    // Destroy mesh loader
+    meshes.destroyMeshLoader();
 
     // Destroy texture loader
     textures.destroyTextureLoader();

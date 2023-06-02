@@ -50,6 +50,17 @@
 
 
     ////////////////////////////////////////////////////////////////////////////
+    //  Vertex inputs types enumeration                                       //
+    ////////////////////////////////////////////////////////////////////////////
+    enum VertexInputsType
+    {
+        VERTEX_INPUTS_DEFAULT = 0,
+        VERTEX_INPUTS_CUBEMAP = 1,
+        VERTEX_INPUTS_STATICMESH = 2
+    };
+
+
+    ////////////////////////////////////////////////////////////////////////////
     //  Default vertex buffer vertices                                        //
     ////////////////////////////////////////////////////////////////////////////
     const uint32_t DefaultVerticesCount = 20;
@@ -88,23 +99,30 @@
 
 
             ////////////////////////////////////////////////////////////////////
-            //  Create Vertex buffer                                          //
+            //  Create vertex buffer                                          //
             ////////////////////////////////////////////////////////////////////
             bool createBuffer();
 
             ////////////////////////////////////////////////////////////////////
-            //  Create Vertex buffer                                          //
+            //  Create vertex buffer                                          //
             ////////////////////////////////////////////////////////////////////
             bool createBuffer(
                 const float* vertices, const unsigned int* indices,
-                uint32_t verticesCount, uint32_t indicesCount);
+                uint32_t verticesCount, uint32_t indicesCount,
+                VertexInputsType vertexType = VERTEX_INPUTS_DEFAULT);
 
             ////////////////////////////////////////////////////////////////////
-            //  Update Vertex buffer                                          //
+            //  Update vertex buffer                                          //
             ////////////////////////////////////////////////////////////////////
             bool updateBuffer(
                 const float* vertices, const unsigned int* indices,
                 uint32_t verticesCount, uint32_t indicesCount);
+
+            ////////////////////////////////////////////////////////////////////
+            //  Destroy vertex buffer                                         //
+            ////////////////////////////////////////////////////////////////////
+            void destroyBuffer();
+
 
             ////////////////////////////////////////////////////////////////////
             //  Render Vertex buffer                                          //
@@ -125,9 +143,10 @@
 
 
         private:
-            uint32_t        m_vertexBuffer;     // Vertex buffer handle
-            uint32_t        m_elementBuffer;    // Element buffer handle
-            uint32_t        m_indicesCount;     // Indices count
+            VertexInputsType    m_vertexType;       // Vertex input type
+            uint32_t            m_vertexBuffer;     // Vertex buffer handle
+            uint32_t            m_elementBuffer;    // Element buffer handle
+            uint32_t            m_indicesCount;     // Indices count
     };
 
 

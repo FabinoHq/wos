@@ -50,6 +50,7 @@ Shader::Shader() :
 m_shader(-1),
 m_verticesLoc(-1),
 m_texCoordsLoc(-1),
+m_normalsLoc(-1),
 m_projViewMatrixLoc(-1),
 m_modelMatrixLoc(-1),
 m_colorLoc(-1),
@@ -175,6 +176,7 @@ bool Shader::createShader(const char* vertexShaderSrc,
 	if (m_verticesLoc < 0) { return false; }
 	m_texCoordsLoc = glGetAttribLocation(m_shader, "vertexCoords");
 	if (m_texCoordsLoc < 0) { return false; }
+	m_normalsLoc = glGetAttribLocation(m_shader, "normals");
 
 	// Get mandatory shader uniforms locations
 	m_projViewMatrixLoc = glGetUniformLocation(m_shader, "projViewMatrix");

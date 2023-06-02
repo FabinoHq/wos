@@ -28,6 +28,7 @@
     Renderer/Shapes/CuboidShape.cpp ^
     Resources/Resources.cpp ^
     Resources/TextureLoader.cpp ^
+    Resources/MeshLoader.cpp ^
     Game/Game.cpp ^
     Wos.cpp ^
     main.cpp

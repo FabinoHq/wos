@@ -146,6 +146,14 @@
             }
 
             ////////////////////////////////////////////////////////////////////
+            //  Bind renderer vertex buffer                                   //
+            ////////////////////////////////////////////////////////////////////
+            /*inline void bindVertexBuffer(MeshesAssets meshAsset)
+            {
+                currentBuffer = meshAsset;
+            }*/
+
+            ////////////////////////////////////////////////////////////////////
             //  Bind renderer view                                            //
             ////////////////////////////////////////////////////////////////////
             inline void bindView(View& view)
@@ -289,6 +297,7 @@
 
             Shader*             currentShader;      // Current shader
             View*               currentView;        // Current view
+            VertexBuffer*       currentBuffer;      // Current vertex buffer
     };
 
 

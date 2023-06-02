@@ -109,6 +109,8 @@
 !Resources/Resources.cpp
 !Resources/TextureLoader.h
 !Resources/TextureLoader.cpp
+!Resources/MeshLoader.h
+!Resources/MeshLoader.cpp
 
 # Game files
 !Game/

@@ -61,7 +61,8 @@ shaders(0),
 vertexBuffer(),
 defaultView(),
 currentShader(0),
-currentView(0)
+currentView(0),
+currentBuffer(0)
 {
 
 }
@@ -71,6 +72,7 @@ currentView(0)
 ////////////////////////////////////////////////////////////////////////////////
 Renderer::~Renderer()
 {
+    currentBuffer = 0;
     currentView = 0;
     currentShader = 0;
     shaders = 0;

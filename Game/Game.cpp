@@ -47,6 +47,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 Game::Game() :
 m_view(),
+m_camera(),
 m_sprite(),
 m_procSprite(),
 m_rectangle(),
@@ -79,6 +80,14 @@ bool Game::init()
     if (!m_view.init())
     {
         // Could not init view
+        GSysWindow.releaseThread();
+        return false;
+    }
+
+    // Init camera
+    if (!m_camera.init())
+    {
+        // Could not init camera
         GSysWindow.releaseThread();
         return false;
     }
@@ -228,6 +237,9 @@ void Game::compute(float frametime)
     GRenderer.defaultView.compute(ratio);
     m_view.compute(ratio);
 
+    // Compute cameras
+    m_camera.compute(ratio);
+
     // Compute procedural sprite
     m_procSprite.setSize(ratio*2.0f, 2.0f);
     m_procSprite.centerOrigin();
@@ -254,9 +266,9 @@ void Game::render()
     m_procSprite.render();*/
 
     // Render sprite
-    /*GRenderer.bindShader(RENDERER_SHADER_DEFAULT);
+    GRenderer.bindShader(RENDERER_SHADER_DEFAULT);
     m_sprite.bindTexture();
-    m_sprite.render();*/
+    m_sprite.render();
 
     // Render rectangle shape
     /*GRenderer.bindShader(RENDERER_SHADER_RECTANGLE);

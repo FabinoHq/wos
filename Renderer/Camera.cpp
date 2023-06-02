@@ -129,6 +129,7 @@ void Camera::destroyCamera()
     resetTransforms();
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////
 //  Compute camera                                                            //
 //  return : True if the camera is successfully computed                      //
@@ -183,4 +184,13 @@ bool Camera::compute(float ratio, Camera& camera)
 
     // Camera successfully computed
     return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Bind camera                                                               //
+////////////////////////////////////////////////////////////////////////////////
+void Camera::bind()
+{
+    // Upload projview matrix
+    GRenderer.currentShader->sendProjViewMatrix(m_projViewMatrix);
 }

@@ -37,13 +37,10 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Resources/TextureLoader.h : Texture loading management                 //
+//     Resources/MeshLoader.h : Mesh loading management                       //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_RESOURCES_TEXTURELOADER_HEADER
-#define WOS_RESOURCES_TEXTURELOADER_HEADER
-
-    #include <emscripten/html5.h>
-    #include <GLES2/gl2.h>
+#ifndef WOS_RESOURCES_MESHLOADER_HEADER
+#define WOS_RESOURCES_MESHLOADER_HEADER
 
     #include "../System/System.h"
     #include "../System/SysThread.h"
@@ -51,229 +48,179 @@
     #include "../System/SysWindow.h"
 
     #include "../Renderer/Renderer.h"
-    #include "../Renderer/Texture.h"
+    #include "../Renderer/VertexBuffer.h"
 
-    #include "../Images/PNGFile.h"
-
+    #include <fstream>
     #include <cstdint>
     #include <new>
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  TextureLoader settings                                                //
+    //  Embedded meshes                                                       //
     ////////////////////////////////////////////////////////////////////////////
-    const uint32_t TextureMaxWidth = 4096;
-    const uint32_t TextureMaxHeight = 4096;
-    const uint32_t TextureMaxLayers = 8;
-    const uint32_t CubeMapMaxWidth = 2048;
-    const uint32_t CubeMapMaxHeight = 2048;
-    const uint32_t TextureMaxSize = (TextureMaxWidth*TextureMaxHeight*4);
-    const uint32_t TextureArrayMaxSize =
-        (TextureMaxWidth*TextureMaxHeight*TextureMaxLayers*4);
-    const uint32_t CubeMapMaxSize = (CubeMapMaxWidth*CubeMapMaxHeight*4*6);
-    const double TextureLoaderIdleSleepTime = 0.01;
-    const double TextureLoaderWaitAsyncSleepTime = 0.002;
-    const double TextureLoaderErrorSleepTime = 0.1;
+    #include "../Renderer/Shapes/CuboidShape.h"
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  TexturesGUI enumeration                                               //
+    //  MeshLoader settings                                                   //
     ////////////////////////////////////////////////////////////////////////////
-    enum TexturesGUI
+    const double MeshLoaderIdleSleepTime = 0.01;
+    const double MeshLoaderErrorSleepTime = 0.1;
+    const uint32_t MeshLoaderMaxVerticesCount = 1048576;
+    const uint32_t MeshLoaderMaxIndicesCount = 262144;
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    //  MeshesAssets enumeration                                              //
+    ////////////////////////////////////////////////////////////////////////////
+    enum MeshesAssets
     {
-        TEXTURE_GUICOUNT = 0
-    };
+        MESHES_DEFAULT = 0,
+        MESHES_CUBOID = 1,
 
-    ////////////////////////////////////////////////////////////////////////////
-    //  TexturesAssets enumeration                                            //
-    ////////////////////////////////////////////////////////////////////////////
-    enum TexturesAssets
-    {
-        TEXTURE_TEST = 0,
+        MESHES_TEST = 2,
 
-        TEXTURE_ASSETSCOUNT = 1
-    };
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  TexturesArrays enumeration                                            //
-    ////////////////////////////////////////////////////////////////////////////
-    enum TexturesArrays
-    {
-        TEXTURE_ARRAYSCOUNT = 0
-    };
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  TexturesCubeMaps enumeration                                          //
-    ////////////////////////////////////////////////////////////////////////////
-    enum TexturesCubeMaps
-    {
-        TEXTURE_CUBEMAPCOUNT = 0
+        MESHES_ASSETSCOUNT = 3
     };
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  TextureLoaderState enumeration                                        //
+    //  MeshLoaderState enumeration                                           //
     ////////////////////////////////////////////////////////////////////////////
-    enum TextureLoaderState
+    enum MeshLoaderState
     {
-        TEXTURELOADER_STATE_NONE = 0,
-        TEXTURELOADER_STATE_INIT = 1,
-        TEXTURELOADER_STATE_LOADEMBEDDED = 2,
+        MESHLOADER_STATE_NONE = 0,
+        MESHLOADER_STATE_INIT = 1,
+        MESHLOADER_STATE_LOADEMBEDDED = 2,
 
-        TEXTURELOADER_STATE_IDLE = 3,
-        TEXTURELOADER_STATE_PRELOAD = 4,
-        TEXTURELOADER_STATE_LOAD = 5,
+        MESHLOADER_STATE_IDLE = 3,
+        MESHLOADER_STATE_PRELOAD = 4,
+        MESHLOADER_STATE_LOAD = 5,
 
-        TEXTURELOADER_STATE_ERROR = 6
+        MESHLOADER_STATE_ERROR = 6
     };
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  TextureCallbackState enumeration                                      //
+    //  MeshLoader class definition                                           //
     ////////////////////////////////////////////////////////////////////////////
-    enum TextureCallbackState
-    {
-        TEXTURELOADER_CALLBACK_NONE = 0,
-        TEXTURELOADER_CALLBACK_LOADED = 1,
-        TEXTURELOADER_CALLBACK_ERROR = 2
-    };
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  TextureCallbackData structure                                         //
-    ////////////////////////////////////////////////////////////////////////////
-    struct TextureCallbackData
-    {
-        SysMutex mutex;
-        TextureCallbackState state;
-        unsigned char* data;
-        int size;
-    };
-
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  TextureLoader class definition                                        //
-    ////////////////////////////////////////////////////////////////////////////
-    class TextureLoader : public SysThread
+    class MeshLoader : public SysThread
     {
         public:
             ////////////////////////////////////////////////////////////////////
-            //  TextureLoader default constructor                             //
+            //  MeshLoader default constructor                                //
             ////////////////////////////////////////////////////////////////////
-            TextureLoader();
+            MeshLoader();
 
             ////////////////////////////////////////////////////////////////////
-            //  TextureLoader virtual destructor                              //
+            //  MeshLoader virtual destructor                                 //
             ////////////////////////////////////////////////////////////////////
-            virtual ~TextureLoader();
+            virtual ~MeshLoader();
 
 
             ////////////////////////////////////////////////////////////////////
-            //  TextureLoader thread process                                  //
+            //  MeshLoader thread process                                     //
             ////////////////////////////////////////////////////////////////////
             virtual void process();
 
 
             ////////////////////////////////////////////////////////////////////
-            //  Init TextureLoader                                            //
-            //  return : True if texture loader is ready                      //
+            //  Init MeshLoader                                               //
+            //  return : True if mesh loader is ready                         //
             ////////////////////////////////////////////////////////////////////
             bool init();
 
             ////////////////////////////////////////////////////////////////////
-            //  Start preloading textures assets                              //
-            //  return : True if textures assets are preloading               //
+            //  Start preloading meshes assets                                //
+            //  return : True if meshes assets are preloading                 //
             ////////////////////////////////////////////////////////////////////
             bool startPreload();
 
             ////////////////////////////////////////////////////////////////////
-            //  Start loading textures assets                                 //
-            //  return : True if textures assets are loading                  //
+            //  Start loading meshes assets                                   //
+            //  return : True if meshes assets are loading                    //
             ////////////////////////////////////////////////////////////////////
             bool startLoading();
 
             ////////////////////////////////////////////////////////////////////
-            //  Get texture loader state                                      //
-            //  return : Current texture loader state                         //
+            //  Get mesh loader state                                         //
+            //  return : Current mesh loader state                            //
             ////////////////////////////////////////////////////////////////////
-            TextureLoaderState getState();
+            MeshLoaderState getState();
 
             ////////////////////////////////////////////////////////////////////
-            //  Get high texture                                              //
-            //  return : high texture                                         //
+            //  Get mesh vertex buffer                                        //
+            //  return : mesh vertex buffer                                   //
             ////////////////////////////////////////////////////////////////////
-            inline Texture& high(TexturesAssets texture)
+            inline VertexBuffer& mesh(MeshesAssets mesh)
             {
-                return m_texturesHigh[texture];
+                return m_meshes[mesh];
             }
 
             ////////////////////////////////////////////////////////////////////
-            //  Destroy texture loader                                        //
+            //  Destroy mesh loader                                           //
             ////////////////////////////////////////////////////////////////////
-            void destroyTextureLoader();
+            void destroyMeshLoader();
 
 
             ////////////////////////////////////////////////////////////////////
-            //  Load texture asynchronously and wait for callback             //
-            //  return : True if texture is loaded, false otherwise           //
+            //  Upload vertex buffer to graphics memory                       //
+            //  return : True if vertex buffer is successfully uploaded       //
             ////////////////////////////////////////////////////////////////////
-            bool loadTextureAsync(Texture& texture, const char* path,
-                bool mipmaps, bool smooth, TextureRepeatMode repeat);
-
-            ////////////////////////////////////////////////////////////////////
-            //  Upload texture to graphics memory                             //
-            //  return : True if texture is successfully uploaded             //
-            ////////////////////////////////////////////////////////////////////
-            bool uploadTexture(unsigned int& handle,
-                uint32_t width, uint32_t height, uint32_t mipLevels,
-                const unsigned char* data,
-                bool smooth, TextureRepeatMode repeat);
-
-            ////////////////////////////////////////////////////////////////////
-            //  Generate texture mipmaps                                      //
-            //  return : True if texture mipmaps are generated                //
-            ////////////////////////////////////////////////////////////////////
-            bool generateTextureMipmaps(unsigned int& handle,
-                uint32_t width, uint32_t height, uint32_t mipLevels);
+            bool uploadVertexBuffer(VertexBuffer& vertexBuffer,
+                const float* vertices, const uint32_t* indices,
+                uint32_t verticesCount, uint32_t indicesCount);
 
 
         private:
             ////////////////////////////////////////////////////////////////////
-            //  Load embedded textures                                        //
-            //  return : True if embedded textures are successfully loaded    //
+            //  Load embedded meshes                                          //
+            //  return : True if embedded meshes are successfully loaded      //
             ////////////////////////////////////////////////////////////////////
-            bool loadEmbeddedTextures();
+            bool loadEmbeddedMeshes();
 
             ////////////////////////////////////////////////////////////////////
-            //  Preload textures assets                                       //
-            //  return : True if textures assets are preloaded                //
+            //  Preload meshes assets                                         //
+            //  return : True if meshes assets are preloaded                  //
             ////////////////////////////////////////////////////////////////////
-            bool preloadTextures();
+            bool preloadMeshes();
 
             ////////////////////////////////////////////////////////////////////
-            //  Load textures assets                                          //
-            //  return : True if textures assets are loaded                   //
+            //  Load meshes assets                                            //
+            //  return : True if meshes assets are loaded                     //
             ////////////////////////////////////////////////////////////////////
-            bool loadTextures();
+            bool loadMeshes();
 
 
-        private:
             ////////////////////////////////////////////////////////////////////
-            //  TextureLoader private copy constructor : Not copyable         //
+            //  Load mesh from VMSH file                                      //
+            //  return : True if the mesh is successfully loaded              //
             ////////////////////////////////////////////////////////////////////
-            TextureLoader(const TextureLoader&) = delete;
-
-            ////////////////////////////////////////////////////////////////////
-            //  TextureLoader private copy operator : Not copyable            //
-            ////////////////////////////////////////////////////////////////////
-            TextureLoader& operator=(const TextureLoader&) = delete;
+            bool loadVMSH(VertexBuffer& vertexBuffer,
+                const std::string& filepath);
 
 
         private:
-            TextureLoaderState      m_state;            // TextureLoader state
+            ////////////////////////////////////////////////////////////////////
+            //  MeshLoader private copy constructor : Not copyable            //
+            ////////////////////////////////////////////////////////////////////
+            MeshLoader(const MeshLoader&) = delete;
+
+            ////////////////////////////////////////////////////////////////////
+            //  MeshLoader private copy operator : Not copyable               //
+            ////////////////////////////////////////////////////////////////////
+            MeshLoader& operator=(const MeshLoader&) = delete;
+
+
+        private:
+            MeshLoaderState         m_state;            // MeshLoader state
             SysMutex                m_stateMutex;       // State mutex
 
-            Texture*                m_texturesHigh;     // High textures
+            VertexBuffer*           m_meshes;           // Meshes
+
+            float*                  m_vertices;         // Mesh vertices
+            uint32_t*               m_indices;          // Mesh indices
     };
 
 
-#endif // WOS_RESOURCES_TEXTURELOADER_HEADER
+#endif // WOS_RESOURCES_MESHLOADER_HEADER

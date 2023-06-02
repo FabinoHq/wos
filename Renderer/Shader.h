@@ -114,6 +114,14 @@
             }
 
             ////////////////////////////////////////////////////////////////////
+            //  Get shader normals location                                   //
+            ////////////////////////////////////////////////////////////////////
+            inline int32_t getNormalsLocation()
+            {
+                return m_normalsLoc;
+            }
+
+            ////////////////////////////////////////////////////////////////////
             //  Send projview matrix                                          //
             ////////////////////////////////////////////////////////////////////
             inline void sendProjViewMatrix(Matrix4x4& projViewMatrix)
@@ -241,6 +249,7 @@
             int32_t     m_shader;               // Shader handle
             int32_t     m_verticesLoc;          // Vertices location
             int32_t     m_texCoordsLoc;         // Texcoords locations
+            int32_t     m_normalsLoc;           // Normals locations
 
             int32_t     m_projViewMatrixLoc;    // ProjView matrix location
             int32_t     m_modelMatrixLoc;       // Model matrix location

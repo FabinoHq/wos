@@ -47,6 +47,7 @@
 
     #include "../Renderer/Renderer.h"
     #include "../Renderer/View.h"
+    #include "../Renderer/Camera.h"
     #include "../Renderer/Texture.h"
     #include "../Renderer/Sprite.h"
     #include "../Renderer/ProcSprite.h"
@@ -110,6 +111,7 @@
 
         private:
             View            m_view;             // View
+            Camera          m_camera;           // Camera
 
             Sprite          m_sprite;           // Sprite
             ProcSprite      m_procSprite;       // Procedural sprite
