@@ -59,8 +59,10 @@ offsetx(0),
 offsety(0),
 shaders(0),
 defaultView(),
+currentProjType(RENDERER_PROJ_VIEW),
 currentShader(0),
 currentView(0),
+currentCamera(0),
 currentBuffer(0)
 {
 
@@ -72,6 +74,7 @@ currentBuffer(0)
 Renderer::~Renderer()
 {
     currentBuffer = 0;
+    currentCamera = 0;
     currentView = 0;
     currentShader = 0;
     shaders = 0;

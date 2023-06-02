@@ -53,8 +53,9 @@
     #include "../Math/Matrix4x4.h"
 
     #include "Shader.h"
-    #include "VertexBuffer.h"
     #include "View.h"
+    #include "Camera.h"
+    #include "VertexBuffer.h"
 
     #include "Shaders/Default.h"
     #include "Shaders/Rectangle.h"
@@ -85,6 +86,16 @@
     const bool RendererRatioMaxClamping = true;
     const float RendererRatioXMax = 2.0f;
     const float RendererRatioYMax = 0.7f;
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    //  Renderer proj type enumaration                                        //
+    ////////////////////////////////////////////////////////////////////////////
+    enum RendererProjType
+    {
+        RENDERER_PROJ_VIEW = 0,
+        RENDERER_PROJ_CAMERA = 1
+    };
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -136,7 +147,14 @@
             {
                 shaders[rendererShader].bind();
                 currentShader = &shaders[rendererShader];
-                currentView->bind();
+                if (currentProjType == RENDERER_PROJ_CAMERA)
+                {
+                    currentCamera->bind();
+                }
+                else
+                {
+                    currentView->bind();
+                }
             }
 
             ////////////////////////////////////////////////////////////////////
@@ -146,7 +164,14 @@
             {
                 shader.bind();
                 currentShader = &shader;
-                currentView->bind();
+                if (currentProjType == RENDERER_PROJ_CAMERA)
+                {
+                    currentCamera->bind();
+                }
+                else
+                {
+                    currentView->bind();
+                }
             }
 
             ////////////////////////////////////////////////////////////////////
@@ -172,6 +197,7 @@
             inline void bindDefaultView()
             {
                 currentView = &defaultView;
+                currentProjType = RENDERER_PROJ_VIEW;
             }
 
             ////////////////////////////////////////////////////////////////////
@@ -180,6 +206,16 @@
             inline void bindView(View& view)
             {
                 currentView = &view;
+                currentProjType = RENDERER_PROJ_VIEW;
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Bind renderer camera                                          //
+            ////////////////////////////////////////////////////////////////////
+            inline void bindCamera(Camera& camera)
+            {
+                currentCamera = &camera;
+                currentProjType = RENDERER_PROJ_CAMERA;
             }
 
 
@@ -315,8 +351,10 @@
             Shader*             shaders;            // Shaders
             View                defaultView;        // Default view
 
+            RendererProjType    currentProjType;    // Current proj type
             Shader*             currentShader;      // Current shader
             View*               currentView;        // Current view
+            Camera*             currentCamera;      // Current camera
             VertexBuffer*       currentBuffer;      // Current vertex buffer
     };
 

@@ -92,6 +92,7 @@ bool Game::init()
         GSysWindow.releaseThread();
         return false;
     }
+    m_camera.setZ(2.0f);
 
     // Init sprite
     if (!m_sprite.init(GResources.textures.high(TEXTURE_TEST), 0.5f, 0.5f))
@@ -255,6 +256,10 @@ void Game::compute(float frametime)
 
     // Compute sprite
     m_sprite.rotate(frametime*0.5f);
+
+    // Compute cuboid shape
+    m_cuboid.rotateX(frametime*0.47f);
+    m_cuboid.rotateY(frametime*0.21f);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -270,12 +275,12 @@ void Game::render()
 
 
     // Bind camera
-    /*m_camera.bind();
+    GRenderer.bindCamera(m_camera);
 
     // Render cuboid shape
     GRenderer.bindShader(RENDERER_SHADER_SHAPE);
     GRenderer.bindVertexBuffer(MESHES_CUBOID);
-    m_cuboid.render();*/
+    m_cuboid.render();
 
 
     // Bind default vertex buffer
@@ -289,9 +294,9 @@ void Game::render()
     m_procSprite.render();*/
 
     // Render sprite
-    GRenderer.bindShader(RENDERER_SHADER_DEFAULT);
+    /*GRenderer.bindShader(RENDERER_SHADER_DEFAULT);
     m_sprite.bindTexture();
-    m_sprite.render();
+    m_sprite.render();*/
 
     // Render rectangle shape
     /*GRenderer.bindShader(RENDERER_SHADER_RECTANGLE);

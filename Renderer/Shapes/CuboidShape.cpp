@@ -40,6 +40,7 @@
 //     Renderer/Shapes/CuboidShape.cpp : Cuboid shape management              //
 ////////////////////////////////////////////////////////////////////////////////
 #include "CuboidShape.h"
+#include "../Renderer.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -107,4 +108,13 @@ void CuboidShape::render()
 {
     // Compute cuboid transformations
     computeTransforms();
+
+    // Upload model matrix
+    GRenderer.currentShader->sendModelMatrix(m_matrix);
+
+    // Send uniforms constants
+    GRenderer.currentShader->sendColor(m_color);
+
+    // Render cuboid shape
+    GRenderer.currentBuffer->render();
 }
