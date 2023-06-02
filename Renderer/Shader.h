@@ -135,6 +135,23 @@
 
 
             ////////////////////////////////////////////////////////////////////
+            //  Send constants color uniform                                  //
+            ////////////////////////////////////////////////////////////////////
+            inline void sendColor(Vector4& color)
+            {
+                glUniform4fv(m_colorLoc, 1, color.vec);
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Send constants time uniform                                   //
+            ////////////////////////////////////////////////////////////////////
+            inline void sendTime(float time)
+            {
+                glUniform1fv(m_timeLoc, 1, &time);
+            }
+
+
+            ////////////////////////////////////////////////////////////////////
             //  Get shader uniform location                                   //
             ////////////////////////////////////////////////////////////////////
             inline int32_t getUniform(const char* uniform)
@@ -224,8 +241,12 @@
             int32_t     m_shader;               // Shader handle
             int32_t     m_verticesLoc;          // Vertices location
             int32_t     m_texCoordsLoc;         // Texcoords locations
+
             int32_t     m_projViewMatrixLoc;    // ProjView matrix location
             int32_t     m_modelMatrixLoc;       // Model matrix location
+
+            int32_t     m_colorLoc;             // Color location
+            int32_t     m_timeLoc;              // Time location
     };
 
 

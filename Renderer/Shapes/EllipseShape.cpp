@@ -40,6 +40,7 @@
 //     Renderer/Shapes/EllipseShape.cpp : Ellipse shape management            //
 ////////////////////////////////////////////////////////////////////////////////
 #include "EllipseShape.h"
+#include "../Renderer.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -118,4 +119,14 @@ void EllipseShape::render()
 {
     // Compute ellipse transformations
     computeTransforms();
+
+    // Upload model matrix
+    GRenderer.currentShader->sendModelMatrix(m_matrix);
+
+    // Send uniforms constants
+    GRenderer.currentShader->sendColor(m_color);
+    GRenderer.currentShader->sendTime(m_smooth);
+
+    // Render ellipse shape
+    GRenderer.vertexBuffer.render();
 }

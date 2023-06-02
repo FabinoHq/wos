@@ -49,6 +49,8 @@ Game::Game() :
 m_view(),
 m_sprite(),
 m_procSprite(),
+m_rectangle(),
+m_ellipse(),
 m_mouseX(0.0f),
 m_mouseY(0.0f)
 {
@@ -93,6 +95,22 @@ bool Game::init()
     if (!m_procSprite.init(1.0f, 1.0f))
     {
         // Could not init procedural sprite
+        GSysWindow.releaseThread();
+        return false;
+    }
+
+    // Init rectangle shape
+    if (!m_rectangle.init(1.0f, 1.0f))
+    {
+        // Could not init rectangle shape
+        GSysWindow.releaseThread();
+        return false;
+    }
+
+    // Init ellipse shape
+    if (!m_ellipse.init(1.0f, 1.0f))
+    {
+        // Could not init ellipse shape
         GSysWindow.releaseThread();
         return false;
     }
@@ -230,16 +248,26 @@ void Game::render()
     }
 
     // Render procedural sprite
-    m_procSprite.bindShader();
+    /*m_procSprite.bindShader();
     GRenderer.bindView(GRenderer.defaultView);
-    m_procSprite.render();
+    m_procSprite.render();*/
 
     // Render sprite
     GRenderer.bindShader(RENDERER_SHADER_DEFAULT);
     GRenderer.bindView(GRenderer.defaultView);
-    m_sprite.setTexture(GResources.textures.high(TEXTURE_TEST));
     m_sprite.bindTexture();
     m_sprite.render();
+
+    // Render rectangle shape
+    /*GRenderer.bindShader(RENDERER_SHADER_RECTANGLE);
+    GRenderer.bindView(GRenderer.defaultView);
+    m_rectangle.render();*/
+
+    // Render ellipse shape
+    /*GRenderer.bindShader(RENDERER_SHADER_ELLIPSE);
+    GRenderer.bindView(GRenderer.defaultView);
+    m_ellipse.render();*/
+
 
     // End frame rendering
     GRenderer.endFrame();

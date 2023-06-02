@@ -40,6 +40,7 @@
 //     Renderer/Shapes/RectangleShape.cpp : Rectangle shape management        //
 ////////////////////////////////////////////////////////////////////////////////
 #include "RectangleShape.h"
+#include "../Renderer.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -118,4 +119,14 @@ void RectangleShape::render()
 {
     // Compute rectangle transformations
     computeTransforms();
+
+    // Upload model matrix
+    GRenderer.currentShader->sendModelMatrix(m_matrix);
+
+    // Send uniforms constants
+    GRenderer.currentShader->sendColor(m_color);
+    GRenderer.currentShader->sendTime(m_smooth);
+
+    // Render rectangle shape
+    GRenderer.vertexBuffer.render();
 }

@@ -51,7 +51,9 @@ m_shader(-1),
 m_verticesLoc(-1),
 m_texCoordsLoc(-1),
 m_projViewMatrixLoc(-1),
-m_modelMatrixLoc(-1)
+m_modelMatrixLoc(-1),
+m_colorLoc(-1),
+m_timeLoc(-1)
 {
 
 }
@@ -174,11 +176,15 @@ bool Shader::createShader(const char* vertexShaderSrc,
 	m_texCoordsLoc = glGetAttribLocation(m_shader, "vertexCoords");
 	if (m_texCoordsLoc < 0) { return false; }
 
-	// Get shader uniforms locations
+	// Get mandatory shader uniforms locations
 	m_projViewMatrixLoc = glGetUniformLocation(m_shader, "projViewMatrix");
 	if (m_projViewMatrixLoc < 0) { return false; }
 	m_modelMatrixLoc = glGetUniformLocation(m_shader, "modelMatrix");
 	if (m_modelMatrixLoc < 0) { return false; }
+
+	// Get optional shader uniforms location
+	m_colorLoc = glGetUniformLocation(m_shader, "constants_color");
+	m_timeLoc = glGetUniformLocation(m_shader, "constants_time");
 
 	// Set default identity matrices
 	float mat[16];

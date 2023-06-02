@@ -50,6 +50,8 @@
     #include "../Renderer/Texture.h"
     #include "../Renderer/Sprite.h"
     #include "../Renderer/ProcSprite.h"
+    #include "../Renderer/Shapes/RectangleShape.h"
+    #include "../Renderer/Shapes/EllipseShape.h"
 
     #include "../Resources/Resources.h"
 
@@ -111,6 +113,8 @@
 
             Sprite          m_sprite;           // Sprite
             ProcSprite      m_procSprite;       // Procedural sprite
+            RectangleShape  m_rectangle;        // Rectangle shape
+            EllipseShape    m_ellipse;          // Ellipse shape
 
             float           m_mouseX;           // Mouse X position
             float           m_mouseY;           // Mouse Y position
