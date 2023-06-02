@@ -259,6 +259,16 @@ bool Renderer::initShaders()
         return false;
     }
 
+    // Create static mesh shader
+    if (!shaders[RENDERER_SHADER_STATICMESH].createShader(
+        StaticMeshVertexShaderSrc, StaticMeshFragmentShaderSrc))
+    {
+        // Could not create static mesh shader
+        SysMessage::box() << "[0x3053] Could not create static mesh shader\n";
+        SysMessage::box() << "Please update your graphics drivers";
+        return false;
+    }
+
     // Renderer shaders are ready
     return true;
 }

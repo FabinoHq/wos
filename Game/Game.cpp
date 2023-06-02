@@ -52,6 +52,7 @@ m_sprite(),
 m_procSprite(),
 m_rectangle(),
 m_ellipse(),
+m_cuboid(),
 m_mouseX(0.0f),
 m_mouseY(0.0f)
 {
@@ -120,6 +121,14 @@ bool Game::init()
     if (!m_ellipse.init(1.0f, 1.0f))
     {
         // Could not init ellipse shape
+        GSysWindow.releaseThread();
+        return false;
+    }
+
+    // Init cuboid shape
+    if (!m_cuboid.init())
+    {
+        // Could not init cuboid shape
         GSysWindow.releaseThread();
         return false;
     }
@@ -234,7 +243,7 @@ void Game::compute(float frametime)
     float ratio = GRenderer.getRatio();
 
     // Compute views
-    GRenderer.defaultView.compute(ratio);
+    GRenderer.computeDefaultView();
     m_view.compute(ratio);
 
     // Compute cameras
@@ -259,6 +268,20 @@ void Game::render()
         return;
     }
 
+
+    // Bind camera
+    /*m_camera.bind();
+
+    // Render cuboid shape
+    GRenderer.bindShader(RENDERER_SHADER_STATICMESH);
+    GRenderer.bindVertexBuffer(MESHES_CUBOID);
+    m_cuboid.render();*/
+
+
+    // Bind default vertex buffer
+    GRenderer.bindVertexBuffer(MESHES_DEFAULT);
+    // Bind default view
+    GRenderer.bindDefaultView();
 
     // Render procedural sprite
     /*m_procSprite.bindShader();

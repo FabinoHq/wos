@@ -59,6 +59,7 @@
     #include "Shaders/Default.h"
     #include "Shaders/Rectangle.h"
     #include "Shaders/Ellipse.h"
+    #include "Shaders/StaticMesh.h"
 
     #include "../Resources/Resources.h"
 
@@ -153,6 +154,23 @@
             inline void bindVertexBuffer(MeshesAssets meshAsset)
             {
                 currentBuffer = &GResources.meshes.mesh(meshAsset);
+            }
+
+
+            ////////////////////////////////////////////////////////////////////
+            //  Compute renderer default view                                 //
+            ////////////////////////////////////////////////////////////////////
+            inline void computeDefaultView()
+            {
+                defaultView.compute(getRatio());
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Bind renderer default view                                    //
+            ////////////////////////////////////////////////////////////////////
+            inline void bindDefaultView()
+            {
+                currentView = &defaultView;
             }
 
             ////////////////////////////////////////////////////////////////////

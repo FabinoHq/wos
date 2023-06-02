@@ -53,6 +53,7 @@
     #include "../Renderer/ProcSprite.h"
     #include "../Renderer/Shapes/RectangleShape.h"
     #include "../Renderer/Shapes/EllipseShape.h"
+    #include "../Renderer/Shapes/CuboidShape.h"
 
     #include "../Resources/Resources.h"
 
@@ -117,6 +118,7 @@
             ProcSprite      m_procSprite;       // Procedural sprite
             RectangleShape  m_rectangle;        // Rectangle shape
             EllipseShape    m_ellipse;          // Ellipse shape
+            CuboidShape     m_cuboid;           // Cuboid shape
 
             float           m_mouseX;           // Mouse X position
             float           m_mouseY;           // Mouse Y position

@@ -155,6 +155,7 @@ bool Shader::createShader(const char* vertexShaderSrc,
 	// Bind vertex and texcoords attributes
 	glBindAttribLocation(m_shader, 0, "vertexPos");
 	glBindAttribLocation(m_shader, 1, "vertexCoords");
+	glBindAttribLocation(m_shader, 2, "vertexNorms");
 
 	// Link shader
 	int linked = 0;
@@ -176,7 +177,7 @@ bool Shader::createShader(const char* vertexShaderSrc,
 	if (m_verticesLoc < 0) { return false; }
 	m_texCoordsLoc = glGetAttribLocation(m_shader, "vertexCoords");
 	if (m_texCoordsLoc < 0) { return false; }
-	m_normalsLoc = glGetAttribLocation(m_shader, "normals");
+	m_normalsLoc = glGetAttribLocation(m_shader, "vertexNorms");
 
 	// Get mandatory shader uniforms locations
 	m_projViewMatrixLoc = glGetUniformLocation(m_shader, "projViewMatrix");
