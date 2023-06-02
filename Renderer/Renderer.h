@@ -89,16 +89,6 @@
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Renderer proj type enumaration                                        //
-    ////////////////////////////////////////////////////////////////////////////
-    enum RendererProjType
-    {
-        RENDERER_PROJ_VIEW = 0,
-        RENDERER_PROJ_CAMERA = 1
-    };
-
-
-    ////////////////////////////////////////////////////////////////////////////
     //  Renderer class definition                                             //
     ////////////////////////////////////////////////////////////////////////////
     class Renderer
@@ -147,14 +137,8 @@
             {
                 shaders[rendererShader].bind();
                 currentShader = &shaders[rendererShader];
-                if (currentProjType == RENDERER_PROJ_CAMERA)
-                {
-                    currentCamera->bind();
-                }
-                else
-                {
-                    currentView->bind();
-                }
+                if (currentCamera) { currentCamera->bind(); }
+                else { currentView->bind(); }
             }
 
             ////////////////////////////////////////////////////////////////////
@@ -164,14 +148,8 @@
             {
                 shader.bind();
                 currentShader = &shader;
-                if (currentProjType == RENDERER_PROJ_CAMERA)
-                {
-                    currentCamera->bind();
-                }
-                else
-                {
-                    currentView->bind();
-                }
+                if (currentCamera) { currentCamera->bind(); }
+                else { currentView->bind(); }
             }
 
             ////////////////////////////////////////////////////////////////////
@@ -196,8 +174,8 @@
             ////////////////////////////////////////////////////////////////////
             inline void bindDefaultView()
             {
+                currentCamera = 0;
                 currentView = &defaultView;
-                currentProjType = RENDERER_PROJ_VIEW;
             }
 
             ////////////////////////////////////////////////////////////////////
@@ -205,8 +183,8 @@
             ////////////////////////////////////////////////////////////////////
             inline void bindView(View& view)
             {
+                currentCamera = 0;
                 currentView = &view;
-                currentProjType = RENDERER_PROJ_VIEW;
             }
 
             ////////////////////////////////////////////////////////////////////
@@ -214,8 +192,8 @@
             ////////////////////////////////////////////////////////////////////
             inline void bindCamera(Camera& camera)
             {
+                currentView = 0;
                 currentCamera = &camera;
-                currentProjType = RENDERER_PROJ_CAMERA;
             }
 
 
@@ -351,7 +329,6 @@
             Shader*             shaders;            // Shaders
             View                defaultView;        // Default view
 
-            RendererProjType    currentProjType;    // Current proj type
             Shader*             currentShader;      // Current shader
             View*               currentView;        // Current view
             Camera*             currentCamera;      // Current camera
