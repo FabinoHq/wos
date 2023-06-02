@@ -43,6 +43,53 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
+//  Mesh loaded callback function                                             //
+////////////////////////////////////////////////////////////////////////////////
+void OnMeshLoaded(void* arg, void* buffer, int size)
+{
+    // Get callback data
+    MeshCallbackData* callbackData = (MeshCallbackData*)arg;
+    if (!callbackData) { return; }
+
+    // Allocate data memory for copy
+    callbackData->mutex.lock();
+    callbackData->data = new (std::nothrow) unsigned char[size];
+    if (!callbackData->data)
+    {
+        // Could not allocate data memory
+        callbackData->data = 0;
+        callbackData->size = 0;
+        callbackData->state = MESHLOADER_CALLBACK_ERROR;
+        callbackData->mutex.unlock();
+        return;
+    }
+
+    // Copy downloaded data into memory
+    memcpy(callbackData->data, buffer, size);
+    callbackData->size = size;
+    callbackData->state = MESHLOADER_CALLBACK_LOADED;
+    callbackData->mutex.unlock();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Mesh error callback function                                              //
+////////////////////////////////////////////////////////////////////////////////
+void OnMeshError(void* arg)
+{
+    // Get callback data
+    MeshCallbackData* callbackData = (MeshCallbackData*)arg;
+    if (!callbackData) { return; }
+
+    // Set callback data error
+    callbackData->mutex.lock();
+    callbackData->data = 0;
+    callbackData->size = 0;
+    callbackData->state = MESHLOADER_CALLBACK_ERROR;
+    callbackData->mutex.unlock();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 //  MeshLoader default constructor                                            //
 ////////////////////////////////////////////////////////////////////////////////
 MeshLoader::MeshLoader() :
@@ -284,6 +331,46 @@ void MeshLoader::destroyMeshLoader()
 
 
 ////////////////////////////////////////////////////////////////////////////////
+//  Load mesh asynchronously and wait for callback                            //
+//  return : True if mesh is loaded, false otherwise                          //
+////////////////////////////////////////////////////////////////////////////////
+bool MeshLoader::loadMeshAsync(VertexBuffer& vertexBuffer, const char* path)
+{
+    // Reset callback data
+    MeshCallbackData callbackData;
+    callbackData.mutex.lock();
+    callbackData.state = MESHLOADER_CALLBACK_NONE;
+    callbackData.data = 0;
+    callbackData.size = 0;
+    callbackData.mutex.unlock();
+
+    // Download mesh asynchronously
+    emscripten_async_wget_data(
+        path, (void*)&callbackData, OnMeshLoaded, OnMeshError
+    );
+    MeshCallbackState state = MESHLOADER_CALLBACK_NONE;
+
+    // Wait for the mesh to be downloaded
+    while (state == MESHLOADER_CALLBACK_NONE)
+    {
+        callbackData.mutex.lock();
+        state = callbackData.state;
+        callbackData.mutex.unlock();
+        SysSleep(MeshLoaderWaitAsyncSleepTime);
+    }
+    if ((state == MESHLOADER_CALLBACK_ERROR) || (!callbackData.data))
+    {
+        // Could not download mesh
+        return false;
+    }
+
+    // Load mesh from data buffer
+
+    // Mesh is successfully loaded
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 //  Create and upload vertex buffer to graphics memory                        //
 //  return : True if vertex buffer is successfully uploaded                   //
 ////////////////////////////////////////////////////////////////////////////////
@@ -397,11 +484,11 @@ bool MeshLoader::loadEmbeddedMeshes()
 bool MeshLoader::preloadMeshes()
 {
     // Load test static mesh
-    /*if (!loadVMSH(m_meshes[MESHES_TEST], "Models/testmodel.vmsh"))
+    if (!loadMeshAsync(m_meshes[MESHES_TEST], "models/testmodel.vmsh"))
     {
         // Could not load test static mesh
         return false;
-    }*/
+    }
 
     // Meshes assets are successfully preloaded
     return true;

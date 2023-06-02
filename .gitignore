@@ -139,3 +139,7 @@
 # Textures files
 !textures/
 !textures/testsprite.png
+
+# Models files
+!models/
+!models/testmodel.vmsh

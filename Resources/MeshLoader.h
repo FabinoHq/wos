@@ -64,6 +64,7 @@
     //  MeshLoader settings                                                   //
     ////////////////////////////////////////////////////////////////////////////
     const double MeshLoaderIdleSleepTime = 0.01;
+    const double MeshLoaderWaitAsyncSleepTime = 0.002;
     const double MeshLoaderErrorSleepTime = 0.1;
     const uint32_t MeshLoaderMaxVerticesCount = 1048576;
     const uint32_t MeshLoaderMaxIndicesCount = 262144;
@@ -97,6 +98,28 @@
         MESHLOADER_STATE_LOAD = 5,
 
         MESHLOADER_STATE_ERROR = 6
+    };
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    //  MeshCallbackState enumeration                                         //
+    ////////////////////////////////////////////////////////////////////////////
+    enum MeshCallbackState
+    {
+        MESHLOADER_CALLBACK_NONE = 0,
+        MESHLOADER_CALLBACK_LOADED = 1,
+        MESHLOADER_CALLBACK_ERROR = 2
+    };
+
+    ////////////////////////////////////////////////////////////////////////////
+    //  MeshCallbackData structure                                            //
+    ////////////////////////////////////////////////////////////////////////////
+    struct MeshCallbackData
+    {
+        SysMutex mutex;
+        MeshCallbackState state;
+        unsigned char* data;
+        int size;
     };
 
 
@@ -161,6 +184,12 @@
             ////////////////////////////////////////////////////////////////////
             void destroyMeshLoader();
 
+
+            ////////////////////////////////////////////////////////////////////
+            //  Load mesh asynchronously and wait for callback                //
+            //  return : True if mesh is loaded, false otherwise              //
+            ////////////////////////////////////////////////////////////////////
+            bool loadMeshAsync(VertexBuffer& vertexBuffer, const char* path);
 
             ////////////////////////////////////////////////////////////////////
             //  Create and upload vertex buffer to graphics memory            //
