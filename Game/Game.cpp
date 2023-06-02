@@ -247,25 +247,23 @@ void Game::render()
         return;
     }
 
+
     // Render procedural sprite
     /*m_procSprite.bindShader();
-    GRenderer.bindView(GRenderer.defaultView);
+    m_procSprite.setColor(1.0f, 1.0f, 1.0f, 1.0f);
     m_procSprite.render();*/
 
     // Render sprite
-    GRenderer.bindShader(RENDERER_SHADER_DEFAULT);
-    GRenderer.bindView(GRenderer.defaultView);
+    /*GRenderer.bindShader(RENDERER_SHADER_DEFAULT);
     m_sprite.bindTexture();
-    m_sprite.render();
+    m_sprite.render();*/
 
     // Render rectangle shape
     /*GRenderer.bindShader(RENDERER_SHADER_RECTANGLE);
-    GRenderer.bindView(GRenderer.defaultView);
     m_rectangle.render();*/
 
     // Render ellipse shape
     /*GRenderer.bindShader(RENDERER_SHADER_ELLIPSE);
-    GRenderer.bindView(GRenderer.defaultView);
     m_ellipse.render();*/
 
 

@@ -51,12 +51,13 @@
     "precision highp float;\n"
     "precision highp int;\n"
     "varying vec2 texCoords;\n"
+    "uniform vec4 constants_color;\n"
     "\n"
     "// Main shader entry point\n"
     "void main()\n"
     "{\n"
     "    // Compute output color\n"
-    "    gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);\n"
+    "    gl_FragColor = constants_color;\n"
     "}\n";
 
 

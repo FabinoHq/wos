@@ -147,6 +147,9 @@ void ProcSprite::render()
     // Upload model matrix
     GRenderer.currentShader->sendModelMatrix(m_matrix);
 
+    // Send uniforms constants
+    GRenderer.currentShader->sendColor(m_color);
+
     // Render procedural sprite
     GRenderer.vertexBuffer.render();
 }

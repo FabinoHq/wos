@@ -58,9 +58,10 @@ height(1),
 offsetx(0),
 offsety(0),
 shaders(0),
-currentShader(0),
 vertexBuffer(),
-defaultView()
+defaultView(),
+currentShader(0),
+currentView(0)
 {
 
 }
@@ -70,6 +71,7 @@ defaultView()
 ////////////////////////////////////////////////////////////////////////////////
 Renderer::~Renderer()
 {
+    currentView = 0;
     currentShader = 0;
     shaders = 0;
     offsety = 0;
@@ -325,11 +327,11 @@ bool Renderer::startFrame()
     // Clear frame
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Bind default shader
-    bindShader(RENDERER_SHADER_DEFAULT);
-
     // Bind default view
     bindView(defaultView);
+
+    // Bind default shader
+    bindShader(RENDERER_SHADER_DEFAULT);
 
     // Rendering frame is ready
     return true;

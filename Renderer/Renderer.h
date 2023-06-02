@@ -132,6 +132,7 @@
             {
                 shaders[rendererShader].bind();
                 currentShader = &shaders[rendererShader];
+                currentView->bind();
             }
 
             ////////////////////////////////////////////////////////////////////
@@ -141,6 +142,7 @@
             {
                 shader.bind();
                 currentShader = &shader;
+                currentView->bind();
             }
 
             ////////////////////////////////////////////////////////////////////
@@ -148,7 +150,7 @@
             ////////////////////////////////////////////////////////////////////
             inline void bindView(View& view)
             {
-                view.bind();
+                currentView = &view;
             }
 
 
@@ -282,9 +284,11 @@
             int                 offsety;            // Renderer Y offset
 
             Shader*             shaders;            // Shaders
-            Shader*             currentShader;      // Current shader
             VertexBuffer        vertexBuffer;       // Default vertex buffer
             View                defaultView;        // Default view
+
+            Shader*             currentShader;      // Current shader
+            View*               currentView;        // Current view
     };
 
 
