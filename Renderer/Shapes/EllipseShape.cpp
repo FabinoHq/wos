@@ -128,5 +128,5 @@ void EllipseShape::render()
     GRenderer.currentShader->sendTime(m_smooth);
 
     // Render ellipse shape
-    GRenderer.vertexBuffer.render();
+    GRenderer.currentBuffer->render();
 }

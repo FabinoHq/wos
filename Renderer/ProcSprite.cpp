@@ -151,5 +151,5 @@ void ProcSprite::render()
     GRenderer.currentShader->sendColor(m_color);
 
     // Render procedural sprite
-    GRenderer.vertexBuffer.render();
+    GRenderer.currentBuffer->render();
 }

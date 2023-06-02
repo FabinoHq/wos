@@ -50,7 +50,6 @@
     #include "../System/SysMutex.h"
     #include "../System/SysWindow.h"
 
-    #include "../Renderer/Renderer.h"
     #include "../Renderer/Texture.h"
 
     #include "../Images/PNGFile.h"

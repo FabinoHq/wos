@@ -47,7 +47,6 @@
     #include "../System/SysMutex.h"
     #include "../System/SysWindow.h"
 
-    #include "../Renderer/Renderer.h"
     #include "../Renderer/VertexBuffer.h"
 
     #include <fstream>
@@ -162,6 +161,14 @@
             ////////////////////////////////////////////////////////////////////
             void destroyMeshLoader();
 
+
+            ////////////////////////////////////////////////////////////////////
+            //  Create and upload vertex buffer to graphics memory            //
+            //  return : True if vertex buffer is successfully uploaded       //
+            ////////////////////////////////////////////////////////////////////
+            bool createVertexBuffer(VertexBuffer& vertexBuffer,
+                const float* vertices, const uint32_t* indices,
+                uint32_t verticesCount, uint32_t indicesCount);
 
             ////////////////////////////////////////////////////////////////////
             //  Upload vertex buffer to graphics memory                       //

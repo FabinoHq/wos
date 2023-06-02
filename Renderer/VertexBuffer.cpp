@@ -41,16 +41,17 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include "VertexBuffer.h"
 #include "Renderer.h"
+#include "../Resources/Resources.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
 //  VertexBuffer default constructor                                          //
 ////////////////////////////////////////////////////////////////////////////////
 VertexBuffer::VertexBuffer() :
-m_vertexType(VERTEX_INPUTS_DEFAULT),
-m_vertexBuffer(0),
-m_elementBuffer(0),
-m_indicesCount(0)
+vertexType(VERTEX_INPUTS_DEFAULT),
+vertexBuffer(0),
+elementBuffer(0),
+indicesRender(0)
 {
 
 }
@@ -69,32 +70,17 @@ VertexBuffer::~VertexBuffer()
 ////////////////////////////////////////////////////////////////////////////////
 bool VertexBuffer::createBuffer()
 {
-    // Create vertex buffer
-    glGenBuffers(1, &m_vertexBuffer);
-    if (!m_vertexBuffer)
-    {
-        // Unable to create vertex buffer
-        return false;
-    }
-
-    // Create element buffer
-    glGenBuffers(1, &m_elementBuffer);
-    if (!m_elementBuffer)
-    {
-        // Unable to create element buffer
-        return false;
-    }
-
-    // Update VBO
-    if (!updateBuffer(DefaultVertices, DefaultIndices,
+    // Upload vertex buffer to graphics memory
+    if (!GResources.meshes.createVertexBuffer(*this,
+        DefaultVertices, DefaultIndices,
         DefaultVerticesCount, DefaultIndicesCount))
     {
-        // Unable to update VBO
+        // Could not upload vertex buffer to graphics memory
         return false;
     }
 
     // Set indices count
-    m_indicesCount = DefaultIndicesCount;
+    indicesRender = DefaultIndicesCount;
 
     // Vertex buffer is successfully created
     return true;
@@ -106,36 +92,21 @@ bool VertexBuffer::createBuffer()
 bool VertexBuffer::createBuffer(
     const float* vertices, const unsigned int* indices,
     uint32_t verticesCount, uint32_t indicesCount,
-    VertexInputsType vertexType)
+    VertexInputsType vertexInputType)
 {
-    // Create vertex buffer
-    glGenBuffers(1, &m_vertexBuffer);
-    if (!m_vertexBuffer)
+    // Upload vertex buffer to graphics memory
+    if (!GResources.meshes.createVertexBuffer(*this,
+        vertices, indices, verticesCount, indicesCount))
     {
-        // Unable to create vertex buffer
-        return false;
-    }
-
-    // Create element buffer
-    glGenBuffers(1, &m_elementBuffer);
-    if (!m_elementBuffer)
-    {
-        // Unable to create element buffer
-        return false;
-    }
-
-    // Update VBO
-    if (!updateBuffer(vertices, indices, verticesCount, indicesCount))
-    {
-        // Unable to update VBO
+        // Could not upload vertex buffer to graphics memory
         return false;
     }
 
     // Set indices count
-    m_indicesCount = indicesCount;
+    indicesRender = indicesCount;
 
     // Set vertex input type
-    m_vertexType = vertexType;
+    vertexType = vertexInputType;
 
     // Vertex buffer is successfully created
     return true;
@@ -146,21 +117,22 @@ bool VertexBuffer::createBuffer(
 ////////////////////////////////////////////////////////////////////////////////
 bool VertexBuffer::updateBuffer(
     const float* vertices, const unsigned int* indices,
-    uint32_t verticesCount, uint32_t indicesCount)
+    uint32_t verticesCount, uint32_t indicesCount,
+    VertexInputsType vertexInputType)
 {
-    // Upload data to vertex buffer
-    glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER,
-        verticesCount*sizeof(float), vertices, GL_STATIC_DRAW
-    );
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    // Upload vertex buffer to graphics memory
+    if (!GResources.meshes.uploadVertexBuffer(*this,
+        vertices, indices, verticesCount, indicesCount))
+    {
+        // Could not upload vertex buffer to graphics memory
+        return false;
+    }
 
-    // Upload indices data
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-        indicesCount*sizeof(unsigned int), indices, GL_STATIC_DRAW
-    );
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    // Set indices count
+    indicesRender = indicesCount;
+
+    // Set vertex input type
+    vertexType = vertexInputType;
 
     // Vertex buffer is successfully updated
     return true;
@@ -172,10 +144,12 @@ bool VertexBuffer::updateBuffer(
 void VertexBuffer::destroyBuffer()
 {
     // Destroy vertex buffer
-    if (m_elementBuffer) { glDeleteBuffers(1, &m_elementBuffer); }
-    m_elementBuffer = 0;
-    if (m_vertexBuffer) { glDeleteBuffers(1, &m_vertexBuffer); }
-    m_vertexBuffer = 0;
+    GSysWindow.setThread();
+    if (elementBuffer) { glDeleteBuffers(1, &elementBuffer); }
+    elementBuffer = 0;
+    if (vertexBuffer) { glDeleteBuffers(1, &vertexBuffer); }
+    vertexBuffer = 0;
+    GSysWindow.releaseThread();
 }
 
 
@@ -185,10 +159,10 @@ void VertexBuffer::destroyBuffer()
 void VertexBuffer::render()
 {
     // Bind buffer
-    glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
 
-    switch (m_vertexType)
+    switch (vertexType)
     {
         case VERTEX_INPUTS_STATICMESH:
             // Enable vertices array
@@ -236,5 +210,5 @@ void VertexBuffer::render()
     }
 
     // Render vertex buffer
-    glDrawElements(GL_TRIANGLES, m_indicesCount, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, indicesRender, GL_UNSIGNED_INT, 0);
 }

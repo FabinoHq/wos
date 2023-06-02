@@ -181,5 +181,5 @@ void Sprite::render()
     GRenderer.currentShader->sendModelMatrix(m_matrix);
 
     // Render sprite
-    GRenderer.vertexBuffer.render();
+    GRenderer.currentBuffer->render();
 }

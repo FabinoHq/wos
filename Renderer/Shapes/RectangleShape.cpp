@@ -128,5 +128,5 @@ void RectangleShape::render()
     GRenderer.currentShader->sendTime(m_smooth);
 
     // Render rectangle shape
-    GRenderer.vertexBuffer.render();
+    GRenderer.currentBuffer->render();
 }

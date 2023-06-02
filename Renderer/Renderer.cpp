@@ -58,7 +58,6 @@ height(1),
 offsetx(0),
 offsety(0),
 shaders(0),
-vertexBuffer(),
 defaultView(),
 currentShader(0),
 currentView(0),
@@ -147,15 +146,6 @@ bool Renderer::init()
     if (!initShaders())
     {
         // Could not init renderer shaders
-        return false;
-    }
-
-    // Create default vertex buffer
-    if (!vertexBuffer.createBuffer())
-    {
-        // Unable to create default vertex buffer
-        SysMessage::box() << "[0x3003] Unable to create vertex buffer\n";
-        SysMessage::box() << "Please update your graphics drivers";
         return false;
     }
 
@@ -328,6 +318,9 @@ bool Renderer::startFrame()
 
     // Clear frame
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Bind default vertex buffer
+    bindVertexBuffer(MESHES_DEFAULT);
 
     // Bind default view
     bindView(defaultView);

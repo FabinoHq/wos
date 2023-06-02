@@ -60,6 +60,8 @@
     #include "Shaders/Rectangle.h"
     #include "Shaders/Ellipse.h"
 
+    #include "../Resources/Resources.h"
+
     #include <cstddef>
     #include <cstdint>
     #include <vector>
@@ -148,10 +150,10 @@
             ////////////////////////////////////////////////////////////////////
             //  Bind renderer vertex buffer                                   //
             ////////////////////////////////////////////////////////////////////
-            /*inline void bindVertexBuffer(MeshesAssets meshAsset)
+            inline void bindVertexBuffer(MeshesAssets meshAsset)
             {
-                currentBuffer = meshAsset;
-            }*/
+                currentBuffer = &GResources.meshes.mesh(meshAsset);
+            }
 
             ////////////////////////////////////////////////////////////////////
             //  Bind renderer view                                            //
@@ -292,7 +294,6 @@
             int                 offsety;            // Renderer Y offset
 
             Shader*             shaders;            // Shaders
-            VertexBuffer        vertexBuffer;       // Default vertex buffer
             View                defaultView;        // Default view
 
             Shader*             currentShader;      // Current shader

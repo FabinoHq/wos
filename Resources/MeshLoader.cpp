@@ -284,6 +284,52 @@ void MeshLoader::destroyMeshLoader()
 
 
 ////////////////////////////////////////////////////////////////////////////////
+//  Create and upload vertex buffer to graphics memory                        //
+//  return : True if vertex buffer is successfully uploaded                   //
+////////////////////////////////////////////////////////////////////////////////
+bool MeshLoader::createVertexBuffer(VertexBuffer& vertexBuffer,
+    const float* vertices, const uint32_t* indices,
+    uint32_t verticesCount, uint32_t indicesCount)
+{
+    // Set current thread as current context
+    GSysWindow.setThread();
+
+    // Create vertex buffer
+    glGenBuffers(1, &vertexBuffer.vertexBuffer);
+    if (!vertexBuffer.vertexBuffer)
+    {
+        // Unable to create vertex buffer
+        return false;
+    }
+
+    // Create element buffer
+    glGenBuffers(1, &vertexBuffer.elementBuffer);
+    if (!vertexBuffer.elementBuffer)
+    {
+        // Unable to create element buffer
+        return false;
+    }
+
+    // Upload data to vertex buffer
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER,
+        verticesCount*sizeof(float), vertices, GL_STATIC_DRAW
+    );
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // Upload indices data
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexBuffer.elementBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+        indicesCount*sizeof(unsigned int), indices, GL_STATIC_DRAW
+    );
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    // Vertex buffer successfully uploaded
+    GSysWindow.releaseThread();
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 //  Upload vertex buffer to graphics memory                                   //
 //  return : True if vertex buffer is successfully uploaded                   //
 ////////////////////////////////////////////////////////////////////////////////
@@ -293,6 +339,20 @@ bool MeshLoader::uploadVertexBuffer(VertexBuffer& vertexBuffer,
 {
     // Set current thread as current context
     GSysWindow.setThread();
+
+    // Upload data to vertex buffer
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER,
+        verticesCount*sizeof(float), vertices, GL_STATIC_DRAW
+    );
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // Upload indices data
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexBuffer.elementBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+        indicesCount*sizeof(unsigned int), indices, GL_STATIC_DRAW
+    );
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     // Vertex buffer successfully uploaded
     GSysWindow.releaseThread();
@@ -307,7 +367,7 @@ bool MeshLoader::uploadVertexBuffer(VertexBuffer& vertexBuffer,
 bool MeshLoader::loadEmbeddedMeshes()
 {
     // Load default vertex buffer
-    /*if (!m_meshes[MESHES_DEFAULT].createBuffer(
+    if (!m_meshes[MESHES_DEFAULT].createBuffer(
         DefaultVertices, DefaultIndices,
         DefaultVerticesCount, DefaultIndicesCount,
         VERTEX_INPUTS_DEFAULT))
@@ -324,7 +384,7 @@ bool MeshLoader::loadEmbeddedMeshes()
     {
         // Could not load cuboid vertex buffer
         return false;
-    }*/
+    }
 
     // Embedded meshes successfully loaded
     return true;
