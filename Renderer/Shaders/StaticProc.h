@@ -37,56 +37,29 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Renderer/Shaders/StaticMesh.h : Static mesh shader                     //
+//     Renderer/Shaders/StaticProc.h : Static procedural shader               //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_RENDERER_SHADERS_STATICMESH_HEADER
-#define WOS_RENDERER_SHADERS_STATICMESH_HEADER
+#ifndef WOS_RENDERER_SHADERS_STATICPROC_HEADER
+#define WOS_RENDERER_SHADERS_STATICPROC_HEADER
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Static mesh vertex shader                                             //
+    //  Static procedural fragment shader                                     //
     ////////////////////////////////////////////////////////////////////////////
-    const char StaticMeshVertexShaderSrc[] =
-    "#version 100\n"
-    "precision highp float;\n"
-    "precision highp int;\n"
-    "attribute vec3 vertexPos;\n"
-    "attribute vec2 vertexCoords;\n"
-    "attribute vec3 vertexNorms;\n"
-    "uniform mat4 projViewMatrix;\n"
-    "uniform mat4 modelMatrix;\n"
-    "varying vec2 texCoords;\n"
-    "varying vec3 normals;\n"
-    "\n"
-    "// Main shader entry point\n"
-    "void main()\n"
-    "{\n"
-    "    // Compute vertex position\n"
-    "    vec4 vertexPos = (modelMatrix*vec4(vertexPos, 1.0));\n"
-    "    normals = normalize(mat3(modelMatrix)*vertexNorms);\n"
-    "    texCoords = vertexCoords;\n"
-    "\n"
-    "    // Compute output vertex\n"
-    "    gl_Position = (projViewMatrix*vertexPos);\n"
-    "}\n";
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  Static mesh fragment shader                                           //
-    ////////////////////////////////////////////////////////////////////////////
-    const char StaticMeshFragmentShaderSrc[] =
+    const char StaticProcFragmentShaderSrc[] =
     "#version 100\n"
     "precision highp float;\n"
     "precision highp int;\n"
     "varying vec2 texCoords;\n"
     "varying vec3 normals;\n"
-    "uniform sampler2D texture;\n"
+    "uniform vec4 constants_color;\n"
     "\n"
     "// Main shader entry point\n"
     "void main()\n"
     "{\n"
     "    // Compute output color\n"
-    "    gl_FragColor = texture2D(texture, texCoords);\n"
+    "    gl_FragColor = constants_color;\n"
     "}\n";
 
 
-#endif // WOS_RENDERER_SHADERS_STATICMESH_HEADER
+#endif // WOS_RENDERER_SHADERS_STATICPROC_HEADER

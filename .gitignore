@@ -94,6 +94,7 @@
 !Renderer/Shaders/Rectangle.h
 !Renderer/Shaders/Ellipse.h
 !Renderer/Shaders/StaticMesh.h
+!Renderer/Shaders/StaticProc.h
 
 # Shapes
 !Renderer/Shapes/

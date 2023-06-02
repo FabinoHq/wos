@@ -273,7 +273,7 @@ void Game::render()
     /*m_camera.bind();
 
     // Render cuboid shape
-    GRenderer.bindShader(RENDERER_SHADER_STATICMESH);
+    GRenderer.bindShader(RENDERER_SHADER_SHAPE);
     GRenderer.bindVertexBuffer(MESHES_CUBOID);
     m_cuboid.render();*/
 

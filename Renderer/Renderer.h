@@ -60,6 +60,7 @@
     #include "Shaders/Rectangle.h"
     #include "Shaders/Ellipse.h"
     #include "Shaders/StaticMesh.h"
+    #include "Shaders/StaticProc.h"
 
     #include "../Resources/Resources.h"
 
