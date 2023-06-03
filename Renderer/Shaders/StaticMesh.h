@@ -79,13 +79,13 @@
     "precision highp int;\n"
     "varying vec2 texCoords;\n"
     "varying vec3 normals;\n"
-    "uniform sampler2D texture;\n"
+    "uniform sampler2D texSampler;\n"
     "\n"
     "// Main shader entry point\n"
     "void main()\n"
     "{\n"
     "    // Compute output color\n"
-    "    gl_FragColor = texture2D(texture, texCoords);\n"
+    "    gl_FragColor = texture2D(texSampler, texCoords);\n"
     "}\n";
 
 

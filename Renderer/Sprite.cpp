@@ -180,6 +180,11 @@ void Sprite::render()
     // Upload model matrix
     GRenderer.currentShader->sendModelMatrix(m_matrix);
 
+    // Send uniforms constants
+    GRenderer.currentShader->sendColor(m_color);
+    GRenderer.currentShader->sendOffset(m_uvOffset);
+    GRenderer.currentShader->sendSize(m_uvSize);
+
     // Render sprite
     GRenderer.currentBuffer->render();
 }

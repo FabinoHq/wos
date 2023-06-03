@@ -72,13 +72,18 @@
     "precision highp float;\n"
     "precision highp int;\n"
     "varying vec2 texCoords;\n"
-    "uniform sampler2D texture;\n"
+    "uniform sampler2D texSampler;\n"
+    "uniform vec4 constants_color;\n"
+    "uniform vec2 constants_offset;\n"
+    "uniform vec2 constants_size;\n"
     "\n"
     "// Main shader entry point\n"
     "void main()\n"
     "{\n"
     "    // Compute output color\n"
-    "    gl_FragColor = texture2D(texture, texCoords);\n"
+    "    gl_FragColor = (texture2D(\n"
+    "        texSampler, (texCoords*constants_size)+constants_offset)\n"
+    "    )*constants_color;\n"
     "}\n";
 
 

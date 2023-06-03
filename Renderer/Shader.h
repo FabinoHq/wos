@@ -153,6 +153,22 @@
             }
 
             ////////////////////////////////////////////////////////////////////
+            //  Send constants offset uniform                                 //
+            ////////////////////////////////////////////////////////////////////
+            inline void sendOffset(Vector2& offset)
+            {
+                glUniform2fv(m_offsetLoc, 1, offset.vec);
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Send constants size uniform                                   //
+            ////////////////////////////////////////////////////////////////////
+            inline void sendSize(Vector2& size)
+            {
+                glUniform2fv(m_sizeLoc, 1, size.vec);
+            }
+
+            ////////////////////////////////////////////////////////////////////
             //  Send constants time uniform                                   //
             ////////////////////////////////////////////////////////////////////
             inline void sendTime(float time)
@@ -257,6 +273,8 @@
             int32_t     m_modelMatrixLoc;       // Model matrix location
 
             int32_t     m_colorLoc;             // Color location
+            int32_t     m_offsetLoc;            // Offset location
+            int32_t     m_sizeLoc;              // Size location
             int32_t     m_timeLoc;              // Time location
     };
 

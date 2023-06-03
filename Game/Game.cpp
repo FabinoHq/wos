@@ -351,10 +351,10 @@ void Game::render()
     m_cuboid.render();*/
 
     // Render static mesh
-    GRenderer.bindShader(RENDERER_SHADER_STATICMESH);
+    /*GRenderer.bindShader(RENDERER_SHADER_STATICMESH);
     GRenderer.bindVertexBuffer(MESHES_TEST);
     m_staticmesh.bindTexture();
-    m_staticmesh.render();
+    m_staticmesh.render();*/
 
 
     // Disable depth test
@@ -373,9 +373,9 @@ void Game::render()
     m_procSprite.render();*/
 
     // Render sprite
-    /*GRenderer.bindShader(RENDERER_SHADER_DEFAULT);
+    GRenderer.bindShader(RENDERER_SHADER_DEFAULT);
     m_sprite.bindTexture();
-    m_sprite.render();*/
+    m_sprite.render();
 
     // Render rectangle shape
     /*GRenderer.bindShader(RENDERER_SHADER_RECTANGLE);
