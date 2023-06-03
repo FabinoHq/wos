@@ -37,94 +37,97 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Game/Game.h : Main game class management                               //
+//     Renderer/StaticMesh.h : Static mesh management                         //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_GAME_GAME_HEADER
-#define WOS_GAME_GAME_HEADER
+#ifndef WOS_RENDERER_STATICMESH_HEADER
+#define WOS_RENDERER_STATICMESH_HEADER
 
     #include "../System/System.h"
-    #include "../System/SysEvent.h"
 
-    #include "../Renderer/Renderer.h"
-    #include "../Renderer/View.h"
-    #include "../Renderer/Camera.h"
-    #include "../Renderer/Texture.h"
-    #include "../Renderer/Sprite.h"
-    #include "../Renderer/ProcSprite.h"
-    #include "../Renderer/StaticMesh.h"
-    #include "../Renderer/Shapes/RectangleShape.h"
-    #include "../Renderer/Shapes/EllipseShape.h"
-    #include "../Renderer/Shapes/CuboidShape.h"
+    #include "../Math/Math.h"
+    #include "../Math/Vector4.h"
+    #include "../Math/Matrix4x4.h"
+    #include "../Math/Transform3.h"
 
-    #include "../Resources/Resources.h"
+    #include "VertexBuffer.h"
+    #include "Texture.h"
+
+    #include <cstdint>
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Game main class definition                                            //
+    //  StaticMesh class definition                                           //
     ////////////////////////////////////////////////////////////////////////////
-    class Game
+    class StaticMesh : public Transform3
     {
         public:
             ////////////////////////////////////////////////////////////////////
-            //  Game default constructor                                      //
+            //  StaticMesh default constructor                                //
             ////////////////////////////////////////////////////////////////////
-            Game();
+            StaticMesh();
 
             ////////////////////////////////////////////////////////////////////
-            //  Game destructor                                               //
+            //  StaticMesh virtual destructor                                 //
             ////////////////////////////////////////////////////////////////////
-            ~Game();
-
-
-            ////////////////////////////////////////////////////////////////////
-            //  Init game                                                     //
-            //  return : True if game is ready, false otherwise               //
-            ////////////////////////////////////////////////////////////////////
-            bool init();
+            virtual ~StaticMesh();
 
 
             ////////////////////////////////////////////////////////////////////
-            //  Compute game events                                           //
+            //  Init static mesh                                              //
+            //  return : True if the static mesh is successfully created      //
             ////////////////////////////////////////////////////////////////////
-            void events(Event& event);
+            bool init(VertexBuffer& vertexBuffer, Texture& texture);
 
             ////////////////////////////////////////////////////////////////////
-            //  Compute game logic                                            //
+            //  Set static mesh vertex buffer                                 //
             ////////////////////////////////////////////////////////////////////
-            void compute(float frametime);
+            inline void setVertexBuffer(VertexBuffer& vertexBuffer)
+            {
+                m_vertexBuffer = &vertexBuffer;
+            }
 
             ////////////////////////////////////////////////////////////////////
-            //  Render game                                                   //
+            //  Set static mesh texture                                       //
+            //  return : True if static mesh texture is successfully set      //
+            ////////////////////////////////////////////////////////////////////
+            bool setTexture(Texture& texture);
+
+
+            ////////////////////////////////////////////////////////////////////
+            //  Bind static mesh vertex buffer                                //
+            ////////////////////////////////////////////////////////////////////
+            void bindVertexBuffer();
+
+            ////////////////////////////////////////////////////////////////////
+            //  Bind static mesh texture                                      //
+            ////////////////////////////////////////////////////////////////////
+            inline void bindTexture()
+            {
+                m_texture->bind();
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Render static mesh                                            //
             ////////////////////////////////////////////////////////////////////
             void render();
 
 
         private:
             ////////////////////////////////////////////////////////////////////
-            //  Game private copy constructor : Not copyable                  //
+            //  StaticMesh private copy constructor : Not copyable            //
             ////////////////////////////////////////////////////////////////////
-            Game(const Game&) = delete;
+            StaticMesh(const StaticMesh&) = delete;
 
             ////////////////////////////////////////////////////////////////////
-            //  Game private copy operator : Not copyable                     //
+            //  StaticMesh private copy operator : Not copyable               //
             ////////////////////////////////////////////////////////////////////
-            Game& operator=(const Game&) = delete;
+            StaticMesh& operator=(const StaticMesh&) = delete;
 
 
         private:
-            View            m_view;             // View
-            Camera          m_camera;           // Camera
-
-            Sprite          m_sprite;           // Sprite
-            ProcSprite      m_procSprite;       // Procedural sprite
-            RectangleShape  m_rectangle;        // Rectangle shape
-            EllipseShape    m_ellipse;          // Ellipse shape
-            CuboidShape     m_cuboid;           // Cuboid shape
-            StaticMesh      m_staticmesh;       // Static mesh
-
-            float           m_mouseX;           // Mouse X position
-            float           m_mouseY;           // Mouse Y position
+            VertexBuffer*   m_vertexBuffer;     // Static mesh vertex buffer
+            Texture*        m_texture;          // Static mesh texture pointer
     };
 
 
-#endif // WOS_GAME_GAME_HEADER
+#endif // WOS_RENDERER_STATICMESH_HEADER

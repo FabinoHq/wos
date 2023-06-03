@@ -86,6 +86,8 @@
 !Renderer/Sprite.cpp
 !Renderer/ProcSprite.h
 !Renderer/ProcSprite.cpp
+!Renderer/StaticMesh.h
+!Renderer/StaticMesh.cpp
 
 # Shaders
 !Renderer/Shaders/

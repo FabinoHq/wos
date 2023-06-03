@@ -51,6 +51,7 @@
 
     #include <fstream>
     #include <cstdint>
+    #include <cstring>
     #include <new>
 
 
@@ -229,11 +230,11 @@
 
 
             ////////////////////////////////////////////////////////////////////
-            //  Load mesh from VMSH file                                      //
+            //  Load mesh from VMSH data buffer                               //
             //  return : True if the mesh is successfully loaded              //
             ////////////////////////////////////////////////////////////////////
             bool loadVMSH(VertexBuffer& vertexBuffer,
-                const std::string& filepath);
+                unsigned char* data, int size);
 
 
         private:
@@ -255,6 +256,7 @@
             VertexBuffer*           m_meshes;           // Meshes
 
             float*                  m_vertices;         // Mesh vertices
+            uint16_t*               m_indices16;        // Mesh 16bits indices
             uint32_t*               m_indices;          // Mesh indices
     };
 

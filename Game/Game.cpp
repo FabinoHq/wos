@@ -53,6 +53,7 @@ m_procSprite(),
 m_rectangle(),
 m_ellipse(),
 m_cuboid(),
+m_staticmesh(),
 m_mouseX(0.0f),
 m_mouseY(0.0f)
 {
@@ -130,6 +131,15 @@ bool Game::init()
     if (!m_cuboid.init())
     {
         // Could not init cuboid shape
+        GSysWindow.releaseThread();
+        return false;
+    }
+
+    // Init static mesh
+    if (!m_staticmesh.init(GResources.meshes.mesh(MESHES_TEST),
+        GResources.textures.high(TEXTURE_TEST)))
+    {
+        // Could not init static mesh
         GSysWindow.releaseThread();
         return false;
     }
@@ -260,6 +270,10 @@ void Game::compute(float frametime)
     // Compute cuboid shape
     m_cuboid.rotateX(frametime*0.47f);
     m_cuboid.rotateY(frametime*0.21f);
+
+    // Compute static mesh
+    m_staticmesh.rotateX(frametime*0.47f);
+    m_staticmesh.rotateY(frametime*0.21f);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -274,14 +288,30 @@ void Game::render()
     }
 
 
+    // Enable depth test
+    glEnable(GL_DEPTH_TEST);
+    // Enable back face culling
+    glEnable(GL_CULL_FACE);
+
     // Bind camera
     GRenderer.bindCamera(m_camera);
 
     // Render cuboid shape
-    GRenderer.bindShader(RENDERER_SHADER_SHAPE);
+    /*GRenderer.bindShader(RENDERER_SHADER_SHAPE);
     GRenderer.bindVertexBuffer(MESHES_CUBOID);
-    m_cuboid.render();
+    m_cuboid.render();*/
 
+    // Render static mesh
+    GRenderer.bindShader(RENDERER_SHADER_STATICMESH);
+    GRenderer.bindVertexBuffer(MESHES_TEST);
+    m_staticmesh.bindTexture();
+    m_staticmesh.render();
+
+
+    // Disable depth test
+    glDisable(GL_DEPTH_TEST);
+    // Disable back face culling
+    glDisable(GL_CULL_FACE);
 
     // Bind default vertex buffer
     GRenderer.bindVertexBuffer(MESHES_DEFAULT);

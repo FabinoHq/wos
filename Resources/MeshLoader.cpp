@@ -97,6 +97,7 @@ m_state(MESHLOADER_STATE_NONE),
 m_stateMutex(),
 m_meshes(0),
 m_vertices(0),
+m_indices16(0),
 m_indices(0)
 {
 
@@ -109,6 +110,8 @@ MeshLoader::~MeshLoader()
 {
     if (m_indices) { delete[] m_indices; }
     m_indices = 0;
+    if (m_indices16) { delete[] m_indices16; }
+    m_indices16 = 0;
     if (m_vertices) { delete[] m_vertices; }
     m_vertices = 0;
     if (m_meshes) { delete[] m_meshes; }
@@ -242,6 +245,14 @@ bool MeshLoader::init()
         return false;
     }
 
+    // Allocate mesh 16bits indices
+    m_indices16 = new (std::nothrow) uint16_t[MeshLoaderMaxIndicesCount];
+    if (!m_indices16)
+    {
+        // Could not allocate mesh 16bits indices
+        return false;
+    }
+
     // Allocate mesh indices
     m_indices = new (std::nothrow) uint32_t[MeshLoaderMaxIndicesCount];
     if (!m_indices)
@@ -317,6 +328,8 @@ void MeshLoader::destroyMeshLoader()
     // Delete indices and vertices
     if (m_indices) { delete[] m_indices; }
     m_indices = 0;
+    if (m_indices16) { delete[] m_indices16; }
+    m_indices16 = 0;
     if (m_vertices) { delete[] m_vertices; }
     m_vertices = 0;
 
@@ -365,6 +378,11 @@ bool MeshLoader::loadMeshAsync(VertexBuffer& vertexBuffer, const char* path)
     }
 
     // Load mesh from data buffer
+    if (!loadVMSH(vertexBuffer, callbackData.data, callbackData.size))
+    {
+        // Could not load VMSH
+        return false;
+    }
 
     // Mesh is successfully loaded
     return true;
@@ -506,32 +524,28 @@ bool MeshLoader::loadMeshes()
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Load mesh from VMSH file                                                  //
+//  Load mesh from VMSH data buffer                                           //
 //  return : True if the mesh is successfully loaded                          //
 ////////////////////////////////////////////////////////////////////////////////
 bool MeshLoader::loadVMSH(VertexBuffer& vertexBuffer,
-    const std::string& filepath)
+    unsigned char* data, int size)
 {
     // Init vertices and indices count
     uint32_t verticesCount = 0;
     uint32_t indicesCount = 0;
-
-    // Load mesh data from file
-    std::ifstream file;
-    file.open(filepath.c_str(), std::ios::in | std::ios::binary);
-    if (!file.is_open())
-    {
-        // Could not load mesh data file
-        return false;
-    }
+    unsigned char* end = data+size;
 
     // Read VMSH header
     char header[4] = {0};
     char majorVersion = 0;
     char minorVersion = 0;
-    file.read(header, sizeof(char)*4);
-    file.read(&majorVersion, sizeof(char));
-    file.read(&minorVersion, sizeof(char));
+    if (data > (end - sizeof(char)*6)) { return false; }
+    memcpy(header, data, sizeof(char)*4);
+    data += sizeof(char)*4;
+    memcpy(&majorVersion, data, sizeof(char));
+    data += sizeof(char);
+    memcpy(&minorVersion, data, sizeof(char));
+    data += sizeof(char);
 
     // Check VMSH header
     if ((header[0] != 'V') || (header[1] != 'M') ||
@@ -550,7 +564,9 @@ bool MeshLoader::loadVMSH(VertexBuffer& vertexBuffer,
 
     // Read VMSH file type
     char type = 0;
-    file.read(&type, sizeof(char));
+    if (data > (end - sizeof(char))) { return false; }
+    memcpy(&type, data, sizeof(char));
+    data += sizeof(char);
     if (type != 0)
     {
         // Invalid VMSH type
@@ -558,8 +574,11 @@ bool MeshLoader::loadVMSH(VertexBuffer& vertexBuffer,
     }
 
     // Read vertices and indices count
-    file.read((char*)&verticesCount, sizeof(uint32_t));
-    file.read((char*)&indicesCount, sizeof(uint32_t));
+    if (data > (end - sizeof(uint32_t)*2)) { return false; }
+    memcpy(&verticesCount, data, sizeof(uint32_t));
+    data += sizeof(uint32_t);
+    memcpy(&indicesCount, data, sizeof(uint32_t));
+    data += sizeof(uint32_t);
     if ((verticesCount <= 0) || (indicesCount <= 0))
     {
         // Invalid vertices or indices count
@@ -581,13 +600,20 @@ bool MeshLoader::loadVMSH(VertexBuffer& vertexBuffer,
     }
 
     // Read vertices
-    file.read((char*)m_vertices, sizeof(float)*verticesCount);
+    if (data > (end - sizeof(float)*verticesCount)) { return false; }
+    memcpy((char*)m_vertices, data, sizeof(float)*verticesCount);
+    data += sizeof(float)*verticesCount;
 
     // Read indices
-    file.read((char*)m_indices, sizeof(uint32_t)*indicesCount);
+    if (data > (end - sizeof(uint16_t)*indicesCount)) { return false; }
+    memcpy((char*)m_indices16, data, sizeof(uint16_t)*indicesCount);
+    data += sizeof(uint16_t)*indicesCount;
 
-    // Close file
-    file.close();
+    // Convert 16bits indices into 32bits indices
+    for (uint32_t i = 0; i < indicesCount; ++i)
+    {
+        m_indices[i] = m_indices16[i];
+    }
 
     // Create vertex buffer
     if (!vertexBuffer.createBuffer(

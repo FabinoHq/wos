@@ -37,76 +37,97 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Renderer/View.h : View management                                      //
+//     Renderer/StaticMesh.cpp : Static mesh management                       //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_RENDERER_VIEW_HEADER
-#define WOS_RENDERER_VIEW_HEADER
-
-    #include "../System/System.h"
-    #include "../Math/Math.h"
-    #include "../Math/Vector2.h"
-    #include "../Math/Matrix4x4.h"
-    #include "../Math/Transform2.h"
-
-    #include <cstdint>
+#include "StaticMesh.h"
+#include "Renderer.h"
 
 
-    ////////////////////////////////////////////////////////////////////////////
-    //  View class definition                                                 //
-    ////////////////////////////////////////////////////////////////////////////
-    class View : public Transform2
+////////////////////////////////////////////////////////////////////////////////
+//  StaticMesh default constructor                                            //
+////////////////////////////////////////////////////////////////////////////////
+StaticMesh::StaticMesh() :
+Transform3(),
+m_vertexBuffer(0),
+m_texture(0)
+{
+
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  StaticMesh virtual destructor                                             //
+////////////////////////////////////////////////////////////////////////////////
+StaticMesh::~StaticMesh()
+{
+    m_texture = 0;
+    m_vertexBuffer = 0;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//  Init static mesh                                                          //
+//  return : True if the static mesh is successfully created                  //
+////////////////////////////////////////////////////////////////////////////////
+bool StaticMesh::init(VertexBuffer& vertexBuffer, Texture& texture)
+{
+    // Check texture handle
+    if (!texture.isValid())
     {
-        public:
-            ////////////////////////////////////////////////////////////////////
-            //  View default constructor                                      //
-            ////////////////////////////////////////////////////////////////////
-            View();
+        // Invalid texture handle
+        return false;
+    }
 
-            ////////////////////////////////////////////////////////////////////
-            //  View virtual destructor                                       //
-            ////////////////////////////////////////////////////////////////////
-            virtual ~View();
+    // Set static mesh vertex buffer pointer
+    m_vertexBuffer = &vertexBuffer;
 
+    // Set static mesh texture pointer
+    m_texture = &texture;
 
-            ////////////////////////////////////////////////////////////////////
-            //  Init view                                                     //
-            //  return : True if the view is successfully created             //
-            ////////////////////////////////////////////////////////////////////
-            bool init();
+    // Reset static mesh transformations
+    resetTransforms();
 
-            ////////////////////////////////////////////////////////////////////
-            //  Destroy view                                                  //
-            ////////////////////////////////////////////////////////////////////
-            void destroyView();
+    // Static mesh successfully created
+    return true;
+}
 
+////////////////////////////////////////////////////////////////////////////////
+//  Set static mesh texture                                                   //
+//  return : True if static mesh texture is successfully set                  //
+////////////////////////////////////////////////////////////////////////////////
+bool StaticMesh::setTexture(Texture& texture)
+{
+    // Check texture handle
+    if (!texture.isValid())
+    {
+        // Invalid texture handle
+        return false;
+    }
 
-            ////////////////////////////////////////////////////////////////////
-            //  Compute view                                                  //
-            ////////////////////////////////////////////////////////////////////
-            void compute(float ratio);
-
-            ////////////////////////////////////////////////////////////////////
-            //  Bind view                                                     //
-            ////////////////////////////////////////////////////////////////////
-            void bind();
-
-
-        private:
-            ////////////////////////////////////////////////////////////////////
-            //  View private copy constructor : Not copyable                  //
-            ////////////////////////////////////////////////////////////////////
-            View(const View&) = delete;
-
-            ////////////////////////////////////////////////////////////////////
-            //  View private copy operator : Not copyable                     //
-            ////////////////////////////////////////////////////////////////////
-            View& operator=(const View&) = delete;
+    // Set static mesh texture pointer
+    m_texture = &texture;
+    return true;
+}
 
 
-        private:
-            Matrix4x4           m_projMatrix;       // Projection matrix
-            Matrix4x4           m_projViewMatrix;   // Projview matrix
-    };
+////////////////////////////////////////////////////////////////////////////////
+//  Bind static mesh vertex buffer                                            //
+////////////////////////////////////////////////////////////////////////////////
+void StaticMesh::bindVertexBuffer()
+{
 
+}
 
-#endif // WOS_RENDERER_VIEW_HEADER
+////////////////////////////////////////////////////////////////////////////////
+//  Render static mesh                                                        //
+////////////////////////////////////////////////////////////////////////////////
+void StaticMesh::render()
+{
+    // Compute static mesh transformations
+    computeTransforms();
+
+    // Upload model matrix
+    GRenderer.currentShader->sendModelMatrix(m_matrix);
+
+    // Render static mesh
+    m_vertexBuffer->render();
+}
