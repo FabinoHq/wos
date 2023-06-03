@@ -37,98 +37,121 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Game/Game.h : Main game class management                               //
+//     Renderer/FreeFlyCam.h : Free fly camera management                     //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_GAME_GAME_HEADER
-#define WOS_GAME_GAME_HEADER
+#ifndef WOS_RENDERER_FREEFLYCAM_HEADER
+#define WOS_RENDERER_FREEFLYCAM_HEADER
 
     #include "../System/System.h"
-    #include "../System/SysEvent.h"
+    #include "../Math/Math.h"
+    #include "../Math/Vector3.h"
+    #include "../Math/Matrix4x4.h"
+    #include "Camera.h"
 
-    #include "../Renderer/Renderer.h"
-    #include "../Renderer/View.h"
-    #include "../Renderer/Camera.h"
-    #include "../Renderer/FreeFlyCam.h"
-    #include "../Renderer/Texture.h"
-    #include "../Renderer/Sprite.h"
-    #include "../Renderer/ProcSprite.h"
-    #include "../Renderer/StaticMesh.h"
-    #include "../Renderer/Shapes/RectangleShape.h"
-    #include "../Renderer/Shapes/EllipseShape.h"
-    #include "../Renderer/Shapes/CuboidShape.h"
-
-    #include "../Resources/Resources.h"
+    #include <cstdint>
+    #include <cstring>
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Game main class definition                                            //
+    //  Freefly camera default settings                                       //
     ////////////////////////////////////////////////////////////////////////////
-    class Game
+    const float FreeflyCameraMouseFactor = 0.004f;
+    const float FreeflyCameraMinAngle = -(Math::PiHalf-0.001f);
+    const float FreeflyCameraMaxAngle = (Math::PiHalf-0.001f);
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    //  FreeFlyCam class definition                                           //
+    ////////////////////////////////////////////////////////////////////////////
+    class FreeFlyCam : public Camera
     {
         public:
             ////////////////////////////////////////////////////////////////////
-            //  Game default constructor                                      //
+            //  FreeFlyCam default constructor                                //
             ////////////////////////////////////////////////////////////////////
-            Game();
+            FreeFlyCam();
 
             ////////////////////////////////////////////////////////////////////
-            //  Game destructor                                               //
+            //  FreeFlyCam virtual destructor                                 //
             ////////////////////////////////////////////////////////////////////
-            ~Game();
-
-
-            ////////////////////////////////////////////////////////////////////
-            //  Init game                                                     //
-            //  return : True if game is ready, false otherwise               //
-            ////////////////////////////////////////////////////////////////////
-            bool init();
+            virtual ~FreeFlyCam();
 
 
             ////////////////////////////////////////////////////////////////////
-            //  Compute game events                                           //
+            //  Compute freefly camera                                        //
+            //  return : True if the freefly camera is successfully computed  //
             ////////////////////////////////////////////////////////////////////
-            void events(Event& event);
+            virtual bool compute(float ratio, float frametime);
+
 
             ////////////////////////////////////////////////////////////////////
-            //  Compute game logic                                            //
+            //  Set freefly camera speed                                      //
             ////////////////////////////////////////////////////////////////////
-            void compute(float frametime);
+            inline void setSpeed(float speed)
+            {
+                m_speed = speed;
+            }
 
             ////////////////////////////////////////////////////////////////////
-            //  Render game                                                   //
+            //  Set freefly camera forward key state                          //
             ////////////////////////////////////////////////////////////////////
-            void render();
+            inline void setForward(bool forward)
+            {
+                m_forward = forward;
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Set freefly camera backward key state                         //
+            ////////////////////////////////////////////////////////////////////
+            inline void setBackward(bool backward)
+            {
+                m_backward = backward;
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Set freefly camera leftward key state                         //
+            ////////////////////////////////////////////////////////////////////
+            inline void setLeftward(bool leftward)
+            {
+                m_leftward = leftward;
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Set freefly camera rightward key state                        //
+            ////////////////////////////////////////////////////////////////////
+            inline void setRightward(bool rightward)
+            {
+                m_rightward = rightward;
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Handle mouse move event                                       //
+            ////////////////////////////////////////////////////////////////////
+            void mouseMove(float mouseDx, float mouseDy);
 
 
         private:
             ////////////////////////////////////////////////////////////////////
-            //  Game private copy constructor : Not copyable                  //
+            //  FreeFlyCam private copy constructor : Not copyable            //
             ////////////////////////////////////////////////////////////////////
-            Game(const Game&) = delete;
+            FreeFlyCam(const FreeFlyCam&) = delete;
 
             ////////////////////////////////////////////////////////////////////
-            //  Game private copy operator : Not copyable                     //
+            //  FreeFlyCam private copy operator : Not copyable               //
             ////////////////////////////////////////////////////////////////////
-            Game& operator=(const Game&) = delete;
+            FreeFlyCam& operator=(const FreeFlyCam&) = delete;
 
 
         private:
-            View            m_view;             // View
-            Camera          m_camera;           // Camera
-            FreeFlyCam      m_freeflycam;       // Free fly camera
+            Vector3     m_cross;        // Freeflycam cross product
 
-            Sprite          m_sprite;           // Sprite
-            ProcSprite      m_procSprite;       // Procedural sprite
-            RectangleShape  m_rectangle;        // Rectangle shape
-            EllipseShape    m_ellipse;          // Ellipse shape
-            CuboidShape     m_cuboid;           // Cuboid shape
-            StaticMesh      m_staticmesh;       // Static mesh
+            float       m_speed;        // Freeflycam speed
 
-            int             m_oldMouseX;        // Old mouse X position
-            int             m_oldMouseY;        // Old mouse Y position
-            float           m_mouseX;           // Mouse X position
-            float           m_mouseY;           // Mouse Y position
+            bool        m_forward;      // Forward key state
+            bool        m_backward;     // Backward key state
+            bool        m_leftward;     // Leftward key state
+            bool        m_rightward;    // Rightward key state
     };
 
 
-#endif // WOS_GAME_GAME_HEADER
+#endif // WOS_RENDERER_FREEFLYCAM_HEADER

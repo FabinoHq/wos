@@ -134,8 +134,10 @@ void Camera::destroyCamera()
 //  Compute camera                                                            //
 //  return : True if the camera is successfully computed                      //
 ////////////////////////////////////////////////////////////////////////////////
-bool Camera::compute(float ratio)
+bool Camera::compute(float ratio, float frametime)
 {
+    (void)frametime;
+
     // Compute camera target
     m_target.vec[0] = std::cos(m_angles.vec[0]);
     m_target.vec[0] *= std::sin(m_angles.vec[1]);

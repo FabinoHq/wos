@@ -94,7 +94,7 @@
             //  Compute camera                                                //
             //  return : True if the camera is successfully computed          //
             ////////////////////////////////////////////////////////////////////
-            virtual bool compute(float ratio);
+            virtual bool compute(float ratio, float frametime);
 
             ////////////////////////////////////////////////////////////////////
             //  Compute camera from another camera                            //

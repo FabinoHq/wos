@@ -48,12 +48,15 @@
 Game::Game() :
 m_view(),
 m_camera(),
+m_freeflycam(),
 m_sprite(),
 m_procSprite(),
 m_rectangle(),
 m_ellipse(),
 m_cuboid(),
 m_staticmesh(),
+m_oldMouseX(0),
+m_oldMouseY(0),
 m_mouseX(0.0f),
 m_mouseY(0.0f)
 {
@@ -94,6 +97,15 @@ bool Game::init()
         return false;
     }
     m_camera.setZ(2.0f);
+
+    // Init free fly camera
+    if (!m_freeflycam.init())
+    {
+        // Could not init free fly camera
+        GSysWindow.releaseThread();
+        return false;
+    }
+    m_freeflycam.setZ(2.0f);
 
     // Init sprite
     if (!m_sprite.init(GResources.textures.high(TEXTURE_TEST), 0.5f, 0.5f))
@@ -167,15 +179,19 @@ void Game::events(Event& event)
             switch (event.key)
             {
                 case EVENT_KEY_Z:
+                    m_freeflycam.setForward(true);
                     break;
 
                 case EVENT_KEY_S:
+                    m_freeflycam.setBackward(true);
                     break;
 
                 case EVENT_KEY_Q:
+                    m_freeflycam.setLeftward(true);
                     break;
 
                 case EVENT_KEY_D:
+                    m_freeflycam.setRightward(true);
                     break;
 
                 default:
@@ -188,15 +204,19 @@ void Game::events(Event& event)
             switch (event.key)
             {
                 case EVENT_KEY_Z:
+                    m_freeflycam.setForward(false);
                     break;
 
                 case EVENT_KEY_S:
+                    m_freeflycam.setBackward(false);
                     break;
 
                 case EVENT_KEY_Q:
+                    m_freeflycam.setLeftward(false);
                     break;
 
                 case EVENT_KEY_D:
+                    m_freeflycam.setRightward(false);
                     break;
 
                 default:
@@ -206,6 +226,14 @@ void Game::events(Event& event)
 
         // Mouse moved
         case EVENT_MOUSEMOVED:
+        {
+            // Compute mouse delta
+            float deltaX = ((event.mouse.x - m_oldMouseX) * 1.0f);
+            float deltaY = ((event.mouse.y - m_oldMouseY) * 1.0f);
+            m_oldMouseX = event.mouse.x;
+            m_oldMouseY = event.mouse.y;
+
+            // Compute mouse position
             m_mouseX = (
                 ((event.mouse.x-GRenderer.getOffsetXF())/
                 (GRenderer.getWidthF()*0.5f))*ratio
@@ -218,7 +246,11 @@ void Game::events(Event& event)
             if (m_mouseX >= ratio) { m_mouseX = ratio; }
             if (m_mouseY <= -1.0f) { m_mouseY = -1.0f; }
             if (m_mouseY >= 1.0f) { m_mouseY = 1.0f; }
+
+            // Compute mouse events
+            m_freeflycam.mouseMove(deltaX*1.0f, deltaY*1.0f);
             break;
+        }
 
         // Mouse button pressed
         case EVENT_MOUSEPRESSED:
@@ -258,7 +290,8 @@ void Game::compute(float frametime)
     m_view.compute(ratio);
 
     // Compute cameras
-    m_camera.compute(ratio);
+    m_camera.compute(ratio, frametime);
+    m_freeflycam.compute(ratio, frametime);
 
     // Compute procedural sprite
     m_procSprite.setSize(ratio*2.0f, 2.0f);
@@ -294,7 +327,7 @@ void Game::render()
     glEnable(GL_CULL_FACE);
 
     // Bind camera
-    GRenderer.bindCamera(m_camera);
+    GRenderer.bindCamera(m_freeflycam);
 
     // Render cuboid shape
     /*GRenderer.bindShader(RENDERER_SHADER_SHAPE);

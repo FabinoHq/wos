@@ -21,6 +21,7 @@
     Renderer/Texture.cpp ^
     Renderer/View.cpp ^
     Renderer/Camera.cpp ^
+    Renderer/FreeFlyCam.cpp ^
     Renderer/Sprite.cpp ^
     Renderer/ProcSprite.cpp ^
     Renderer/StaticMesh.cpp ^
