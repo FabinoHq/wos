@@ -49,6 +49,7 @@ Game::Game() :
 m_view(),
 m_camera(),
 m_freeflycam(),
+m_orbitalcam(),
 m_sprite(),
 m_procSprite(),
 m_rectangle(),
@@ -106,6 +107,18 @@ bool Game::init()
         return false;
     }
     m_freeflycam.setZ(2.0f);
+
+    // Init orbital camera
+    if (!m_orbitalcam.init())
+    {
+        // Could not init orbital camera
+        GSysWindow.releaseThread();
+        return false;
+    }
+    m_orbitalcam.setZ(2.0f);
+    m_orbitalcam.setTarget(0.0f, 0.0f, 0.0f);
+    m_orbitalcam.setDistance(2.0f);
+    m_orbitalcam.setSpeed(50.0f);
 
     // Init sprite
     if (!m_sprite.init(GResources.textures.high(TEXTURE_TEST), 0.5f, 0.5f))
@@ -179,19 +192,19 @@ void Game::events(Event& event)
             switch (event.key)
             {
                 case EVENT_KEY_Z:
-                    m_freeflycam.setForward(true);
+                    //m_freeflycam.setForward(true);
                     break;
 
                 case EVENT_KEY_S:
-                    m_freeflycam.setBackward(true);
+                    //m_freeflycam.setBackward(true);
                     break;
 
                 case EVENT_KEY_Q:
-                    m_freeflycam.setLeftward(true);
+                    //m_freeflycam.setLeftward(true);
                     break;
 
                 case EVENT_KEY_D:
-                    m_freeflycam.setRightward(true);
+                    //m_freeflycam.setRightward(true);
                     break;
 
                 default:
@@ -204,19 +217,19 @@ void Game::events(Event& event)
             switch (event.key)
             {
                 case EVENT_KEY_Z:
-                    m_freeflycam.setForward(false);
+                    //m_freeflycam.setForward(false);
                     break;
 
                 case EVENT_KEY_S:
-                    m_freeflycam.setBackward(false);
+                    //m_freeflycam.setBackward(false);
                     break;
 
                 case EVENT_KEY_Q:
-                    m_freeflycam.setLeftward(false);
+                    //m_freeflycam.setLeftward(false);
                     break;
 
                 case EVENT_KEY_D:
-                    m_freeflycam.setRightward(false);
+                    //m_freeflycam.setRightward(false);
                     break;
 
                 default:
@@ -248,7 +261,8 @@ void Game::events(Event& event)
             if (m_mouseY >= 1.0f) { m_mouseY = 1.0f; }
 
             // Compute mouse events
-            m_freeflycam.mouseMove(deltaX*1.0f, deltaY*1.0f);
+            //m_freeflycam.mouseMove(deltaX*1.0f, deltaY*1.0f);
+            m_orbitalcam.mouseMove(deltaX*1.0f, deltaY*1.0f);
             break;
         }
 
@@ -256,7 +270,7 @@ void Game::events(Event& event)
         case EVENT_MOUSEPRESSED:
             if (event.mouse.button == EVENT_MOUSE_LEFT)
             {
-
+                m_orbitalcam.mousePress();
             }
             break;
 
@@ -264,12 +278,13 @@ void Game::events(Event& event)
         case EVENT_MOUSERELEASED:
             if (event.mouse.button == EVENT_MOUSE_LEFT)
             {
-
+                m_orbitalcam.mouseRelease();
             }
             break;
 
         // Mouse wheel
         case EVENT_MOUSEWHEEL:
+            m_orbitalcam.mouseWheel(event.mouse.wheel);
             break;
 
         default:
@@ -292,6 +307,7 @@ void Game::compute(float frametime)
     // Compute cameras
     m_camera.compute(ratio, frametime);
     m_freeflycam.compute(ratio, frametime);
+    m_orbitalcam.compute(ratio, frametime);
 
     // Compute procedural sprite
     m_procSprite.setSize(ratio*2.0f, 2.0f);
@@ -327,7 +343,7 @@ void Game::render()
     glEnable(GL_CULL_FACE);
 
     // Bind camera
-    GRenderer.bindCamera(m_freeflycam);
+    GRenderer.bindCamera(m_orbitalcam);
 
     // Render cuboid shape
     /*GRenderer.bindShader(RENDERER_SHADER_SHAPE);

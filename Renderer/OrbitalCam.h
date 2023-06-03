@@ -37,100 +37,126 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Game/Game.h : Main game class management                               //
+//     Renderer/OrbitalCam.h : Orbital camera management                      //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_GAME_GAME_HEADER
-#define WOS_GAME_GAME_HEADER
+#ifndef WOS_RENDERER_ORBITALCAM_HEADER
+#define WOS_RENDERER_ORBITALCAM_HEADER
 
     #include "../System/System.h"
-    #include "../System/SysEvent.h"
+    #include "../Math/Math.h"
+    #include "../Math/Vector3.h"
+    #include "../Math/Matrix4x4.h"
+    #include "Camera.h"
 
-    #include "../Renderer/Renderer.h"
-    #include "../Renderer/View.h"
-    #include "../Renderer/Camera.h"
-    #include "../Renderer/FreeFlyCam.h"
-    #include "../Renderer/OrbitalCam.h"
-    #include "../Renderer/Texture.h"
-    #include "../Renderer/Sprite.h"
-    #include "../Renderer/ProcSprite.h"
-    #include "../Renderer/StaticMesh.h"
-    #include "../Renderer/Shapes/RectangleShape.h"
-    #include "../Renderer/Shapes/EllipseShape.h"
-    #include "../Renderer/Shapes/CuboidShape.h"
-
-    #include "../Resources/Resources.h"
+    #include <cstdint>
+    #include <cstring>
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Game main class definition                                            //
+    //  Orbital camera default settings                                       //
     ////////////////////////////////////////////////////////////////////////////
-    class Game
+    const float OrbitalCameraMouseFactor = 0.004f;
+    const float OrbitalCameraMinAngle = -(Math::PiHalf-0.001f);
+    const float OrbitalCameraMaxAngle = (Math::PiHalf-0.001f);
+    const float OrbitalCameraMinDistance = 0.0f;
+    const float OrbitalCameraMaxDistance = 10.0f;
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    //  OrbitalCam class definition                                           //
+    ////////////////////////////////////////////////////////////////////////////
+    class OrbitalCam : public Camera
     {
         public:
             ////////////////////////////////////////////////////////////////////
-            //  Game default constructor                                      //
+            //  OrbitalCam default constructor                                //
             ////////////////////////////////////////////////////////////////////
-            Game();
+            OrbitalCam();
 
             ////////////////////////////////////////////////////////////////////
-            //  Game destructor                                               //
+            //  OrbitalCam virtual destructor                                 //
             ////////////////////////////////////////////////////////////////////
-            ~Game();
-
-
-            ////////////////////////////////////////////////////////////////////
-            //  Init game                                                     //
-            //  return : True if game is ready, false otherwise               //
-            ////////////////////////////////////////////////////////////////////
-            bool init();
+            virtual ~OrbitalCam();
 
 
             ////////////////////////////////////////////////////////////////////
-            //  Compute game events                                           //
+            //  Compute orbital camera                                        //
+            //  return : True if the orbital camera is successfully computed  //
             ////////////////////////////////////////////////////////////////////
-            void events(Event& event);
+            virtual bool compute(float ratio, float frametime);
+
 
             ////////////////////////////////////////////////////////////////////
-            //  Compute game logic                                            //
+            //  Set orbital camera target                                     //
             ////////////////////////////////////////////////////////////////////
-            void compute(float frametime);
+            void setTarget(const Vector3& target);
 
             ////////////////////////////////////////////////////////////////////
-            //  Render game                                                   //
+            //  Set orbital camera target                                     //
             ////////////////////////////////////////////////////////////////////
-            void render();
+            void setTarget(float targetX, float targetY, float targetZ);
+
+            ////////////////////////////////////////////////////////////////////
+            //  Set orbital camera distance from target                       //
+            ////////////////////////////////////////////////////////////////////
+            void setDistance(float distance);
+
+            ////////////////////////////////////////////////////////////////////
+            //  Set orbital camera speed                                      //
+            ////////////////////////////////////////////////////////////////////
+            inline void setSpeed(float speed)
+            {
+                m_speed = speed;
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Handle mouse move event                                       //
+            ////////////////////////////////////////////////////////////////////
+            void mouseMove(float mouseDx, float mouseDy);
+
+            ////////////////////////////////////////////////////////////////////
+            //  Handle mouse press event                                      //
+            ////////////////////////////////////////////////////////////////////
+            inline void mousePress()
+            {
+                m_mousePressed = true;
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Handle mouse release event                                    //
+            ////////////////////////////////////////////////////////////////////
+            inline void mouseRelease()
+            {
+                m_mousePressed = false;
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Handle mouse wheel event                                      //
+            ////////////////////////////////////////////////////////////////////
+            void mouseWheel(int mouseWheel);
 
 
         private:
             ////////////////////////////////////////////////////////////////////
-            //  Game private copy constructor : Not copyable                  //
+            //  OrbitalCam private copy constructor : Not copyable            //
             ////////////////////////////////////////////////////////////////////
-            Game(const Game&) = delete;
+            OrbitalCam(const OrbitalCam&) = delete;
 
             ////////////////////////////////////////////////////////////////////
-            //  Game private copy operator : Not copyable                     //
+            //  OrbitalCam private copy operator : Not copyable               //
             ////////////////////////////////////////////////////////////////////
-            Game& operator=(const Game&) = delete;
+            OrbitalCam& operator=(const OrbitalCam&) = delete;
 
 
         private:
-            View            m_view;             // View
-            Camera          m_camera;           // Camera
-            FreeFlyCam      m_freeflycam;       // Free fly camera
-            OrbitalCam      m_orbitalcam;       // Orbital camera
+            Vector3     m_target;       // Orbitalcam target
+            float       m_distance;     // Orbitalcam distance from target
+            float       m_speed;        // Orbitalcam speed
 
-            Sprite          m_sprite;           // Sprite
-            ProcSprite      m_procSprite;       // Procedural sprite
-            RectangleShape  m_rectangle;        // Rectangle shape
-            EllipseShape    m_ellipse;          // Ellipse shape
-            CuboidShape     m_cuboid;           // Cuboid shape
-            StaticMesh      m_staticmesh;       // Static mesh
-
-            int             m_oldMouseX;        // Old mouse X position
-            int             m_oldMouseY;        // Old mouse Y position
-            float           m_mouseX;           // Mouse X position
-            float           m_mouseY;           // Mouse Y position
+            bool        m_mousePressed; // Orbitalcam mouse pressed state
+            bool        m_forward;      // Orbitalcam forward state
+            bool        m_backward;     // Orbitalcam backward state
     };
 
 
-#endif // WOS_GAME_GAME_HEADER
+#endif // WOS_RENDERER_ORBITALCAM_HEADER

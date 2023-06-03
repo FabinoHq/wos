@@ -22,6 +22,7 @@
     Renderer/View.cpp ^
     Renderer/Camera.cpp ^
     Renderer/FreeFlyCam.cpp ^
+    Renderer/OrbitalCam.cpp ^
     Renderer/Sprite.cpp ^
     Renderer/ProcSprite.cpp ^
     Renderer/StaticMesh.cpp ^
