@@ -305,7 +305,7 @@ void Game::compute(float frametime)
     m_view.compute(ratio);
 
     // Compute cameras
-    m_camera.compute(ratio, frametime);
+    m_camera.compute(ratio);
     m_freeflycam.compute(ratio, frametime);
     m_orbitalcam.compute(ratio, frametime);
 

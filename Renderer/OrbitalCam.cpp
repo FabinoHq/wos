@@ -127,6 +127,32 @@ bool OrbitalCam::compute(float ratio, float frametime)
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//  Compute orbital camera from another orbital camera                        //
+//  return : True if the orbital camera is successfully computed              //
+////////////////////////////////////////////////////////////////////////////////
+bool OrbitalCam::compute(float ratio, OrbitalCam& orbitalCam)
+{
+    // Copy orbital camera parameters
+    m_origin = orbitalCam.m_origin;
+    m_position = orbitalCam.m_position;
+    m_scale = orbitalCam.m_scale;
+    m_angles = orbitalCam.m_angles;
+
+    // Compute projection matrix
+    m_projMatrix.setPerspective(m_fovy, ratio, m_nearPlane, m_farPlane);
+
+    // Compute view matrix
+    m_matrix.set(orbitalCam.m_matrix);
+
+    // Compute projview matrix
+    m_projViewMatrix.set(m_projMatrix);
+    m_projViewMatrix *= m_matrix;
+
+    // Orbital camera successfully computed
+    return true;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //  Set orbital camera distance from target                                   //
