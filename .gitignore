@@ -43,6 +43,8 @@
 !System/SysThread.cpp
 !System/SysWindow.h
 !System/SysWindow.cpp
+!System/SysSettings.h
+!System/SysSettings.cpp
 
 # Compress
 !Compress/

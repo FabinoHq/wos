@@ -166,7 +166,7 @@
             ////////////////////////////////////////////////////////////////////
             inline void computeDefaultView()
             {
-                defaultView.compute(getRatio());
+                view.compute(getRatio());
             }
 
             ////////////////////////////////////////////////////////////////////
@@ -174,8 +174,7 @@
             ////////////////////////////////////////////////////////////////////
             inline void bindDefaultView()
             {
-                currentCamera = 0;
-                currentView = &defaultView;
+                view.bind();
             }
 
 
@@ -309,7 +308,7 @@
             int                 offsety;            // Renderer Y offset
 
             Shader*             shaders;            // Shaders
-            View                defaultView;        // Default view
+            View                view;               // Default view
 
             Shader*             currentShader;      // Current shader
             View*               currentView;        // Current view

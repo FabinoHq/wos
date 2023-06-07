@@ -58,7 +58,7 @@ height(1),
 offsetx(0),
 offsety(0),
 shaders(0),
-defaultView(),
+view(),
 currentShader(0),
 currentView(0),
 currentCamera(0),
@@ -152,7 +152,7 @@ bool Renderer::init()
     }
 
     // Create default view
-    if (!defaultView.init())
+    if (!view.init())
     {
         // Unable to create default view
         SysMessage::box() << "[0x3004] Unable to create default view\n";
@@ -348,7 +348,7 @@ bool Renderer::startFrame()
     bindShader(RENDERER_SHADER_DEFAULT);
 
     // Bind default view
-    defaultView.bind();
+    view.bind();
 
     // Rendering frame is ready
     return true;

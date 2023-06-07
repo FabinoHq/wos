@@ -101,6 +101,13 @@ bool Wos::launch()
         return false;
     }
 
+    // Init system settings
+    if (!GSysSettings.loadSettings())
+    {
+        // Unable to load system settings
+        return false;
+    }
+
     // Init WOS renderer
     if (!GRenderer.init())
     {

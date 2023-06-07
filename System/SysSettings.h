@@ -37,113 +37,107 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Wos.h : WOS Main class management                                      //
+//     System/SysSettings.h : System Settings management                      //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_WOS_HEADER
-#define WOS_WOS_HEADER
+#ifndef WOS_SYSTEM_SYSSETTINGS_HEADER
+#define WOS_SYSTEM_SYSSETTINGS_HEADER
 
-    #include <emscripten/html5.h>
-
-    #include "System/System.h"
-    #include "System/SysEvent.h"
-    #include "System/SysMessage.h"
-    #include "System/SysCPU.h"
-    #include "System/SysClock.h"
-    #include "System/SysSleep.h"
-    #include "System/SysWindow.h"
-    #include "System/SysSettings.h"
-
-    #include "Renderer/Renderer.h"
-
-    #include "Resources/Resources.h"
-
-    #include "Game/Game.h"
-
-    #include <cstddef>
-    #include <cstdint>
-    #include <new>
+    #include "System.h"
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  WosState enumeration                                                  //
+    //  Anisotropic filtering mode enumeration                                //
     ////////////////////////////////////////////////////////////////////////////
-    enum WosState
+    enum AnisotropicFilteringMode
     {
-        WOS_STATE_NONE = 0,
-        WOS_STATE_INIT = 1,
-        WOS_STATE_PRELOAD = 2,
-        WOS_STATE_LOAD = 3,
-        WOS_STATE_WAIT = 4,
-
-        WOS_STATE_RUN = 5,
-
-        WOS_STATE_ERROR = 6
+        ANISOTROPIC_FILTERING_NONE = 0,
+        ANISOTROPIC_FILTERING_2X = 1,
+        ANISOTROPIC_FILTERING_4X = 2,
+        ANISOTROPIC_FILTERING_8X = 3,
+        ANISOTROPIC_FILTERING_16X = 4
     };
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  WOS main loop callback function                                       //
+    //  SysSettings class definition                                          //
     ////////////////////////////////////////////////////////////////////////////
-    void WosMainLoop();
-
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  WOS main class definition                                             //
-    ////////////////////////////////////////////////////////////////////////////
-    class Wos
+    class SysSettings
     {
         public:
             ////////////////////////////////////////////////////////////////////
-            //  Wos default constructor                                       //
+            //  SysSettings default constructor                               //
             ////////////////////////////////////////////////////////////////////
-            Wos();
+            SysSettings();
 
             ////////////////////////////////////////////////////////////////////
-            //  Wos destructor                                                //
+            //  SysSettings destructor                                        //
             ////////////////////////////////////////////////////////////////////
-            ~Wos();
+            ~SysSettings();
 
 
             ////////////////////////////////////////////////////////////////////
-            //  Launch WOS                                                    //
-            //  return : True if WOS successfully started, false otherwise    //
+            //  Load system settings                                          //
+            //  return : True if system settings are successfully loaded      //
             ////////////////////////////////////////////////////////////////////
-            bool launch();
+            bool loadSettings();
 
             ////////////////////////////////////////////////////////////////////
-            //  Run WOS                                                       //
+            //  Adjust system settings according to device properties         //
             ////////////////////////////////////////////////////////////////////
-            void run();
+            void adjustSettings();
+
+
+            ////////////////////////////////////////////////////////////////////
+            //  Set Anisotropic filtering mode                                //
+            ////////////////////////////////////////////////////////////////////
+            inline void setAnisotropicFilteringMode(
+                AnisotropicFilteringMode anisotropicFiltering)
+            {
+                m_anisotropicFiltering = anisotropicFiltering;
+            }
+
+
+            ////////////////////////////////////////////////////////////////////
+            //  Get max anisotropic filtering mode                            //
+            ////////////////////////////////////////////////////////////////////
+            inline AnisotropicFilteringMode getMaxAnisotropicFilteringMode()
+            {
+                return m_maxAnisotropicFiltering;
+            }
+
+
+            ////////////////////////////////////////////////////////////////////
+            //  Get Anisotropic filtering mode                                //
+            ////////////////////////////////////////////////////////////////////
+            inline AnisotropicFilteringMode getAnisotropicFilteringMode()
+            {
+                return m_anisotropicFiltering;
+            }
 
 
         private:
             ////////////////////////////////////////////////////////////////////
-            //  Wos private copy constructor : Not copyable                   //
+            //  SysSettings private copy constructor : Not copyable           //
             ////////////////////////////////////////////////////////////////////
-            Wos(const Wos&) = delete;
+            SysSettings(const SysSettings&) = delete;
 
             ////////////////////////////////////////////////////////////////////
-            //  Wos private copy operator : Not copyable                      //
+            //  SysSettings private copy operator : Not copyable              //
             ////////////////////////////////////////////////////////////////////
-            Wos& operator=(const Wos&) = delete;
+            SysSettings& operator=(const SysSettings&) = delete;
 
 
         private:
-            WosState        m_state;            // WOS state
-            SysClock        m_clock;            // WOS clock
-            float           m_frametime;        // WOS frametime
-            float           m_framecount;       // WOS framecount
-            float           m_framerate;        // WOS framerate
-            float           m_timer;            // WOS timer
+            AnisotropicFilteringMode    m_maxAnisotropicFiltering;
 
-            Game            m_game;             // Game instance
+            AnisotropicFilteringMode    m_anisotropicFiltering;
     };
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  WOS global instance                                                   //
+    //  SysSettings global instance                                           //
     ////////////////////////////////////////////////////////////////////////////
-    extern Wos GWos;
+    extern SysSettings GSysSettings;
 
 
-#endif // WOS_WOS_HEADER
+#endif // WOS_SYSTEM_SYSSETTINGS_HEADER

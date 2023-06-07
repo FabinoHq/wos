@@ -13,6 +13,7 @@
     System/SysClock.cpp ^
     System/SysThread.cpp ^
     System/SysWindow.cpp ^
+    System/SysSettings.cpp ^
     Compress/ZLib.cpp ^
     Images/PNGFile.cpp ^
     Renderer/Renderer.cpp ^
