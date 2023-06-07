@@ -129,6 +129,7 @@ void View::compute(float ratio)
 ////////////////////////////////////////////////////////////////////////////////
 void View::bind()
 {
-    // Upload projview matrix
+    GRenderer.currentCamera = 0;
+    GRenderer.currentView = this;
     GRenderer.currentShader->sendProjViewMatrix(m_projViewMatrix);
 }

@@ -343,7 +343,7 @@ void Game::render()
     glEnable(GL_CULL_FACE);
 
     // Bind camera
-    GRenderer.bindCamera(m_orbitalcam);
+    m_orbitalcam.bind();
 
     // Render cuboid shape
     /*GRenderer.bindShader(RENDERER_SHADER_SHAPE);

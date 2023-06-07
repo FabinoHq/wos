@@ -191,6 +191,7 @@ bool Camera::compute(float ratio, Camera& camera)
 ////////////////////////////////////////////////////////////////////////////////
 void Camera::bind()
 {
-    // Upload projview matrix
+    GRenderer.currentView = 0;
+    GRenderer.currentCamera = this;
     GRenderer.currentShader->sendProjViewMatrix(m_projViewMatrix);
 }

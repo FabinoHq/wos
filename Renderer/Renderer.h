@@ -178,24 +178,6 @@
                 currentView = &defaultView;
             }
 
-            ////////////////////////////////////////////////////////////////////
-            //  Bind renderer view                                            //
-            ////////////////////////////////////////////////////////////////////
-            inline void bindView(View& view)
-            {
-                currentCamera = 0;
-                currentView = &view;
-            }
-
-            ////////////////////////////////////////////////////////////////////
-            //  Bind renderer camera                                          //
-            ////////////////////////////////////////////////////////////////////
-            inline void bindCamera(Camera& camera)
-            {
-                currentView = 0;
-                currentCamera = &camera;
-            }
-
 
             ////////////////////////////////////////////////////////////////////
             //  Get renderer ready state                                      //

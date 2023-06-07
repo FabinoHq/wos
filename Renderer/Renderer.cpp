@@ -344,11 +344,11 @@ bool Renderer::startFrame()
     // Bind default vertex buffer
     bindVertexBuffer(MESHES_DEFAULT);
 
-    // Bind default view
-    bindView(defaultView);
-
     // Bind default shader
     bindShader(RENDERER_SHADER_DEFAULT);
+
+    // Bind default view
+    defaultView.bind();
 
     // Rendering frame is ready
     return true;
