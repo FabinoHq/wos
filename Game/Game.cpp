@@ -338,9 +338,9 @@ void Game::render()
 
 
     // Enable depth test
-    glEnable(GL_DEPTH_TEST);
+    GRenderer.enableDepthTest();
     // Enable back face culling
-    glEnable(GL_CULL_FACE);
+    GRenderer.enableCullFace();
 
     // Bind camera
     m_orbitalcam.bind();
@@ -358,9 +358,9 @@ void Game::render()
 
 
     // Disable depth test
-    glDisable(GL_DEPTH_TEST);
+    GRenderer.disableDepthTest();
     // Disable back face culling
-    glDisable(GL_CULL_FACE);
+    GRenderer.disableCullFace();
 
     // Bind default vertex buffer
     GRenderer.bindVertexBuffer(MESHES_DEFAULT);
