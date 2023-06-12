@@ -89,20 +89,11 @@
                 m_matrix.setIdentity();
                 m_origin.reset();
                 m_position.reset();
-                m_size.reset();
+                m_size.set(1.0f, 1.0f);
                 //m_shear.reset();
                 m_angle = 0.0f;
             }
 
-
-            ////////////////////////////////////////////////////////////////////
-            //  Center origin                                                 //
-            ////////////////////////////////////////////////////////////////////
-            inline void centerOrigin()
-            {
-                m_origin.vec[0] = m_size.vec[0]*0.5f;
-                m_origin.vec[1] = m_size.vec[1]*0.5f;
-            }
 
             ////////////////////////////////////////////////////////////////////
             //  Set origin                                                    //
@@ -276,6 +267,15 @@
             inline void setHeight(float height)
             {
                 m_size.vec[1] = height;
+            }
+
+            ////////////////////////////////////////////////////////////////////
+            //  Set scale                                                     //
+            ////////////////////////////////////////////////////////////////////
+            inline void setScale(float scale)
+            {
+                m_size.vec[0] = scale;
+                m_size.vec[1] = scale;
             }
 
             ////////////////////////////////////////////////////////////////////

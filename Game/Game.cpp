@@ -311,7 +311,6 @@ void Game::compute(float frametime)
 
     // Compute procedural sprite
     m_procSprite.setSize(ratio*2.0f, 2.0f);
-    m_procSprite.centerOrigin();
 
     // Compute sprite
     m_sprite.rotate(frametime*0.5f);
