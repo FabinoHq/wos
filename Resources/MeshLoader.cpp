@@ -481,6 +481,16 @@ bool MeshLoader::loadEmbeddedMeshes()
         return false;
     }
 
+    // Load plane vertex buffer
+    if (!m_meshes[MESHES_PLANE].createBuffer(
+        PlaneVertices, PlaneIndices,
+        PlaneVerticesCount, PlaneIndicesCount,
+        VERTEX_INPUTS_STATICMESH))
+    {
+        // Could not load plane vertex buffer
+        return false;
+    }
+
     // Load cuboid vertex buffer
     if (!m_meshes[MESHES_CUBOID].createBuffer(
         CuboidShapeVertices, CuboidShapeIndices,

@@ -26,6 +26,7 @@
     Renderer/OrbitalCam.cpp ^
     Renderer/Sprite.cpp ^
     Renderer/ProcSprite.cpp ^
+    Renderer/Plane.cpp ^
     Renderer/StaticMesh.cpp ^
     Renderer/Shapes/RectangleShape.cpp ^
     Renderer/Shapes/EllipseShape.cpp ^

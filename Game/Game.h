@@ -53,6 +53,7 @@
     #include "../Renderer/Texture.h"
     #include "../Renderer/Sprite.h"
     #include "../Renderer/ProcSprite.h"
+    #include "../Renderer/Plane.h"
     #include "../Renderer/StaticMesh.h"
     #include "../Renderer/Shapes/RectangleShape.h"
     #include "../Renderer/Shapes/EllipseShape.h"
@@ -124,6 +125,7 @@
             RectangleShape  m_rectangle;        // Rectangle shape
             EllipseShape    m_ellipse;          // Ellipse shape
             CuboidShape     m_cuboid;           // Cuboid shape
+            Plane           m_plane;            // Plane billboard
             StaticMesh      m_staticmesh;       // Static mesh
 
             int             m_oldMouseX;        // Old mouse X position

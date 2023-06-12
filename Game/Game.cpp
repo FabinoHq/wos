@@ -55,6 +55,7 @@ m_procSprite(),
 m_rectangle(),
 m_ellipse(),
 m_cuboid(),
+m_plane(),
 m_staticmesh(),
 m_oldMouseX(0),
 m_oldMouseY(0),
@@ -159,6 +160,16 @@ bool Game::init()
         GSysWindow.releaseThread();
         return false;
     }
+
+    // Init plane
+    if (!m_plane.init(GResources.textures.high(TEXTURE_TEST), 1.0f, 1.0f))
+    {
+        // Could not init plane
+        GSysWindow.releaseThread();
+        return false;
+    }
+    m_plane.setBillboard(PLANE_BILLBOARD_SPHERICAL);
+    m_plane.setTarget(m_orbitalcam);
 
     // Init static mesh
     if (!m_staticmesh.init(GResources.meshes.mesh(MESHES_TEST),
@@ -319,9 +330,13 @@ void Game::compute(float frametime)
     m_cuboid.rotateX(frametime*0.47f);
     m_cuboid.rotateY(frametime*0.21f);
 
+    // Compute plane
+    m_plane.setX(2.0f);
+
     // Compute static mesh
-    m_staticmesh.rotateX(frametime*0.47f);
-    m_staticmesh.rotateY(frametime*0.21f);
+    /*m_staticmesh.rotateX(frametime*0.47f);
+    m_staticmesh.rotateY(frametime*0.21f);*/
+    m_staticmesh.setX(-2.0f);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -348,6 +363,12 @@ void Game::render()
     /*GRenderer.bindShader(RENDERER_SHADER_SHAPE);
     GRenderer.bindVertexBuffer(MESHES_CUBOID);
     m_cuboid.render();*/
+
+    // Render plane
+    GRenderer.bindShader(RENDERER_SHADER_STATICMESH);
+    GRenderer.bindVertexBuffer(MESHES_PLANE);
+    m_plane.bindTexture();
+    m_plane.render();
 
     // Render static mesh
     GRenderer.bindShader(RENDERER_SHADER_STATICMESH);
