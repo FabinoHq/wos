@@ -166,7 +166,7 @@ bool SysWindow::create()
     EmscriptenWebGLContextAttributes attributes;
     emscripten_webgl_init_context_attributes(&attributes);
     attributes.alpha = EM_FALSE;
-    attributes.depth = EM_FALSE;
+    attributes.depth = EM_TRUE;
     attributes.stencil = EM_FALSE;
     attributes.antialias = EM_FALSE;
     attributes.premultipliedAlpha = EM_TRUE;
