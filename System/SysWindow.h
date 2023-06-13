@@ -137,6 +137,15 @@
             }
 
             ////////////////////////////////////////////////////////////////////
+            //  Enable WebGL extension                                        //
+            //  return : True if the extension is enabled, false otherwise    //
+            ////////////////////////////////////////////////////////////////////
+            inline bool enableExtension(const char* extension) const
+            {
+                return (emscripten_webgl_enable_extension(m_handle, extension));
+            }
+
+            ////////////////////////////////////////////////////////////////////
             //  Check if the window has a valid handle                        //
             //  return : True if the window is valid                          //
             ////////////////////////////////////////////////////////////////////

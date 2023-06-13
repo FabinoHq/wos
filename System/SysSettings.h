@@ -42,6 +42,8 @@
 #ifndef WOS_SYSTEM_SYSSETTINGS_HEADER
 #define WOS_SYSTEM_SYSSETTINGS_HEADER
 
+    #include <GLES2/gl2.h>
+    #include <GLES2/gl2ext.h>
     #include "System.h"
 
 

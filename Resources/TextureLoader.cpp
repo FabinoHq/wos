@@ -385,6 +385,8 @@ bool TextureLoader::uploadTexture(unsigned int& handle,
         GL_TEXTURE_2D, 0, GL_RGBA, width, height,
         0, GL_RGBA, GL_UNSIGNED_BYTE, data
     );
+
+    // Repeat mode
     if (repeat == TEXTUREMODE_REPEAT)
     {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -395,10 +397,39 @@ bool TextureLoader::uploadTexture(unsigned int& handle,
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     }
+
+    // Smooth mode (linear interpolation)
     if (smooth)
     {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        // Anisotropic filtering
+        switch (GSysSettings.getAnisotropicFilteringMode())
+        {
+            case ANISOTROPIC_FILTERING_2X:
+                glTexParameterf(
+                    GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 2.0f
+                );
+                break;
+            case ANISOTROPIC_FILTERING_4X:
+                glTexParameterf(
+                    GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 4.0f
+                );
+                break;
+            case ANISOTROPIC_FILTERING_8X:
+                glTexParameterf(
+                    GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 8.0f
+                );
+                break;
+            case ANISOTROPIC_FILTERING_16X:
+                glTexParameterf(
+                    GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f
+                );
+                break;
+            default:
+                break;
+        }
     }
     else
     {

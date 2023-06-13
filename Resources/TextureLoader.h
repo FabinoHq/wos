@@ -49,6 +49,7 @@
     #include "../System/SysThread.h"
     #include "../System/SysMutex.h"
     #include "../System/SysWindow.h"
+    #include "../System/SysSettings.h"
 
     #include "../Renderer/Texture.h"
 

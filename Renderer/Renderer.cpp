@@ -106,6 +106,9 @@ bool Renderer::init()
     // Set current thread as current context
     GSysWindow.setThread();
 
+    // Adjust system settings
+    GSysSettings.adjustSettings();
+
     // Set renderer size
     width = GSysWindow.getWidth();
     height = GSysWindow.getHeight();

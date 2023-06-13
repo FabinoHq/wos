@@ -40,6 +40,7 @@
 //     System/SysSettings.cpp : System Settings management                    //
 ////////////////////////////////////////////////////////////////////////////////
 #include "SysSettings.h"
+#include "SysWindow.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -75,8 +76,8 @@ SysSettings::~SysSettings()
 bool SysSettings::loadSettings()
 {
     // Temp set settings
-    //m_anisotropicFiltering = ANISOTROPIC_FILTERING_8X;
-    m_anisotropicFiltering = ANISOTROPIC_FILTERING_NONE;
+    m_anisotropicFiltering = ANISOTROPIC_FILTERING_8X;
+    //m_anisotropicFiltering = ANISOTROPIC_FILTERING_NONE;
 
     // System settings successfully loaded
     return true;
@@ -89,6 +90,28 @@ void SysSettings::adjustSettings()
 {
     // Set max anistrotropic filtering
     m_maxAnisotropicFiltering = ANISOTROPIC_FILTERING_NONE;
+
+    if (GSysWindow.enableExtension("EXT_texture_filter_anisotropic"))
+    {
+        float maxAnisotropy = 0.0f;
+        glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
+        if (maxAnisotropy >= 2.0f)
+        {
+            m_maxAnisotropicFiltering = ANISOTROPIC_FILTERING_2X;
+        }
+        if (maxAnisotropy >= 4.0f)
+        {
+            m_maxAnisotropicFiltering = ANISOTROPIC_FILTERING_4X;
+        }
+        if (maxAnisotropy >= 8.0f)
+        {
+            m_maxAnisotropicFiltering = ANISOTROPIC_FILTERING_8X;
+        }
+        if (maxAnisotropy >= 16.0f)
+        {
+            m_maxAnisotropicFiltering = ANISOTROPIC_FILTERING_16X;
+        }
+    }
 
     // Adjust anistrotropic filtering
     if (m_anisotropicFiltering >= m_maxAnisotropicFiltering)
