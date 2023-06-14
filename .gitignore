@@ -145,6 +145,7 @@
 # Fonts files
 !fonts/
 !fonts/wosfont.otf
+!fonts/wospxfont.png
 
 # Textures files
 !textures/

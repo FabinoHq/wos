@@ -95,6 +95,7 @@ void OnTextureError(void* arg)
 TextureLoader::TextureLoader() :
 m_state(TEXTURELOADER_STATE_NONE),
 m_stateMutex(),
+m_texturesGUI(0),
 m_texturesHigh(0)
 {
 
@@ -218,6 +219,14 @@ void TextureLoader::process()
 ////////////////////////////////////////////////////////////////////////////////
 bool TextureLoader::init()
 {
+    // Allocate GUI textures
+    m_texturesGUI = new (std::nothrow) Texture[TEXTURE_GUICOUNT];
+    if (!m_texturesGUI)
+    {
+        // Could not allocate GUI textures
+        return false;
+    }
+
     // Allocate high textures
     m_texturesHigh = new (std::nothrow) Texture[TEXTURE_ASSETSCOUNT];
     if (!m_texturesHigh)
@@ -297,6 +306,14 @@ void TextureLoader::destroyTextureLoader()
     }
     if (m_texturesHigh) { delete[] m_texturesHigh; }
     m_texturesHigh = 0;
+
+    // Destroy GUI textures
+    for (int i = 0; i < TEXTURE_GUICOUNT; ++i)
+    {
+        m_texturesGUI[i].destroyTexture();
+    }
+    if (m_texturesGUI) { delete[] m_texturesGUI; }
+    m_texturesGUI = 0;
 }
 
 
@@ -492,7 +509,16 @@ bool TextureLoader::generateTextureMipmaps(unsigned int& handle,
 ////////////////////////////////////////////////////////////////////////////////
 bool TextureLoader::loadEmbeddedTextures()
 {
-    // Embedded textures successfully loaded
+    // Load pixel font texture
+    if (!loadTextureAsync(m_texturesGUI[TEXTURE_PIXELFONT],
+        "fonts/wospxfont.png",
+        true, true, TEXTUREMODE_CLAMP))
+    {
+        // Could not load pixel font texture
+        return false;
+    }
+
+    // Embedded textures are successfully loaded
     return true;
 }
 

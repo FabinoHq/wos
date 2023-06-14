@@ -81,7 +81,9 @@
     ////////////////////////////////////////////////////////////////////////////
     enum TexturesGUI
     {
-        TEXTURE_GUICOUNT = 0
+        TEXTURE_PIXELFONT = 0,
+
+        TEXTURE_GUICOUNT = 1
     };
 
     ////////////////////////////////////////////////////////////////////////////
@@ -198,6 +200,15 @@
             TextureLoaderState getState();
 
             ////////////////////////////////////////////////////////////////////
+            //  Get GUI texture                                               //
+            //  return : GUI texture                                          //
+            ////////////////////////////////////////////////////////////////////
+            inline Texture& gui(TexturesGUI texture)
+            {
+                return m_texturesGUI[texture];
+            }
+
+            ////////////////////////////////////////////////////////////////////
             //  Get high texture                                              //
             //  return : high texture                                         //
             ////////////////////////////////////////////////////////////////////
@@ -272,6 +283,7 @@
             TextureLoaderState      m_state;            // TextureLoader state
             SysMutex                m_stateMutex;       // State mutex
 
+            Texture*                m_texturesGUI;      // GUI textures
             Texture*                m_texturesHigh;     // High textures
     };
 
