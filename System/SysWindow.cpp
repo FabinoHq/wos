@@ -168,7 +168,7 @@ bool SysWindow::create()
     attributes.alpha = EM_FALSE;
     attributes.depth = EM_TRUE;
     attributes.stencil = EM_FALSE;
-    attributes.antialias = EM_FALSE;
+    attributes.antialias = EM_TRUE;
     attributes.premultipliedAlpha = EM_TRUE;
     attributes.preserveDrawingBuffer = EM_FALSE;
     attributes.powerPreference = EM_WEBGL_POWER_PREFERENCE_HIGH_PERFORMANCE;
