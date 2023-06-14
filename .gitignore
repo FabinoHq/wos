@@ -155,6 +155,7 @@
 
 # Textures files
 !textures/
+!textures/window.png
 !textures/testsprite.png
 
 # Models files

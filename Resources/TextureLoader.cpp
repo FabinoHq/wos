@@ -509,10 +509,19 @@ bool TextureLoader::generateTextureMipmaps(unsigned int& handle,
 ////////////////////////////////////////////////////////////////////////////////
 bool TextureLoader::loadEmbeddedTextures()
 {
+    // Load window texture
+    if (!loadTextureAsync(m_texturesGUI[TEXTURE_WINDOW],
+        "textures/window.png",
+        false, true, TEXTUREMODE_CLAMP))
+    {
+        // Could not load pixel font texture
+        return false;
+    }
+
     // Load pixel font texture
     if (!loadTextureAsync(m_texturesGUI[TEXTURE_PIXELFONT],
         "fonts/wospxfont.png",
-        true, true, TEXTUREMODE_CLAMP))
+        false, true, TEXTUREMODE_CLAMP))
     {
         // Could not load pixel font texture
         return false;
