@@ -62,6 +62,7 @@
     #include "Shaders/Default.h"
     #include "Shaders/Rectangle.h"
     #include "Shaders/Ellipse.h"
+    #include "Shaders/PxText.h"
     #include "Shaders/StaticMesh.h"
     #include "Shaders/StaticProc.h"
 

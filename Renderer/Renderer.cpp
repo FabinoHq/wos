@@ -264,6 +264,17 @@ bool Renderer::initShaders()
         return false;
     }
 
+    // Create pixel text shader
+    if (!shaders[RENDERER_SHADER_PXTEXT].createShader(
+        DefaultVertexShaderSrc, PxTextFragmentShaderSrc))
+    {
+        // Could not create pixel text shader
+        SysMessage::box() << "[0x3053] Could not create pixel text shader\n";
+        SysMessage::box() << "Please update your graphics drivers";
+        return false;
+    }
+
+
     // Create shape shader
     if (!shaders[RENDERER_SHADER_SHAPE].createShader(
         StaticMeshVertexShaderSrc, StaticProcFragmentShaderSrc))
@@ -283,6 +294,7 @@ bool Renderer::initShaders()
         SysMessage::box() << "Please update your graphics drivers";
         return false;
     }
+
 
     // Renderer shaders are ready
     return true;

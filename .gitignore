@@ -103,6 +103,7 @@
 !Renderer/Shaders/DefaultProc.h
 !Renderer/Shaders/Rectangle.h
 !Renderer/Shaders/Ellipse.h
+!Renderer/Shaders/PxText.h
 !Renderer/Shaders/StaticMesh.h
 !Renderer/Shaders/StaticProc.h
 
@@ -114,6 +115,11 @@
 !Renderer/Shapes/EllipseShape.cpp
 !Renderer/Shapes/CuboidShape.h
 !Renderer/Shapes/CuboidShape.cpp
+
+# GUI
+!Renderer/GUI/
+!Renderer/GUI/GUIPxText.h
+!Renderer/GUI/GUIPxText.cpp
 
 # Resources
 !Resources/

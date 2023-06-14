@@ -31,6 +31,7 @@
     Renderer/Shapes/RectangleShape.cpp ^
     Renderer/Shapes/EllipseShape.cpp ^
     Renderer/Shapes/CuboidShape.cpp ^
+    Renderer/GUI/GUIPxText.cpp ^
     Resources/Resources.cpp ^
     Resources/TextureLoader.cpp ^
     Resources/MeshLoader.cpp ^

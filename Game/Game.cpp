@@ -57,6 +57,7 @@ m_ellipse(),
 m_cuboid(),
 m_plane(),
 m_staticmesh(),
+m_pxText(),
 m_oldMouseX(0),
 m_oldMouseY(0),
 m_mouseX(0.0f),
@@ -83,11 +84,29 @@ bool Game::init()
     // Set current thread as current context
     GSysWindow.setThread();
 
+    // Init game
+    if (!initGame())
+    {
+        // Could not init game
+        GSysWindow.releaseThread();
+        return false;
+    }
+
+    // Game is ready
+    GSysWindow.releaseThread();
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  Init game                                                                 //
+//  return : True if game is ready, false otherwise                           //
+////////////////////////////////////////////////////////////////////////////////
+bool Game::initGame()
+{
     // Init view
     if (!m_view.init())
     {
         // Could not init view
-        GSysWindow.releaseThread();
         return false;
     }
 
@@ -95,7 +114,6 @@ bool Game::init()
     if (!m_camera.init())
     {
         // Could not init camera
-        GSysWindow.releaseThread();
         return false;
     }
     m_camera.setZ(2.0f);
@@ -104,7 +122,6 @@ bool Game::init()
     if (!m_freeflycam.init())
     {
         // Could not init free fly camera
-        GSysWindow.releaseThread();
         return false;
     }
     m_freeflycam.setZ(2.0f);
@@ -113,7 +130,6 @@ bool Game::init()
     if (!m_orbitalcam.init())
     {
         // Could not init orbital camera
-        GSysWindow.releaseThread();
         return false;
     }
     m_orbitalcam.setZ(2.0f);
@@ -125,7 +141,6 @@ bool Game::init()
     if (!m_sprite.init(GResources.textures.high(TEXTURE_TEST), 0.5f, 0.5f))
     {
         // Could not init sprite
-        GSysWindow.releaseThread();
         return false;
     }
 
@@ -133,7 +148,6 @@ bool Game::init()
     if (!m_procSprite.init(1.0f, 1.0f))
     {
         // Could not init procedural sprite
-        GSysWindow.releaseThread();
         return false;
     }
 
@@ -141,7 +155,6 @@ bool Game::init()
     if (!m_rectangle.init(1.0f, 1.0f))
     {
         // Could not init rectangle shape
-        GSysWindow.releaseThread();
         return false;
     }
 
@@ -149,7 +162,6 @@ bool Game::init()
     if (!m_ellipse.init(1.0f, 1.0f))
     {
         // Could not init ellipse shape
-        GSysWindow.releaseThread();
         return false;
     }
 
@@ -157,7 +169,6 @@ bool Game::init()
     if (!m_cuboid.init())
     {
         // Could not init cuboid shape
-        GSysWindow.releaseThread();
         return false;
     }
 
@@ -165,7 +176,6 @@ bool Game::init()
     if (!m_plane.init(GResources.textures.high(TEXTURE_TEST), 1.0f, 1.0f))
     {
         // Could not init plane
-        GSysWindow.releaseThread();
         return false;
     }
     m_plane.setBillboard(PLANE_BILLBOARD_SPHERICAL);
@@ -176,12 +186,21 @@ bool Game::init()
         GResources.textures.high(TEXTURE_TEST)))
     {
         // Could not init static mesh
-        GSysWindow.releaseThread();
         return false;
     }
 
+
+    // Init test pixel text
+    if (!m_pxText.init(GResources.textures.gui(TEXTURE_PIXELFONT), 0.04f))
+    {
+        // Could not init test pixel text
+        return false;
+    }
+    m_pxText.setSmooth(0.2f);
+    m_pxText.setText("FPS : 0");
+
+
     // Game is ready
-    GSysWindow.releaseThread();
     return true;
 }
 
@@ -308,6 +327,25 @@ void Game::events(Event& event)
 ////////////////////////////////////////////////////////////////////////////////
 void Game::compute(float frametime)
 {
+    // Framerate
+    static std::ostringstream framestr;
+    static float frameavg = 0.0f;
+    static float framecnt = 0.0f;
+
+    // Framerate display
+    frameavg += frametime;
+    framecnt += 1.0f;
+    if ((frameavg >= 0.5f) && (framecnt >= 1.0f))
+    {
+        framestr.clear();
+        framestr.str("");
+        framestr << "FPS : " << (1.0f/(frameavg/framecnt));
+        frameavg = 0.0f;
+        framecnt = 0.0f;
+    }
+    m_pxText.setText(framestr.str());
+
+
     // Get render ratio
     float ratio = GRenderer.getRatio();
 
@@ -349,6 +387,9 @@ void Game::render()
     {
         return;
     }
+
+    // Get render ratio
+    float ratio = GRenderer.getRatio();
 
 
     // Enable depth test
@@ -404,6 +445,22 @@ void Game::render()
     // Render ellipse shape
     /*GRenderer.bindShader(RENDERER_SHADER_ELLIPSE);
     m_ellipse.render();*/
+
+
+    // Render pixel text (framerate)
+    GRenderer.bindShader(RENDERER_SHADER_PXTEXT);
+    m_pxText.bindTexture();
+    m_pxText.setPosition(-ratio+0.01f, 1.0f-(m_pxText.getHeight()*0.7f));
+    m_pxText.render();
+
+    // Render pixel text (camera position)
+    std::ostringstream camerastr;
+    camerastr << "X : " << m_orbitalcam.getX() <<
+        " | Y : " << m_orbitalcam.getY() <<
+        " | Z : " << m_orbitalcam.getZ();
+    m_pxText.setText(camerastr.str());
+    m_pxText.setPosition(-ratio+0.01f, 0.96f-(m_pxText.getHeight()*0.7f));
+    m_pxText.render();
 
 
     // End frame rendering

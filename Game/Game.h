@@ -58,8 +58,12 @@
     #include "../Renderer/Shapes/RectangleShape.h"
     #include "../Renderer/Shapes/EllipseShape.h"
     #include "../Renderer/Shapes/CuboidShape.h"
+    #include "../Renderer/GUI/GUIPxText.h"
 
     #include "../Resources/Resources.h"
+
+    #include <string>
+    #include <sstream>
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -114,6 +118,13 @@
             Game& operator=(const Game&) = delete;
 
 
+            ////////////////////////////////////////////////////////////////////
+            //  Init game                                                     //
+            //  return : True if game is ready, false otherwise               //
+            ////////////////////////////////////////////////////////////////////
+            bool initGame();
+
+
         private:
             View            m_view;             // View
             Camera          m_camera;           // Camera
@@ -127,6 +138,8 @@
             CuboidShape     m_cuboid;           // Cuboid shape
             Plane           m_plane;            // Plane billboard
             StaticMesh      m_staticmesh;       // Static mesh
+
+            GUIPxText       m_pxText;           // GUI pixel text
 
             int             m_oldMouseX;        // Old mouse X position
             int             m_oldMouseY;        // Old mouse Y position
