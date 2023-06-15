@@ -176,16 +176,14 @@ void GUIPxText::render()
     m_matrix.translate(-m_origin);
     m_matrix.scale(m_size.vec[1], m_size.vec[1]);
 
-    // UV size and dynamic offset
-    Vector2 size = Vector2(PixelTextDefaultUVWidth, PixelTextDefaultUVHeight);
-    Vector2 offset = Vector2(0.0f, 0.0f);
-
     // Move to the first character
     m_matrix.translateX(PixelTextDefaultXStart);
 
     // Send uniforms constants
     GRenderer.currentShader->sendColor(m_color);
-    GRenderer.currentShader->sendSize(size);
+    GRenderer.currentShader->sendSize(
+        Vector2(PixelTextDefaultUVWidth, PixelTextDefaultUVHeight)
+    );
     GRenderer.currentShader->sendTime(m_smooth*PixelTextDefaultSmoothFactor);
 
     // Draw pixel text characters
@@ -206,9 +204,9 @@ void GUIPxText::render()
         GRenderer.currentShader->sendModelMatrix(m_matrix);
 
         // Send UV uniforms constants
-        offset.vec[0] = charX*PixelTextDefaultUVWidth;
-        offset.vec[1] = charY*PixelTextDefaultUVHeight;
-        GRenderer.currentShader->sendOffset(offset);
+        GRenderer.currentShader->sendOffset(Vector2(
+            (charX*PixelTextDefaultUVWidth), (charY*PixelTextDefaultUVHeight)
+        ));
 
         // Render current character
         GRenderer.currentBuffer->render();

@@ -32,6 +32,7 @@
     Renderer/Shapes/EllipseShape.cpp ^
     Renderer/Shapes/CuboidShape.cpp ^
     Renderer/GUI/GUIPxText.cpp ^
+    Renderer/GUI/GUIWindow.cpp ^
     Resources/Resources.cpp ^
     Resources/TextureLoader.cpp ^
     Resources/MeshLoader.cpp ^

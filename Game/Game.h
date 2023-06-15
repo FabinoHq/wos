@@ -59,6 +59,7 @@
     #include "../Renderer/Shapes/EllipseShape.h"
     #include "../Renderer/Shapes/CuboidShape.h"
     #include "../Renderer/GUI/GUIPxText.h"
+    #include "../Renderer/GUI/GUIWindow.h"
 
     #include "../Resources/Resources.h"
 
@@ -140,6 +141,7 @@
             StaticMesh      m_staticmesh;       // Static mesh
 
             GUIPxText       m_pxText;           // GUI pixel text
+            GUIWindow       m_guiWindow;        // GUI window
 
             int             m_oldMouseX;        // Old mouse X position
             int             m_oldMouseY;        // Old mouse Y position

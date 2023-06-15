@@ -58,6 +58,7 @@ m_cuboid(),
 m_plane(),
 m_staticmesh(),
 m_pxText(),
+m_guiWindow(),
 m_oldMouseX(0),
 m_oldMouseY(0),
 m_mouseX(0.0f),
@@ -199,6 +200,14 @@ bool Game::initGame()
     m_pxText.setSmooth(0.2f);
     m_pxText.setText("FPS : 0");
 
+    // Init GUI window
+    if (!m_guiWindow.init(
+        GResources.textures.gui(TEXTURE_WINDOW), 1.0f, 1.0f, 3.75f))
+    {
+        // Could not init GUI window
+        return false;
+    }
+
 
     // Game is ready
     return true;
@@ -293,6 +302,8 @@ void Game::events(Event& event)
             // Compute mouse events
             //m_freeflycam.mouseMove(deltaX*1.0f, deltaY*1.0f);
             m_orbitalcam.mouseMove(deltaX*1.0f, deltaY*1.0f);
+            m_guiWindow.mouseMove(m_mouseX, m_mouseY);
+            //m_cursor.setCursor(m_guiWindow.updateCursor(m_mouseX, m_mouseY));
             break;
         }
 
@@ -301,6 +312,7 @@ void Game::events(Event& event)
             if (event.mouse.button == EVENT_MOUSE_LEFT)
             {
                 m_orbitalcam.mousePress();
+                m_guiWindow.mousePress(m_mouseX, m_mouseY);
             }
             break;
 
@@ -309,6 +321,7 @@ void Game::events(Event& event)
             if (event.mouse.button == EVENT_MOUSE_LEFT)
             {
                 m_orbitalcam.mouseRelease();
+                m_guiWindow.mouseRelease(m_mouseX, m_mouseY);
             }
             break;
 
@@ -446,6 +459,11 @@ void Game::render()
     /*GRenderer.bindShader(RENDERER_SHADER_ELLIPSE);
     m_ellipse.render();*/
 
+    // Render window
+    GRenderer.bindShader(RENDERER_SHADER_DEFAULT);
+    //GRenderer.bindShader(RENDERER_SHADER_NINEPATCH);
+    m_guiWindow.bindTexture();
+    m_guiWindow.render();
 
     // Render pixel text (framerate)
     GRenderer.bindShader(RENDERER_SHADER_PXTEXT);

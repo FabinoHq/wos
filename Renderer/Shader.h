@@ -128,7 +128,7 @@
             ////////////////////////////////////////////////////////////////////
             //  Send projview matrix                                          //
             ////////////////////////////////////////////////////////////////////
-            inline void sendProjViewMatrix(Matrix4x4& projViewMatrix)
+            inline void sendProjViewMatrix(const Matrix4x4& projViewMatrix)
             {
                 glUniformMatrix4fv(
                     m_projViewMatrixLoc, 1, GL_FALSE, projViewMatrix.mat
@@ -138,7 +138,7 @@
             ////////////////////////////////////////////////////////////////////
             //  Send model matrix                                             //
             ////////////////////////////////////////////////////////////////////
-            inline void sendModelMatrix(Matrix4x4& modelMatrix)
+            inline void sendModelMatrix(const Matrix4x4& modelMatrix)
             {
                 glUniformMatrix4fv(
                     m_modelMatrixLoc, 1, GL_FALSE, modelMatrix.mat
@@ -149,7 +149,7 @@
             ////////////////////////////////////////////////////////////////////
             //  Send constants color uniform                                  //
             ////////////////////////////////////////////////////////////////////
-            inline void sendColor(Vector4& color)
+            inline void sendColor(const Vector4& color)
             {
                 glUniform4fv(m_colorLoc, 1, color.vec);
             }
@@ -157,7 +157,7 @@
             ////////////////////////////////////////////////////////////////////
             //  Send constants offset uniform                                 //
             ////////////////////////////////////////////////////////////////////
-            inline void sendOffset(Vector2& offset)
+            inline void sendOffset(const Vector2& offset)
             {
                 glUniform2fv(m_offsetLoc, 1, offset.vec);
             }
@@ -165,7 +165,7 @@
             ////////////////////////////////////////////////////////////////////
             //  Send constants size uniform                                   //
             ////////////////////////////////////////////////////////////////////
-            inline void sendSize(Vector2& size)
+            inline void sendSize(const Vector2& size)
             {
                 glUniform2fv(m_sizeLoc, 1, size.vec);
             }
@@ -206,7 +206,7 @@
             ////////////////////////////////////////////////////////////////////
             //  Send shader uniform vec 2                                     //
             ////////////////////////////////////////////////////////////////////
-            inline void sendUniformVec2(int32_t location, Vector2& vec)
+            inline void sendUniformVec2(int32_t location, const Vector2& vec)
             {
                 glUniform2fv(location, 1, vec.vec);
             }
@@ -214,7 +214,7 @@
             ////////////////////////////////////////////////////////////////////
             //  Send shader uniform vec 3                                     //
             ////////////////////////////////////////////////////////////////////
-            inline void sendUniformVec3(int32_t location, Vector3& vec)
+            inline void sendUniformVec3(int32_t location, const Vector3& vec)
             {
                 glUniform3fv(location, 1, vec.vec);
             }
@@ -222,7 +222,7 @@
             ////////////////////////////////////////////////////////////////////
             //  Send shader uniform vec 4                                     //
             ////////////////////////////////////////////////////////////////////
-            inline void sendUniformVec4(int32_t location, Vector4& vec)
+            inline void sendUniformVec4(int32_t location, const Vector4& vec)
             {
                 glUniform4fv(location, 1, vec.vec);
             }
@@ -230,7 +230,7 @@
             ////////////////////////////////////////////////////////////////////
             //  Send shader uniform mat 4                                     //
             ////////////////////////////////////////////////////////////////////
-            inline void sendUniformMat4(int32_t location, Matrix4x4& mat)
+            inline void sendUniformMat4(int32_t location, const Matrix4x4& mat)
             {
                 glUniformMatrix4fv(location, 1, GL_FALSE, mat.mat);
             }

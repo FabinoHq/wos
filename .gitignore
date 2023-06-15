@@ -120,6 +120,8 @@
 !Renderer/GUI/
 !Renderer/GUI/GUIPxText.h
 !Renderer/GUI/GUIPxText.cpp
+!Renderer/GUI/GUIWindow.h
+!Renderer/GUI/GUIWindow.cpp
 
 # Resources
 !Resources/
