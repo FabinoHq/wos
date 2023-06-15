@@ -244,6 +244,16 @@ bool Renderer::initShaders()
         return false;
     }
 
+    // Create nine patch shader
+    if (!shaders[RENDERER_SHADER_NINEPATCH].createShader(
+        DefaultVertexShaderSrc, NinePatchFragmentShaderSrc))
+    {
+        // Could not create nine patch shader
+        SysMessage::box() << "[0x3053] Could not create nine patch shader\n";
+        SysMessage::box() << "Please update your graphics drivers";
+        return false;
+    }
+
     // Create rectangle shader
     if (!shaders[RENDERER_SHADER_RECTANGLE].createShader(
         DefaultVertexShaderSrc, RectangleFragmentShaderSrc))

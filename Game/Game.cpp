@@ -460,8 +460,7 @@ void Game::render()
     m_ellipse.render();*/
 
     // Render window
-    GRenderer.bindShader(RENDERER_SHADER_DEFAULT);
-    //GRenderer.bindShader(RENDERER_SHADER_NINEPATCH);
+    GRenderer.bindShader(RENDERER_SHADER_NINEPATCH);
     m_guiWindow.bindTexture();
     m_guiWindow.render();
 

@@ -60,6 +60,7 @@
     #include "VertexBuffer.h"
 
     #include "Shaders/Default.h"
+    #include "Shaders/NinePatch.h"
     #include "Shaders/Rectangle.h"
     #include "Shaders/Ellipse.h"
     #include "Shaders/PxText.h"

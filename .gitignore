@@ -101,6 +101,7 @@
 !Renderer/Shaders/
 !Renderer/Shaders/Default.h
 !Renderer/Shaders/DefaultProc.h
+!Renderer/Shaders/NinePatch.h
 !Renderer/Shaders/Rectangle.h
 !Renderer/Shaders/Ellipse.h
 !Renderer/Shaders/PxText.h

@@ -631,7 +631,6 @@ void GUIWindow::render()
 
     // Send uniforms constants
     GRenderer.currentShader->sendColor(m_color);
-    GRenderer.currentShader->sendOffset(Vector2(0.0f, 0.0f));
     GRenderer.currentShader->sendSize(m_size);
     GRenderer.currentShader->sendTime(m_uvFactor);
 
