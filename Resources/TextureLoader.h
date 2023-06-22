@@ -81,10 +81,15 @@
     ////////////////////////////////////////////////////////////////////////////
     enum TexturesGUI
     {
-        TEXTURE_WINDOW = 0,
-        TEXTURE_PIXELFONT = 1,
+        TEXTURE_CURSOR = 0,
+        TEXTURE_NSCURSOR = 1,
+        TEXTURE_EWCURSOR = 2,
+        TEXTURE_NESWCURSOR = 3,
+        TEXTURE_NWSECURSOR = 4,
+        TEXTURE_WINDOW = 5,
+        TEXTURE_PIXELFONT = 6,
 
-        TEXTURE_GUICOUNT = 2
+        TEXTURE_GUICOUNT = 7
     };
 
     ////////////////////////////////////////////////////////////////////////////

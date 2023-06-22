@@ -31,6 +31,7 @@
     Renderer/Shapes/RectangleShape.cpp ^
     Renderer/Shapes/EllipseShape.cpp ^
     Renderer/Shapes/CuboidShape.cpp ^
+    Renderer/GUI/GUICursor.cpp ^
     Renderer/GUI/GUIPxText.cpp ^
     Renderer/GUI/GUIWindow.cpp ^
     Resources/Resources.cpp ^

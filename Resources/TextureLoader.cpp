@@ -509,6 +509,51 @@ bool TextureLoader::generateTextureMipmaps(unsigned int& handle,
 ////////////////////////////////////////////////////////////////////////////////
 bool TextureLoader::loadEmbeddedTextures()
 {
+    // Load cursor texture
+    if (!loadTextureAsync(m_texturesGUI[TEXTURE_CURSOR],
+        "cursors/default.png",
+        false, false, TEXTUREMODE_CLAMP))
+    {
+        // Could not load cursor texture
+        return false;
+    }
+
+    // Load NS cursor texture
+    if (!loadTextureAsync(m_texturesGUI[TEXTURE_NSCURSOR],
+        "cursors/nsresize.png",
+        false, false, TEXTUREMODE_CLAMP))
+    {
+        // Could not load NS cursor texture
+        return false;
+    }
+
+    // Load EW cursor texture
+    if (!loadTextureAsync(m_texturesGUI[TEXTURE_EWCURSOR],
+        "cursors/ewresize.png",
+        false, false, TEXTUREMODE_CLAMP))
+    {
+        // Could not load EW cursor texture
+        return false;
+    }
+
+    // Load NE-SW cursor texture
+    if (!loadTextureAsync(m_texturesGUI[TEXTURE_NESWCURSOR],
+        "cursors/neswresize.png",
+        false, false, TEXTUREMODE_CLAMP))
+    {
+        // Could not load NE-SW cursor texture
+        return false;
+    }
+
+    // Load NW-SE cursor texture
+    if (!loadTextureAsync(m_texturesGUI[TEXTURE_NWSECURSOR],
+        "cursors/nwseresize.png",
+        false, false, TEXTUREMODE_CLAMP))
+    {
+        // Could not load NW-SE cursor texture
+        return false;
+    }
+
     // Load window texture
     if (!loadTextureAsync(m_texturesGUI[TEXTURE_WINDOW],
         "textures/window.png",
