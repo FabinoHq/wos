@@ -43,6 +43,7 @@
 #define WOS_RENDERER_GUI_GUIWINDOW_HEADER
 
     #include "../../System/System.h"
+    #include "../../System/SysCursor.h"
     #include "../../Math/Math.h"
     #include "../../Math/Vector2.h"
     #include "../../Math/Vector4.h"
@@ -304,7 +305,7 @@
             ////////////////////////////////////////////////////////////////////
             //  Update renderer current cursor                                //
             ////////////////////////////////////////////////////////////////////
-            //GUICursorType updateCursor(float mouseX, float mouseY);
+            SysCursorType updateCursor(float mouseX, float mouseY);
 
 
             ////////////////////////////////////////////////////////////////////

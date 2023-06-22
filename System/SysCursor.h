@@ -37,36 +37,33 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     System/System.h : WOS System management wrapper                        //
+//     System/SysCursor.h : System Cursor management                          //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_SYSTEM_SYSTEM_HEADER
-#define WOS_SYSTEM_SYSTEM_HEADER
+#ifndef WOS_SYSTEM_SYSCURSOR_HEADER
+#define WOS_SYSTEM_SYSCURSOR_HEADER
+
+    #include "System.h"
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  Operating system configuration                                        //
+    //  SysCursor type enumeration                                            //
     ////////////////////////////////////////////////////////////////////////////
-    #define WOS_DESKTOP
+    enum SysCursorType
+    {
+        SYSCURSOR_NONE = 0,
+        SYSCURSOR_DEFAULT = 1,
+
+        SYSCURSOR_TOPRESIZE = 2,
+        SYSCURSOR_BOTTOMRESIZE = 3,
+        SYSCURSOR_LEFTRESIZE = 4,
+        SYSCURSOR_RIGHTRESIZE = 5,
+        SYSCURSOR_TOPLEFTRESIZE = 6,
+        SYSCURSOR_TOPRIGHTRESIZE = 7,
+        SYSCURSOR_BOTTOMLEFTRESIZE = 8,
+        SYSCURSOR_BOTTOMRIGHTRESIZE = 9,
+
+        SYSCURSOR_CURSORSCOUNT = 10
+    };
 
 
-    ////////////////////////////////////////////////////////////////////////////
-    //  64bits or 32bits configuration                                        //
-    ////////////////////////////////////////////////////////////////////////////
-    #if defined(__x86_64__) || defined(_WIN64) || defined(__LP64__) || \
-        defined(__ia64) || defined(_M_X64) || defined(_M_IA64) || \
-        defined(__aarch64__) || defined(__powerpc64__)
-        #define WOS_64BITS
-    #else
-        #define WOS_32BITS
-    #endif
-
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  Mouse pointer lock configuration                                      //
-    //  0 : No pointer lock (OS absolute mouse position)                      //
-    //  1 : Pointer lock (High precision mouse delta)                         //
-    ////////////////////////////////////////////////////////////////////////////
-    #define WOS_POINTERLOCK 0
-
-
-#endif // WOS_SYSTEM_SYSTEM_HEADER
+#endif // WOS_SYSTEM_SYSCURSOR_HEADER

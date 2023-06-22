@@ -86,7 +86,7 @@
     "    }\n"
     "    if (patchSize.x <= 0.5) { curCoord.x = texCoords.x; }\n"
     "    if (patchSize.y <= 0.5) { curCoord.y = texCoords.y; }\n"
-    "    \n"
+    "\n"
     "    // Compute output color\n"
     "    gl_FragColor = texture2D(texSampler, curCoord)*constants_color;\n"
     "}\n";

@@ -41,6 +41,7 @@
 !System/SysMutexLocker.h
 !System/SysThread.h
 !System/SysThread.cpp
+!System/SysCursor.h
 !System/SysWindow.h
 !System/SysWindow.cpp
 !System/SysSettings.h

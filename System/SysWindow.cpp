@@ -84,7 +84,15 @@ EM_BOOL OnWindowMouse(int event, const EmscriptenMouseEvent* mouse, void* user)
     // Update window mouse
     (void)event;
     (void)user;
-    GSysWindow.updateMouse(mouse->clientX, mouse->clientY, mouse->buttons);
+    #if (WOS_POINTERLOCK == 1)
+        GSysWindow.updateMouse(
+            mouse->movementX, mouse->movementY, mouse->buttons
+        );
+    #else
+        GSysWindow.updateMouse(
+            mouse->clientX, mouse->clientY, mouse->buttons
+        );
+    #endif // WOS_POINTERLOCK
     return EM_TRUE;
 }
 
@@ -303,6 +311,11 @@ void SysWindow::updateMouse(
         event.mouse.x = m_mouseX;
         event.mouse.y = m_mouseY;
         m_events.push(event);
+
+        // Lock pointer request
+        #if (WOS_POINTERLOCK == 1)
+            emscripten_request_pointerlock("#woscreen", EM_FALSE);
+        #endif // WOS_POINTERLOCK
     }
     if ((buttons & 0x02) && !(m_buttons & 0x02))
     {
