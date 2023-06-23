@@ -49,6 +49,7 @@
     #include "SysSleep.h"
     #include "SysMessage.h"
     #include "SysEvent.h"
+    #include "SysCursor.h"
 
     #include <queue>
 
@@ -106,6 +107,17 @@
             //  Update window keyboard up                                     //
             ////////////////////////////////////////////////////////////////////
             void updateKeyUp(const EM_UTF8 key[32], unsigned long location);
+
+            ////////////////////////////////////////////////////////////////////
+            //  Set system window cursor                                      //
+            ////////////////////////////////////////////////////////////////////
+            #if (WOS_POINTERLOCK == 0)
+                inline void setCursor(SysCursorType cursorType)
+                {
+                    (void)cursorType;
+                    //m_cursors[cursorType]
+                }
+            #endif // WOS_POINTERLOCK
 
 
             ////////////////////////////////////////////////////////////////////

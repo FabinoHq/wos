@@ -54,14 +54,17 @@
     #include "../Renderer/Sprite.h"
     #include "../Renderer/ProcSprite.h"
     #include "../Renderer/Plane.h"
-    #include "../Renderer/StaticMesh.h"
-    #include "../Renderer/Shapes/RectangleShape.h"
-    #include "../Renderer/Shapes/EllipseShape.h"
-    #include "../Renderer/Shapes/CuboidShape.h"
+
+    #include "../Resources/Resources.h"
+    #include "../Renderer/GUI/GUICursor.h"
     #include "../Renderer/GUI/GUIPxText.h"
     #include "../Renderer/GUI/GUIWindow.h"
 
-    #include "../Resources/Resources.h"
+    #include "../Renderer/Shapes/RectangleShape.h"
+    #include "../Renderer/Shapes/EllipseShape.h"
+    #include "../Renderer/Shapes/CuboidShape.h"
+
+    #include "../Renderer/StaticMesh.h"
 
     #include <string>
     #include <sstream>
@@ -138,13 +141,13 @@
             EllipseShape    m_ellipse;          // Ellipse shape
             CuboidShape     m_cuboid;           // Cuboid shape
             Plane           m_plane;            // Plane billboard
-            StaticMesh      m_staticmesh;       // Static mesh
 
+            GUICursor       m_cursor;           // GUI Cursor
             GUIPxText       m_pxText;           // GUI pixel text
             GUIWindow       m_guiWindow;        // GUI window
 
-            int             m_oldMouseX;        // Old mouse X position
-            int             m_oldMouseY;        // Old mouse Y position
+            StaticMesh      m_staticmesh;       // Static mesh
+
             float           m_mouseX;           // Mouse X position
             float           m_mouseY;           // Mouse Y position
     };

@@ -56,11 +56,10 @@ m_rectangle(),
 m_ellipse(),
 m_cuboid(),
 m_plane(),
-m_staticmesh(),
+m_cursor(),
 m_pxText(),
 m_guiWindow(),
-m_oldMouseX(0),
-m_oldMouseY(0),
+m_staticmesh(),
 m_mouseX(0.0f),
 m_mouseY(0.0f)
 {
@@ -182,14 +181,13 @@ bool Game::initGame()
     m_plane.setBillboard(PLANE_BILLBOARD_SPHERICAL);
     m_plane.setTarget(m_orbitalcam);
 
-    // Init static mesh
-    if (!m_staticmesh.init(GResources.meshes.mesh(MESHES_TEST),
-        GResources.textures.high(TEXTURE_TEST)))
+
+    // Init GUI cursor
+    if (!m_cursor.init(GResources.textures.gui(TEXTURE_CURSOR), 64.0f))
     {
-        // Could not init static mesh
+        // Could not init GUI cursor
         return false;
     }
-
 
     // Init test pixel text
     if (!m_pxText.init(GResources.textures.gui(TEXTURE_PIXELFONT), 0.04f))
@@ -205,6 +203,15 @@ bool Game::initGame()
         GResources.textures.gui(TEXTURE_WINDOW), 1.0f, 1.0f, 3.75f))
     {
         // Could not init GUI window
+        return false;
+    }
+
+
+    // Init static mesh
+    if (!m_staticmesh.init(GResources.meshes.mesh(MESHES_TEST),
+        GResources.textures.high(TEXTURE_TEST)))
+    {
+        // Could not init static mesh
         return false;
     }
 
@@ -279,31 +286,53 @@ void Game::events(Event& event)
         // Mouse moved
         case EVENT_MOUSEMOVED:
         {
-            // Compute mouse delta
-            float deltaX = ((event.mouse.x - m_oldMouseX) * 1.0f);
-            float deltaY = ((event.mouse.y - m_oldMouseY) * 1.0f);
-            m_oldMouseX = event.mouse.x;
-            m_oldMouseY = event.mouse.y;
-
             // Compute mouse position
-            m_mouseX = (
-                ((event.mouse.x-GRenderer.getOffsetXF())/
-                (GRenderer.getWidthF()*0.5f))*ratio
-            )-ratio;
-            m_mouseY = (
-                -(event.mouse.y-GRenderer.getOffsetYF())/
-                (GRenderer.getHeightF()*0.5f)
-            )+1.0f;
-            if (m_mouseX <= -ratio) { m_mouseX = -ratio; }
-            if (m_mouseX >= ratio) { m_mouseX = ratio; }
-            if (m_mouseY <= -1.0f) { m_mouseY = -1.0f; }
-            if (m_mouseY >= 1.0f) { m_mouseY = 1.0f; }
+            #if (WOS_POINTERLOCK == 1)
+                // High precision mouse delta
+                float deltaX = (event.mouse.x*1.0f);
+                float deltaY = (event.mouse.y*1.0f);
+                m_mouseX += event.mouse.x*scale*2.0f;
+                m_mouseY -= event.mouse.y*scale*2.0f;
+                if (m_mouseX <= -ratio) { m_mouseX = -ratio; }
+                if (m_mouseX >= ratio) { m_mouseX = ratio; }
+                if (m_mouseY <= -1.0f) { m_mouseY = -1.0f; }
+                if (m_mouseY >= 1.0f) { m_mouseY = 1.0f; }
+            #else
+                // OS absolute mouse position
+                float prevMouseX = m_mouseX;
+                float prevMouseY = m_mouseY;
+                m_mouseX = (
+                    ((event.mouse.x-GRenderer.getOffsetXF())/
+                    (GRenderer.getWidthF()*0.5f))*ratio
+                )-ratio;
+                m_mouseY = (
+                    -(event.mouse.y-GRenderer.getOffsetYF())/
+                    (GRenderer.getHeightF()*0.5f)
+                )+1.0f;
+                float deltaX = (m_mouseX - prevMouseX)*500.0f;
+                float deltaY = (prevMouseY - m_mouseY)*500.0f;
+                if (m_mouseX <= -ratio) { m_mouseX = -ratio; }
+                if (m_mouseX >= ratio) { m_mouseX = ratio; }
+                if (m_mouseY <= -1.0f) { m_mouseY = -1.0f; }
+                if (m_mouseY >= 1.0f) { m_mouseY = 1.0f; }
+            #endif // WOS_POINTERLOCK
 
             // Compute mouse events
             //m_freeflycam.mouseMove(deltaX*1.0f, deltaY*1.0f);
             m_orbitalcam.mouseMove(deltaX*1.0f, deltaY*1.0f);
             m_guiWindow.mouseMove(m_mouseX, m_mouseY);
-            //m_cursor.setCursor(m_guiWindow.updateCursor(m_mouseX, m_mouseY));
+
+            #if (WOS_POINTERLOCK == 1)
+                // GUI cursor
+                m_cursor.setCursor(
+                    m_guiWindow.updateCursor(m_mouseX, m_mouseY)
+                );
+            #else
+                // System cursor
+                GSysWindow.setCursor(
+                    m_guiWindow.updateCursor(m_mouseX, m_mouseY)
+                );
+            #endif // WOS_POINTERLOCK
             break;
         }
 
@@ -478,6 +507,12 @@ void Game::render()
     m_pxText.setText(camerastr.str());
     m_pxText.setPosition(-ratio+0.01f, 0.96f-(m_pxText.getHeight()*0.7f));
     m_pxText.render();
+
+    // Render cursor
+    GRenderer.bindShader(RENDERER_SHADER_DEFAULT);
+    m_cursor.setPosition(m_mouseX, m_mouseY);
+    m_cursor.bindTexture();
+    m_cursor.render();
 
 
     // End frame rendering
