@@ -292,15 +292,12 @@ void SysWindow::updateMouse(
     event.type = EVENT_NONE;
 
     // Mouse move event
-    if ((mouseX != m_mouseX) || (mouseY != m_mouseY))
-    {
-        m_mouseX = mouseX;
-        m_mouseY = mouseY;
-        event.type = EVENT_MOUSEMOVED;
-        event.mouse.x = mouseX;
-        event.mouse.y = mouseY;
-        m_events.push(event);
-    }
+    m_mouseX = mouseX;
+    m_mouseY = mouseY;
+    event.type = EVENT_MOUSEMOVED;
+    event.mouse.x = mouseX;
+    event.mouse.y = mouseY;
+    m_events.push(event);
 
     // Mouse press event
     if ((buttons & 0x01) && !(m_buttons & 0x01))

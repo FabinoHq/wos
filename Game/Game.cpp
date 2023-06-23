@@ -309,8 +309,8 @@ void Game::events(Event& event)
                     -(event.mouse.y-GRenderer.getOffsetYF())/
                     (GRenderer.getHeightF()*0.5f)
                 )+1.0f;
-                float deltaX = (m_mouseX - prevMouseX)*500.0f;
-                float deltaY = (prevMouseY - m_mouseY)*500.0f;
+                float deltaX = ((m_mouseX - prevMouseX) * 500.0f);
+                float deltaY = ((prevMouseY - m_mouseY) * 500.0f);
                 if (m_mouseX <= -ratio) { m_mouseX = -ratio; }
                 if (m_mouseX >= ratio) { m_mouseX = ratio; }
                 if (m_mouseY <= -1.0f) { m_mouseY = -1.0f; }
