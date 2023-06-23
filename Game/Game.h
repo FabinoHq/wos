@@ -44,6 +44,7 @@
 
     #include "../System/System.h"
     #include "../System/SysEvent.h"
+    #include "../System/SysMouse.h"
 
     #include "../Renderer/Renderer.h"
     #include "../Renderer/View.h"
@@ -147,9 +148,6 @@
             GUIWindow       m_guiWindow;        // GUI window
 
             StaticMesh      m_staticmesh;       // Static mesh
-
-            float           m_mouseX;           // Mouse X position
-            float           m_mouseY;           // Mouse Y position
     };
 
 

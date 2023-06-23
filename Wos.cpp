@@ -208,6 +208,18 @@ void Wos::run()
             Event event;
             while (GSysWindow.getEvent(event))
             {
+                // Process event
+                switch (event.type)
+                {
+                    // Mouse moved
+                    case EVENT_MOUSEMOVED:
+                        GSysMouse.update(event.mouse.x, event.mouse.y);
+                        break;
+
+                    default:
+                        break;
+                }
+
                 // Compute events
                 m_game.events(event);
             }

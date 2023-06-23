@@ -59,9 +59,7 @@ m_plane(),
 m_cursor(),
 m_pxText(),
 m_guiWindow(),
-m_staticmesh(),
-m_mouseX(0.0f),
-m_mouseY(0.0f)
+m_staticmesh()
 {
 
 }
@@ -226,10 +224,6 @@ bool Game::initGame()
 ////////////////////////////////////////////////////////////////////////////////
 void Game::events(Event& event)
 {
-    // Get renderer scale and ratio
-    float scale = GRenderer.getScale();
-    float ratio = GRenderer.getRatio();
-
     // Process event
     switch (event.type)
     {
@@ -286,51 +280,20 @@ void Game::events(Event& event)
         // Mouse moved
         case EVENT_MOUSEMOVED:
         {
-            // Compute mouse position
-            #if (WOS_POINTERLOCK == 1)
-                // High precision mouse delta
-                float deltaX = (event.mouse.x*1.0f);
-                float deltaY = (event.mouse.y*1.0f);
-                m_mouseX += event.mouse.x*scale*2.0f;
-                m_mouseY -= event.mouse.y*scale*2.0f;
-                if (m_mouseX <= -ratio) { m_mouseX = -ratio; }
-                if (m_mouseX >= ratio) { m_mouseX = ratio; }
-                if (m_mouseY <= -1.0f) { m_mouseY = -1.0f; }
-                if (m_mouseY >= 1.0f) { m_mouseY = 1.0f; }
-            #else
-                // OS absolute mouse position
-                float prevMouseX = m_mouseX;
-                float prevMouseY = m_mouseY;
-                m_mouseX = (
-                    ((event.mouse.x-GRenderer.getOffsetXF())/
-                    (GRenderer.getWidthF()*0.5f))*ratio
-                )-ratio;
-                m_mouseY = (
-                    -(event.mouse.y-GRenderer.getOffsetYF())/
-                    (GRenderer.getHeightF()*0.5f)
-                )+1.0f;
-                float deltaX = ((m_mouseX - prevMouseX) * 500.0f);
-                float deltaY = ((prevMouseY - m_mouseY) * 500.0f);
-                if (m_mouseX <= -ratio) { m_mouseX = -ratio; }
-                if (m_mouseX >= ratio) { m_mouseX = ratio; }
-                if (m_mouseY <= -1.0f) { m_mouseY = -1.0f; }
-                if (m_mouseY >= 1.0f) { m_mouseY = 1.0f; }
-            #endif // WOS_POINTERLOCK
-
             // Compute mouse events
-            //m_freeflycam.mouseMove(deltaX*1.0f, deltaY*1.0f);
-            m_orbitalcam.mouseMove(deltaX*1.0f, deltaY*1.0f);
-            m_guiWindow.mouseMove(m_mouseX, m_mouseY);
+            //m_freeflycam.mouseMove(GSysMouse.deltaX, GSysMouse.deltaY);
+            m_orbitalcam.mouseMove(GSysMouse.deltaX, GSysMouse.deltaY);
+            m_guiWindow.mouseMove(GSysMouse.mouseX, GSysMouse.mouseY);
 
             #if (WOS_POINTERLOCK == 1)
                 // GUI cursor
                 m_cursor.setCursor(
-                    m_guiWindow.updateCursor(m_mouseX, m_mouseY)
+                    m_guiWindow.updateCursor(GSysMouse.mouseX, GSysMouse.mouseY)
                 );
             #else
                 // System cursor
                 GSysWindow.setCursor(
-                    m_guiWindow.updateCursor(m_mouseX, m_mouseY)
+                    m_guiWindow.updateCursor(GSysMouse.mouseX, GSysMouse.mouseY)
                 );
             #endif // WOS_POINTERLOCK
             break;
@@ -341,7 +304,7 @@ void Game::events(Event& event)
             if (event.mouse.button == EVENT_MOUSE_LEFT)
             {
                 m_orbitalcam.mousePress();
-                m_guiWindow.mousePress(m_mouseX, m_mouseY);
+                m_guiWindow.mousePress(GSysMouse.mouseX, GSysMouse.mouseY);
             }
             break;
 
@@ -350,7 +313,7 @@ void Game::events(Event& event)
             if (event.mouse.button == EVENT_MOUSE_LEFT)
             {
                 m_orbitalcam.mouseRelease();
-                m_guiWindow.mouseRelease(m_mouseX, m_mouseY);
+                m_guiWindow.mouseRelease(GSysMouse.mouseX, GSysMouse.mouseY);
             }
             break;
 
@@ -510,7 +473,7 @@ void Game::render()
 
     // Render cursor
     GRenderer.bindShader(RENDERER_SHADER_DEFAULT);
-    m_cursor.setPosition(m_mouseX, m_mouseY);
+    m_cursor.setPosition(GSysMouse.mouseX, GSysMouse.mouseY);
     m_cursor.bindTexture();
     m_cursor.render();
 

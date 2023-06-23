@@ -37,114 +37,63 @@
 //   For more information, please refer to <https://unlicense.org>            //
 ////////////////////////////////////////////////////////////////////////////////
 //    WOS : Web Operating System                                              //
-//     Wos.h : WOS Main class management                                      //
+//     System/SysMouse.h : System Mouse management                            //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef WOS_WOS_HEADER
-#define WOS_WOS_HEADER
+#ifndef WOS_SYSTEM_SYSMOUSE_HEADER
+#define WOS_SYSTEM_SYSMOUSE_HEADER
 
-    #include <emscripten/html5.h>
-
-    #include "System/System.h"
-    #include "System/SysEvent.h"
-    #include "System/SysMessage.h"
-    #include "System/SysCPU.h"
-    #include "System/SysClock.h"
-    #include "System/SysSleep.h"
-    #include "System/SysWindow.h"
-    #include "System/SysMouse.h"
-    #include "System/SysSettings.h"
-
-    #include "Renderer/Renderer.h"
-
-    #include "Resources/Resources.h"
-
-    #include "Game/Game.h"
-
-    #include <cstddef>
-    #include <cstdint>
-    #include <new>
+    #include "System.h"
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  WosState enumeration                                                  //
+    //  SysMouse class definition                                             //
     ////////////////////////////////////////////////////////////////////////////
-    enum WosState
-    {
-        WOS_STATE_NONE = 0,
-        WOS_STATE_INIT = 1,
-        WOS_STATE_PRELOAD = 2,
-        WOS_STATE_LOAD = 3,
-        WOS_STATE_WAIT = 4,
-
-        WOS_STATE_RUN = 5,
-
-        WOS_STATE_ERROR = 6
-    };
-
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  WOS main loop callback function                                       //
-    ////////////////////////////////////////////////////////////////////////////
-    void WosMainLoop();
-
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  WOS main class definition                                             //
-    ////////////////////////////////////////////////////////////////////////////
-    class Wos
+    class SysMouse
     {
         public:
             ////////////////////////////////////////////////////////////////////
-            //  Wos default constructor                                       //
+            //  SysMouse default constructor                                  //
             ////////////////////////////////////////////////////////////////////
-            Wos();
+            SysMouse();
 
             ////////////////////////////////////////////////////////////////////
-            //  Wos destructor                                                //
+            //  SysMouse destructor                                           //
             ////////////////////////////////////////////////////////////////////
-            ~Wos();
+            ~SysMouse();
 
 
             ////////////////////////////////////////////////////////////////////
-            //  Launch WOS                                                    //
-            //  return : True if WOS successfully started, false otherwise    //
+            //  Update mouse position                                         //
             ////////////////////////////////////////////////////////////////////
-            bool launch();
-
-            ////////////////////////////////////////////////////////////////////
-            //  Run WOS                                                       //
-            ////////////////////////////////////////////////////////////////////
-            void run();
+            void update(int x, int y);
 
 
         private:
             ////////////////////////////////////////////////////////////////////
-            //  Wos private copy constructor : Not copyable                   //
+            //  SysMouse private copy constructor : Not copyable              //
             ////////////////////////////////////////////////////////////////////
-            Wos(const Wos&) = delete;
+            SysMouse(const SysMouse&) = delete;
 
             ////////////////////////////////////////////////////////////////////
-            //  Wos private copy operator : Not copyable                      //
+            //  SysMouse private copy operator : Not copyable                 //
             ////////////////////////////////////////////////////////////////////
-            Wos& operator=(const Wos&) = delete;
+            SysMouse& operator=(const SysMouse&) = delete;
 
 
-        private:
-            WosState        m_state;            // WOS state
-            SysClock        m_clock;            // WOS clock
-            float           m_frametime;        // WOS frametime
-            float           m_framecount;       // WOS framecount
-            float           m_framerate;        // WOS framerate
-            float           m_timer;            // WOS timer
-
-            Game            m_game;             // Game instance
+        public:
+            float           mouseX;             // Mouse X position
+            float           mouseY;             // Mouse Y position
+            float           deltaX;             // Mouse X delta
+            float           deltaY;             // Mouse Y delta
+            int             previousX;          // Previous mouse X position
+            int             previousY;          // Previous mouse Y position
     };
 
 
     ////////////////////////////////////////////////////////////////////////////
-    //  WOS global instance                                                   //
+    //  SysMouse global instance                                              //
     ////////////////////////////////////////////////////////////////////////////
-    extern Wos GWos;
+    extern SysMouse GSysMouse;
 
 
-#endif // WOS_WOS_HEADER
+#endif // WOS_SYSTEM_SYSMOUSE_HEADER

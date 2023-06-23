@@ -44,6 +44,8 @@
 !System/SysCursor.h
 !System/SysWindow.h
 !System/SysWindow.cpp
+!System/SysMouse.h
+!System/SysMouse.cpp
 !System/SysSettings.h
 !System/SysSettings.cpp
 
