@@ -114,8 +114,9 @@
             #if (WOS_POINTERLOCK == 0)
                 inline void setCursor(SysCursorType cursorType)
                 {
-                    (void)cursorType;
-                    //m_cursors[cursorType]
+                    EM_ASM({
+                        document.body.style.cursor = UTF8ToString($0);
+                    }, SysCursors[cursorType]);
                 }
             #endif // WOS_POINTERLOCK
 

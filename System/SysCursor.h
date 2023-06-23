@@ -65,5 +65,21 @@
         SYSCURSOR_CURSORSCOUNT = 10
     };
 
+    ////////////////////////////////////////////////////////////////////////////
+    //  SysCursors                                                            //
+    ////////////////////////////////////////////////////////////////////////////
+    const char* const SysCursors[] = {
+        "auto",             // SYSCURSOR_NONE
+        "auto",             // SYSCURSOR_DEFAULT
+        "ns-resize",        // SYSCURSOR_TOPRESIZE
+        "ns-resize",        // SYSCURSOR_BOTTOMRESIZE
+        "ew-resize",        // SYSCURSOR_LEFTRESIZE
+        "ew-resize",        // SYSCURSOR_RIGHTRESIZE
+        "nwse-resize",      // SYSCURSOR_TOPLEFTRESIZE
+        "nesw-resize",      // SYSCURSOR_TOPRIGHTRESIZE
+        "nesw-resize",      // SYSCURSOR_BOTTOMLEFTRESIZE
+        "nwse-resize"       // SYSCURSOR_BOTTOMRIGHTRESIZE
+    };
+
 
 #endif // WOS_SYSTEM_SYSCURSOR_HEADER

@@ -49,21 +49,6 @@ SysWindow GSysWindow = SysWindow();
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Get window width                                                          //
-////////////////////////////////////////////////////////////////////////////////
-EM_JS(int, SysGetWindowWidth, (), {
-    return window.innerWidth;
-});
-
-////////////////////////////////////////////////////////////////////////////////
-//  Get window height                                                         //
-////////////////////////////////////////////////////////////////////////////////
-EM_JS(int, SysGetWindowHeight, (), {
-    return window.innerHeight;
-});
-
-
-////////////////////////////////////////////////////////////////////////////////
 //  Window resize callback function                                           //
 ////////////////////////////////////////////////////////////////////////////////
 EM_BOOL OnWindowResize(int event, const EmscriptenUiEvent* uievent, void* user)
@@ -208,8 +193,8 @@ bool SysWindow::create()
     }
 
     // Update window size
-    m_width = SysGetWindowWidth();
-    m_height = SysGetWindowHeight();
+    m_width = EM_ASM_INT(return window.innerWidth);
+    m_height = EM_ASM_INT(return window.innerHeight);
     emscripten_set_canvas_element_size("#woscreen", m_width, m_height);
 
     // Set window resize callback
@@ -277,8 +262,8 @@ void SysWindow::close()
 void SysWindow::updateSize()
 {
     // Update window size
-    m_width = SysGetWindowWidth();
-    m_height = SysGetWindowHeight();
+    m_width = EM_ASM_INT(return window.innerWidth);
+    m_height = EM_ASM_INT(return window.innerHeight);
     emscripten_set_canvas_element_size("#woscreen", m_width, m_height);
 }
 
